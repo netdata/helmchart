@@ -1,0 +1,84 @@
+apiVersion: apps/v1beta2
+kind: StatefulSet
+metadata:
+  name: {{ template "netdata.name" . }}-master
+  labels:
+    app: {{ template "netdata.name" . }}
+    chart: {{ template "netdata.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    role: master
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "netdata.name" . }}
+      release: {{ .Release.Name }}
+      role: master
+  template:
+    metadata:
+      labels:
+        app: {{ template "netdata.name" . }}
+        release: {{ .Release.Name }}
+        role: master
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.port }}
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+            timeoutSeconds: 1
+            periodSeconds: 30
+            successThreshold: 1
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+            timeoutSeconds: 1
+            periodSeconds: 30
+            successThreshold: 1
+            failureThreshold: 3
+          volumeMounts:
+            - name: config
+              mountPath: /etc/netdata/netdata.conf
+              subPath: netdata.conf
+            - name: stream
+              mountPath: /etc/netdata/stream.conf
+              subPath: stream.conf
+          resources:
+{{ toYaml .Values.master.resources | indent 12 }}
+    {{- with .Values.master.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.master.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.master.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+      volumes:
+        - name: config
+          configMap:
+            name: netdata-conf-master
+            items:
+              - key: netdata.conf
+                path: netdata.conf
+        - name: stream
+          configMap:
+            name: netdata-conf-master
+            items:
+              - key: stream.conf
+                path: stream.conf

@@ -1,0 +1,8 @@
+name: netdata
+home: https://github.com/netdata/netdata
+version: 0.0.1
+appVersion: v1.12.2
+description: Real-time performance monitoring, done right! https://my-netdata.io/
+maintainer:
+  name: Chris Akritidis
+  email: chris@netdata.cloud

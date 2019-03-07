@@ -1,0 +1,96 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  annotations:
+    container.apparmor.security.beta.kubernetes.io/netdata-slave: unconfined
+  name: {{ template "netdata.name" . }}-slave
+  labels:
+    app: {{ template "netdata.name" . }}
+    chart: {{ template "netdata.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    role: slave
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "netdata.name" . }}
+      release: {{ .Release.Name }}
+      role: slave
+  template:
+    metadata:
+      labels:
+        app: {{ template "netdata.name" . }}
+        release: {{ .Release.Name }}
+        role: slave
+      annotations:
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+    spec:
+      restartPolicy: Always
+      hostPID: true
+      hostIPC: true
+      hostNetwork: true
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          volumeMounts:
+            - name: proc
+              readOnly: true
+              mountPath: /host/proc
+            - name: run
+              mountPath: /var/run/docker.sock
+            - name: sys
+              mountPath: /host/sys
+            - name: cache
+              mountPath: /var/cache/netdata
+            - name: config
+              mountPath: /etc/netdata/netdata.conf
+              subPath: netdata.conf
+            - name: stream
+              mountPath: /etc/netdata/stream.conf
+              subPath: stream.conf
+          securityContext:
+            capabilities:
+              add:
+                - SYS_PTRACE
+                - SYS_ADMIN
+          resources:
+{{ toYaml .Values.slave.resources | indent 12 }}
+    {{- with .Values.slave.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.slave.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.slave.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+      volumes:
+        - name: proc
+          hostPath:
+            path: /proc
+        - name: run
+          hostPath:
+            path: /var/run/docker.sock
+        - name: sys
+          hostPath:
+            path: /sys
+        - name: cache
+          hostPath:
+            path: /global/netdata/cache
+        - name: config
+          configMap:
+            name: netdata-conf-slave
+            items:
+              - key: netdata.conf
+                path: netdata.conf
+        - name: stream
+          configMap:
+            name: netdata-conf-slave
+            items:
+              - key: stream.conf
+                path: stream.conf
+      dnsPolicy: ClusterFirstWithHostNet
