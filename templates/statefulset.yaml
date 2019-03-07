@@ -9,6 +9,7 @@ metadata:
     heritage: {{ .Release.Service }}
     role: master
 spec:
+  serviceAccountName: {{ .Values.serviceaccount.name }}
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:

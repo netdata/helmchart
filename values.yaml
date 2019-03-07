@@ -22,6 +22,12 @@ ingress:
 #      hosts:
 #        - netdata.k8s.local
 
+serviceaccount:
+  name: netdata
+
+clusterrole:
+  name: netdata
+
 master:
   resources: {}
     # limits:

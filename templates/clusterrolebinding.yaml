@@ -1,0 +1,12 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: netdata
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: {{ .Values.clusterrole.name }}
+subjects:
+- kind: ServiceAccount
+  name: {{ .Values.serviceaccount.name }}
+  namespace: default

@@ -11,6 +11,7 @@ metadata:
     heritage: {{ .Release.Service }}
     role: slave
 spec:
+  serviceAccountName: {{ .Values.serviceaccount.name }}
   selector:
     matchLabels:
       app: {{ template "netdata.name" . }}

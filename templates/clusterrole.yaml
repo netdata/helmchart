@@ -1,0 +1,18 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: {{ .Values.clusterrole.name }}
+rules:
+- apiGroups: [""]
+  resources: ["services", "events", "endpoints", "pods", "nodes", "componentstatuses"]
+  verbs: ["get", "list", "watch"]
+- apiGroups: ["quota.openshift.io"]
+  resources: ["clusterresourcequotas"]
+  verbs: ["get", "list"]
+- nonResourceURLs:
+  - "/version"
+  - "/healthz"
+  verbs: ["get"]
+- apiGroups: [""]
+  resources: ["nodes/metrics", "nodes/spec", "nodes/proxy"]
+  verbs: ["get"]
