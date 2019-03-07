@@ -11,7 +11,6 @@ metadata:
     heritage: {{ .Release.Service }}
     role: slave
 spec:
-  serviceAccountName: {{ .Values.serviceaccount.name }}
   selector:
     matchLabels:
       app: {{ template "netdata.name" . }}
@@ -26,6 +25,7 @@ spec:
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
     spec:
+      serviceAccountName: {{ .Values.serviceaccount.name }}
       restartPolicy: Always
       hostPID: true
       hostIPC: true

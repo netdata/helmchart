@@ -9,7 +9,6 @@ metadata:
     heritage: {{ .Release.Service }}
     role: master
 spec:
-  serviceAccountName: {{ .Values.serviceaccount.name }}
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
@@ -25,6 +24,7 @@ spec:
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
     spec:
+      serviceAccountName: {{ .Values.serviceaccount.name }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
