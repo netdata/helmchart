@@ -10,6 +10,23 @@ metadata:
     role: master
 spec:
   replicas: {{ .Values.replicaCount }}
+  volumeClaimTemplates:
+    - metadata:
+        name: database
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        storageClassName: {{ .Values.master.alarms.storageclass }}
+        resources:
+          requests:
+            storage: {{ .Values.master.database.volumesize }}
+    - metadata:
+        name: alarms
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        storageClassName: {{ .Values.master.alarms.storageclass }}
+        resources:
+          requests:
+            storage: {{ .Values.master.alarms.volumesize }}
   selector:
     matchLabels:
       app: {{ template "netdata.name" . }}
@@ -56,6 +73,13 @@ spec:
             - name: stream
               mountPath: /etc/netdata/stream.conf
               subPath: stream.conf
+            - name: health
+              mountPath: /etc/netdata/health_alarm_notify.conf
+              subPath: health_alarm_notify.conf
+            - name: database
+              mountPath: /var/cache/netdata
+            - name: alarms
+              mountPath: /var/lib/netdata
           resources:
 {{ toYaml .Values.master.resources | indent 12 }}
     {{- with .Values.master.nodeSelector }}
@@ -83,3 +107,9 @@ spec:
             items:
               - key: stream.conf
                 path: stream.conf
+        - name: health
+          configMap:
+            name: netdata-conf-master
+            items:
+              - key: health_alarm_notify.conf
+                path: health_alarm_notify.conf

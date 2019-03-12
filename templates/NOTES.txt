@@ -2,13 +2,17 @@
 {{- range .Values.ingress.hosts }}
 1. netdata will be available on http{{ if $.Values.ingress.tls }}s{{ end }}://{{ . }}{{ $.Values.ingress.path }}, on the exposed port of your ingress controller
 
+In a production environment, you 
  You can get that port via `kubectl get services`. e.g. in the following example, the http exposed port is 31737, the https one is 30069.
+ The hostname {{ . }} will need to be added to /etc/hosts, so that it resolves to the exposed IP. That IP depends on how your cluster is set up: 
+	- When no load balancer is available (e.g. with minikube), you get the IP shown on `kubectl cluster-info`
+	- In a production environment, the command `kubectl get services` will show the IP under the EXTERNAL-IP column
 
-kubectl get services
+The port can be retrieved in both cases from `kubectl get services`
+
 NAME                                         TYPE           CLUSTER-IP       EXTERNAL-IP   PORT(S)                      AGE
 exiled-tapir-nginx-ingress-controller        LoadBalancer   10.98.132.169    <pending>     80:31737/TCP,443:30069/TCP   11h
 
- The hostname {{ . }} will need to be added to /etc/hosts, with the IP shown on `kubectl cluster-info`, or the ADDRESS column of your ingress controller.
 
 {{- end }}
 {{- else if contains "NodePort" .Values.service.type }}

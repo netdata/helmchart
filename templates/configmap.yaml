@@ -23,7 +23,8 @@ data:
         memory mode = ram
     [web]
         mode = none
-
+    [health]
+        enabled = no
 ---
 
 apiVersion: v1
@@ -40,12 +41,21 @@ data:
     [11111111-2222-3333-4444-555555555555]
         enabled = yes
         history = 3600
-        default memory mode = ram
+        default memory mode = save
         health enabled by default = auto
         allow from = *
   netdata.conf: |-
     [global]
         memory mode = save
         bind to = 0.0.0.0:{{ .Values.service.port }}
-        # this is a third test
+  health_alarm_notify.conf: |- # The following is an example. You will need to configure and start the sendmail daemon to use it, or use a different notification method
+    EMAIL_SENDER=""
+    SEND_EMAIL="YES"
+    DEFAULT_RECIPIENT_EMAIL="root"
+    role_recipients_email[sysadmin]="${DEFAULT_RECIPIENT_EMAIL}"
+    role_recipients_email[domainadmin]="${DEFAULT_RECIPIENT_EMAIL}"
+    role_recipients_email[dba]="${DEFAULT_RECIPIENT_EMAIL}"
+    role_recipients_email[webmaster]="${DEFAULT_RECIPIENT_EMAIL}"
+    role_recipients_email[proxyadmin]="${DEFAULT_RECIPIENT_EMAIL}"
+    role_recipients_email[sitemgr]="${DEFAULT_RECIPIENT_EMAIL}"
 
