@@ -1,6 +1,8 @@
 {{- if .Values.ingress.enabled -}}
 {{- $fullName := include "netdata.name" . -}}
 {{- $ingressPath := .Values.ingress.path -}}
+{{- $ingressPort := .Values.ingress.port -}}
+
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
@@ -17,13 +19,7 @@ metadata:
 spec:
 {{- if .Values.ingress.tls }}
   tls:
-  {{- range .Values.ingress.tls }}
-    - hosts:
-      {{- range .hosts }}
-        - {{ . }}
-      {{- end }}
-      secretName: {{ .secretName }}
-  {{- end }}
+{{ toYaml .Values.ingress.tls | indent 4 }}
 {{- end }}
   rules:
   {{- range .Values.ingress.hosts }}
@@ -33,6 +29,6 @@ spec:
           - path: {{ $ingressPath }}
             backend:
               serviceName: {{ $fullName }}
-              servicePort: http
+              servicePort: {{ $ingressPort }}
   {{- end }}
 {{- end }}
