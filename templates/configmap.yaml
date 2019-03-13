@@ -13,7 +13,7 @@ data:
     [stream]
         enabled = yes
         destination = {{ template "netdata.name" . }}:{{ .Values.service.port }}
-        api key = 11111111-2222-3333-4444-555555555555
+        api key = {{ .Values.APIKEY }}
         timeout seconds = 60
         buffer size bytes = 1048576
         reconnect delay seconds = 5
@@ -38,7 +38,7 @@ metadata:
     heritage: {{ .Release.Service }}
 data:
   stream.conf: |-
-    [11111111-2222-3333-4444-555555555555]
+    [{{ .Values.APIKEY }}]
         enabled = yes
         history = 3600
         default memory mode = save
