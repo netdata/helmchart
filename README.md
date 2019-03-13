@@ -67,13 +67,10 @@ Parameter | Description | Default
 `service.type` | netdata master service type | `ClusterIP`
 `service.port` | netdata master service port | `19999`
 `ingress.enabled` | Create Ingress to access the netdata web UI | `true`
-`ingress.annotations` | Associate annotations to the Ingress | ```yaml
-    kubernetes.io/ingress.class: nginx
-    kubernetes.io/tls-acme: "true"
-```
+`ingress.annotations` | Associate annotations to the Ingress | `kubernetes.io/ingress.class: nginx` and `kubernetes.io/tls-acme: "true"`
 `ingress.path` | URL path for the ingress | `/`
 `ingress.port` | URL port for the ingress | `80`
-`hosts` | URL hostnames for the ingress (they need to resolve to the external IP of the ingress controller) | `netdata.k8s.local`
+`ingress.hosts` | URL hostnames for the ingress (they need to resolve to the external IP of the ingress controller) | `netdata.k8s.local`
 `serviceaccount.name` | Name of the service account that provides access rights  to netdata | `netdata`
 `clusterrole.name` | Name of the cluster role linked with the service account | `netdata`
 `master.resources` | Resources for the master statefulset | `{}`
@@ -86,10 +83,7 @@ Parameter | Description | Default
 `master.database.volumesize` | The storage space for the PVC of the master alarm log | `100Mi`
 `slave.resources` | Resources for the slave daemonsets | `{}`
 `slave.nodeSelector` | Node selector for the slave daemonsets | `{}`
-`slave.tolerations` | Tolerations settings for the slave daemonsets | ```yaml
-- operator: Exists
-      effect: NoSchedule
-```
+`slave.tolerations` | Tolerations settings for the slave daemonsets | `- operator: Exists` with `effect: NoSchedule`
 `slave.affinity` | Affinity settings for the slave daemonsets | `{}`
 `notifications.slackurl` | URL for slack notifications | `""`
 `notifications.slackrecipient` | Slack recipient list | `""`
