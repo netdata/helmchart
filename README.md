@@ -62,7 +62,7 @@ Parameter | Description | Default
 --- | --- | ---
 `replicaCount` | Number of `replicas` for the master netdata `Statefulset` | `1`
 `image.repository` | Container image repo | `netdata/netdata`
-`image.tag` | Container image tag | `TBD`
+`image.tag` | Container image tag | `v1.12.2`
 `image.pullPolicy` | Container image pull policy | `Always`
 `service.type` | netdata master service type | `ClusterIP`
 `service.port` | netdata master service port | `19999`

@@ -1,8 +1,8 @@
 replicaCount: 1
 
 image:
-  repository: cakrit/netdata-prs
-  tag: PR5576
+  repository: netdata/netdata
+  tag: v1.12.2
   pullPolicy: Always
 
 service:
