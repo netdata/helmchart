@@ -67,3 +67,8 @@ slave:
       effect: NoSchedule
 
   affinity: {}
+
+notifications:
+  slackurl: ""
+  slackrecipient: ""
+

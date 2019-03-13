@@ -41,6 +41,8 @@ spec:
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
     spec:
+      securityContext:
+        fsGroup: 201
       serviceAccountName: {{ .Values.serviceaccount.name }}
       containers:
         - name: {{ .Chart.Name }}
