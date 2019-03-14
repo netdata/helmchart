@@ -67,6 +67,19 @@ spec:
       tolerations:
 {{ toYaml . | indent 8 }}
     {{- end }}
+      env:
+        - name: MY_POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: MY_POD_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        {{- range $key, $value := .Values.slave.env }}
+        - name: {{ $key }}
+          value: {{ $value | quote }}
+        {{- end }}
       volumes:
         - name: proc
           hostPath:

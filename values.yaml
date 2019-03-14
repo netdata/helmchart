@@ -46,6 +46,8 @@ master:
 
   affinity: {}
 
+  env: {}
+
   database:
     storageclass: "standard"
     volumesize: 2Gi
@@ -71,7 +73,8 @@ slave:
 
   affinity: {}
 
+  env: {}
+
 notifications:
   slackurl: ""
   slackrecipient: ""
-
