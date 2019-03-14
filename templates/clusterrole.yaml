@@ -6,8 +6,8 @@ rules:
 - apiGroups: [""]
   resources: ["services", "events", "endpoints", "pods", "nodes", "componentstatuses"]
   verbs: ["get", "list", "watch"]
-- apiGroups: ["quota.openshift.io"]
-  resources: ["clusterresourcequotas"]
+- apiGroups: [""]
+  resources: ["resourcequotas"]
   verbs: ["get", "list"]
 - nonResourceURLs:
   - "/version"
