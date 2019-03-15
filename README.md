@@ -69,7 +69,6 @@ Parameter | Description | Default
 `ingress.enabled` | Create Ingress to access the netdata web UI | `true`
 `ingress.annotations` | Associate annotations to the Ingress | `kubernetes.io/ingress.class: nginx` and `kubernetes.io/tls-acme: "true"`
 `ingress.path` | URL path for the ingress | `/`
-`ingress.port` | URL port for the ingress | `80`
 `ingress.hosts` | URL hostnames for the ingress (they need to resolve to the external IP of the ingress controller) | `netdata.k8s.local`
 `serviceaccount.name` | Name of the service account that provides access rights  to netdata | `netdata`
 `clusterrole.name` | Name of the cluster role linked with the service account | `netdata`

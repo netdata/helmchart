@@ -1,7 +1,6 @@
 {{- if .Values.ingress.enabled -}}
 {{- $fullName := include "netdata.name" . -}}
 {{- $ingressPath := .Values.ingress.path -}}
-{{- $ingressPort := .Values.ingress.port -}}
 
 apiVersion: extensions/v1beta1
 kind: Ingress
@@ -29,6 +28,6 @@ spec:
           - path: {{ $ingressPath }}
             backend:
               serviceName: {{ $fullName }}
-              servicePort: {{ $ingressPort }}
+              servicePort: http
   {{- end }}
 {{- end }}
