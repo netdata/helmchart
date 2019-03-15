@@ -82,10 +82,12 @@ Parameter | Description | Default
 `master.database.volumesize` | The storage space for the PVC of the master database | `2Gi`
 `master.alarms.storageclass` | The storage class for the persistent volume claim of the master's alarm log, mounted to `/var/lib/netdata` | `standard`
 `master.database.volumesize` | The storage space for the PVC of the master alarm log | `100Mi`
+`master.env` | Set environment parameters for the master statefulset | `{}`
 `slave.resources` | Resources for the slave daemonsets | `{}`
 `slave.nodeSelector` | Node selector for the slave daemonsets | `{}`
 `slave.tolerations` | Tolerations settings for the slave daemonsets | `- operator: Exists` with `effect: NoSchedule`
 `slave.affinity` | Affinity settings for the slave daemonsets | `{}`
+`slave.env` | Set environment parameters for the slave daemonset | `{}`
 `notifications.slackurl` | URL for slack notifications | `""`
 `notifications.slackrecipient` | Slack recipient list | `""`
 
