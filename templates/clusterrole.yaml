@@ -4,15 +4,16 @@ metadata:
   name: {{ .Values.clusterrole.name }}
 rules:
 - apiGroups: [""]
-  resources: ["services", "events", "endpoints", "pods", "nodes", "componentstatuses"]
+  resources: ["services", "events", "endpoints", "pods", "nodes", "componentstatuses", "nodes/proxy" ]
   verbs: ["get", "list", "watch"]
 - apiGroups: [""]
   resources: ["resourcequotas"]
   verbs: ["get", "list"]
-- nonResourceURLs:
-  - "/version"
-  - "/healthz"
+- apiGroups: ["extensions"]
+  resources: ["ingresses"]
+  verbs: ["get", "list", "watch"]
+- nonResourceURLs: ["/version", "/healthz", "/metrics"]
   verbs: ["get"]
 - apiGroups: [""]
-  resources: ["nodes/metrics", "nodes/spec", "nodes/proxy"]
+  resources: ["nodes/metrics", "nodes/spec"]
   verbs: ["get"]
