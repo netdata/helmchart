@@ -9,22 +9,9 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 data:
-  stream.conf: |-
-    [stream]
-        enabled = yes
-        destination = {{ template "netdata.name" . }}:{{ .Values.service.port }}
-        api key = {{ .Values.APIKEY }}
-        timeout seconds = 60
-        buffer size bytes = 1048576
-        reconnect delay seconds = 5
-        initial clock resync iterations = 60
-  netdata.conf: |-
-    [global]
-        memory mode = ram
-    [web]
-        mode = none
-    [health]
-        enabled = no
+  netdata.conf: {{ toYaml .Values.slave.netdata_config | indent 4 }}
+  stream.conf: {{ toYaml .Values.slave.stream_config | indent 4 }}
+
 ---
 
 apiVersion: v1
@@ -37,26 +24,15 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 data:
-  stream.conf: |-
-    [{{ .Values.APIKEY }}]
-        enabled = yes
-        history = 3600
-        default memory mode = save
-        health enabled by default = auto
-        allow from = *
-  netdata.conf: |-
-    [global]
-        memory mode = save
-        bind to = 0.0.0.0:{{ .Values.service.port }}
-  health_alarm_notify.conf: |- # The following is an example. You will need to configure and start the sendmail daemon to use it, or use a different notification method
-        SEND_EMAIL="NO"
-        SEND_SLACK="YES"
-        SLACK_WEBHOOK_URL="{{ .Values.notifications.slackurl }}"
-        DEFAULT_RECIPIENT_SLACK="{{ .Values.notifications.slackrecipient }}"
-        role_recipients_slack[sysadmin]="${DEFAULT_RECIPIENT_SLACK}"
-        role_recipients_slack[domainadmin]="${DEFAULT_RECIPIENT_SLACK}"
-        role_recipients_slack[dba]="${DEFAULT_RECIPIENT_SLACK}"
-        role_recipients_slack[webmaster]="${DEFAULT_RECIPIENT_SLACK}"
-        role_recipients_slack[proxyadmin]="${DEFAULT_RECIPIENT_SLACK}"
-        role_recipients_slack[sitemgr]="${DEFAULT_RECIPIENT_SLACK}"
+  netdata.conf: {{ toYaml .Values.master.netdata_config | indent 4 }}
+  stream.conf: {{ toYaml .Values.master.stream_config | indent 4 }}
+  health_alarm_notify.conf: {{ toYaml .Values.master.health_config | indent 4 }}
+  example.conf: |-
+    alarm: example_alarm1
+      on: example.random
+    every: 2s
+    warn: $random1 > (($status >= $WARNING)  ? (70) : (80))
+    crit: $random1 > (($status == $CRITICAL) ? (80) : (90))
+    info: random
+      to: sysadmin
 

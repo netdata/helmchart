@@ -82,11 +82,16 @@ Parameter | Description | Default
 `master.alarms.storageclass` | The storage class for the persistent volume claim of the master's alarm log, mounted to `/var/lib/netdata` | `standard`
 `master.database.volumesize` | The storage space for the PVC of the master alarm log | `100Mi`
 `master.env` | Set environment parameters for the master statefulset | `{}`
+`master.stream_config` | Contents of the master's `stream.conf` | Store slave data, accept all connections, and issue alarms for slave data.
+`master.netdata_config` | Contents of the master's `netdata.conf` | `memory mode = save` and `bind to = 0.0.0.0:19999`
+`master.health_config` | Contents of `health_alarm_notify.conf` | Email disabled, a sample of the required settings for Slack notifications
 `slave.resources` | Resources for the slave daemonsets | `{}`
 `slave.nodeSelector` | Node selector for the slave daemonsets | `{}`
 `slave.tolerations` | Tolerations settings for the slave daemonsets | `- operator: Exists` with `effect: NoSchedule`
 `slave.affinity` | Affinity settings for the slave daemonsets | `{}`
 `slave.env` | Set environment parameters for the slave daemonset | `{}`
+`slave.stream_config` | Contents of the slave `stream.conf` | Send metrics to the master at netdata:19999
+`master.netdata_config` | Contents of the slave's `netdata.conf` | No persistent storage, no alarms, no UI
 `notifications.slackurl` | URL for slack notifications | `""`
 `notifications.slackrecipient` | Slack recipient list | `""`
 
@@ -106,3 +111,39 @@ $ helm install ./netdata --name my-release -f values.yaml
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
 
+### Additional netdata configurations
+
+To deploy additional netdata user configuration files, you will need to modify the helm chart configuration files as explained below. 
+
+#### Adding a configuration file to the master
+
+To provide a new user configuration file to the master, you need to edit the following:
+ - In `templates/statefulset.yaml` : `spec.template.spec.volumes` and `spec.template.spec.containers.volumeMounts`.
+ - In `templates/configmap.yaml` : In the second `ConfigMap` with `metadata.name=netdata-conf-master`, update `metadata.data`.
+
+Note that with the default configuration of this chart, the master does the health checks and triggers alams, but does not collect much data. As a result, the only other 
+configuration files that might make sense to add are the alarm and alarm template definitions, under `/etc/netdata/health.d`. 
+
+#### Adding a configuration file to the slaves
+
+To provide a new user configuration file to the slave pods, you need to edit the following:
+ - In `templates/daemonset.yaml` : `spec.template.spec.volumes` and `spec.template.spec.containers.volumeMounts`.
+ - In `templates/configmap.yaml` : In the first `ConfigMap` with `metadata.name=netdata-conf-slave`, update `metadata.data`.
+ 
+Regardless of whether you add config files that reside directly under `/etc/netdata` or in a subdirectory 
+such as `/etc/netdata/go.d`, you can use the already provided configurations as reference. 
+
+#### Example
+
+For reference, the `yaml` templates of the master mentioned above include an `example` alarm that would get triggered if the python.d `example` module was enabled. 
+You will see in this case that we chose not to add a value for the contents of the configuration file in `values.yaml`. We use the multi-line syntax `var: |-` and enter 
+the contents of the config file underneath. 
+
+> **Tip**: Do pay attention to the indentation of the config file contents, as it matters for the parsing of the `yaml` file. Note that the first line under `var: |-` 
+must be indented with two more spaces relative to the preceding line:
+
+```
+  myconfigfilecontents: |-
+    config line 1 #Need those two spaces
+        config line 2 #No problem indenting more here
+```
