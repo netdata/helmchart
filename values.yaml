@@ -28,7 +28,6 @@ serviceaccount:
 clusterrole:
   name: netdata
 
-APIKEY: 11111111-2222-3333-4444-555555555555
 
 master:
   resources: {}
@@ -55,6 +54,34 @@ master:
     storageclass: "standard"
     volumesize: 100Mi
 
+  # stream.conf
+  stream_config: |-
+    [11111111-2222-3333-4444-555555555555]
+      enabled = yes
+      history = 3600
+      default memory mode = save
+      health enabled by default = auto
+      allow from = *
+
+  # netdata.conf
+  netdata_config: |-
+    [global]
+      memory mode = save
+      bind to = 0.0.0.0:19999
+
+  # health_alarm_notify.conf
+  health_config: |-
+    SEND_EMAIL="NO"
+    SEND_SLACK="YES"
+    SLACK_WEBHOOK_URL=""
+    DEFAULT_RECIPIENT_SLACK=""
+    role_recipients_slack[sysadmin]="${DEFAULT_RECIPIENT_SLACK}"
+    role_recipients_slack[domainadmin]="${DEFAULT_RECIPIENT_SLACK}"
+    role_recipients_slack[dba]="${DEFAULT_RECIPIENT_SLACK}"
+    role_recipients_slack[webmaster]="${DEFAULT_RECIPIENT_SLACK}"
+    role_recipients_slack[proxyadmin]="${DEFAULT_RECIPIENT_SLACK}"
+    role_recipients_slack[sitemgr]="${DEFAULT_RECIPIENT_SLACK}"
+
 slave:
   resources: {}
     # limits:
@@ -72,8 +99,25 @@ slave:
 
   affinity: {}
 
+  # netdata.conf
+  netdata_config: |-
+    [global]
+      memory mode = ram
+    [web]
+      mode = none
+    [health]
+      enabled = no
+
+  # stream.conf
+  stream_config: |-
+    [stream]
+      enabled = yes
+      destination = netdata:19999
+      api key = 11111111-2222-3333-4444-555555555555
+      timeout seconds = 60
+      buffer size bytes = 1048576
+      reconnect delay seconds = 5
+      initial clock resync iterations = 60
+
   env: {}
 
-notifications:
-  slackurl: ""
-  slackrecipient: ""

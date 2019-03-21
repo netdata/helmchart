@@ -78,6 +78,9 @@ spec:
             - name: health
               mountPath: /etc/netdata/health_alarm_notify.conf
               subPath: health_alarm_notify.conf
+            - name: alarms-example
+              mountPath: /etc/netdata/health.d/example.conf
+              subPath: example.conf
             - name: database
               mountPath: /var/cache/netdata
             - name: alarms
@@ -128,3 +131,9 @@ spec:
             items:
               - key: health_alarm_notify.conf
                 path: health_alarm_notify.conf
+        - name: alarms-example
+          configMap:
+            name: netdata-conf-master
+            items:
+              - key: example.conf
+                path: example.conf
