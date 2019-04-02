@@ -25,7 +25,7 @@ spec:
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
     spec:
-      serviceAccountName: {{ .Values.serviceaccount.name }}
+      serviceAccountName: {{ .Values.serviceAccount.name }}
       restartPolicy: Always
       hostPID: true
       hostIPC: true

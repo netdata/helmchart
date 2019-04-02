@@ -22,10 +22,11 @@ ingress:
 #      hosts:
 #        - netdata.k8s.local
 
-serviceaccount:
-  name: netdata
+rbac:
+  create: true
 
-clusterrole:
+serviceAccount:
+  create: true
   name: netdata
 
 
