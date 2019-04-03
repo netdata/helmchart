@@ -70,7 +70,9 @@ Parameter | Description | Default
 `ingress.annotations` | Associate annotations to the Ingress | `kubernetes.io/ingress.class: nginx` and `kubernetes.io/tls-acme: "true"`
 `ingress.path` | URL path for the ingress | `/`
 `ingress.hosts` | URL hostnames for the ingress (they need to resolve to the external IP of the ingress controller) | `netdata.k8s.local`
-`serviceaccount.name` | Name of the service account that provides access rights  to netdata | `netdata`
+`rbac.create` | if true, create & use RBAC resources | `true`
+`serviceAccount.create` |if true, create a service account | `true`
+`serviceAccount.name` | The name of the service account to use. If not set and create is true, a name is generated using the fullname template. | `netdata`
 `clusterrole.name` | Name of the cluster role linked with the service account | `netdata`
 `APIKEY` | The key shared between the master and the slave netdata for streaming | `11111111-2222-3333-4444-555555555555`
 `master.resources` | Resources for the master statefulset | `{}`
