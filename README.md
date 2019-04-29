@@ -96,6 +96,12 @@ Parameter | Description | Default
 `master.netdata_config` | Contents of the slave's `netdata.conf` | No persistent storage, no alarms, no UI
 `notifications.slackurl` | URL for slack notifications | `""`
 `notifications.slackrecipient` | Slack recipient list | `""`
+`sysctlImage.enabled` | Enable an init container to modify Kernel settings | `false` |
+`sysctlImage.command` | sysctlImage command to execute | [] |
+`sysctlImage.repository`| sysctlImage Init container name | `alpine` |
+`sysctlImage.tag` | sysctlImage Init container tag | `latest` |
+`sysctlImage.pullPolicy` | sysctlImage Init container pull policy | `Always` |
+`sysctlImage.resources` | sysctlImage Init container CPU/Memory resource requests/limits | {} |
 
 Example to set the parameters from the command line:
 ```console
