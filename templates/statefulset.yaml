@@ -45,6 +45,19 @@ spec:
       securityContext:
         fsGroup: 201
       serviceAccountName: {{ .Values.serviceAccount.name }}
+      initContainers:
+      {{- if .Values.sysctlImage.enabled }}
+        - name: init-sysctl
+          image: "{{ .Values.sysctlImage.repository }}:{{ .Values.sysctlImage.tag }}"
+          command:
+{{ toYaml .Values.sysctlImage.command | indent 12 }}
+          securityContext:
+            runAsNonRoot: false
+            privileged: true
+            runAsUser: 0
+          resources:
+{{ toYaml .Values.sysctlImage.resources | indent 12 }}
+      {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"

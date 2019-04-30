@@ -5,6 +5,13 @@ image:
   tag: v1.13.0
   pullPolicy: Always
 
+sysctlImage:
+  enabled: false
+  repository: alpine
+  tag: latest
+  pullPolicy: Always
+  command: []
+
 service:
   type: ClusterIP
   port: 19999
