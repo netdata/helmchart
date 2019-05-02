@@ -120,9 +120,7 @@ slave:
   # netdata.conf
   netdata_config: |-
     [global]
-      memory mode = ram
-    [web]
-      mode = none
+      memory mode = none
     [health]
       enabled = no
 
