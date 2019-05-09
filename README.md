@@ -82,7 +82,7 @@ Parameter | Description | Default
 `master.database.storageclass` | The storage class for the persistent volume claim of the master's database store, mounted to `/var/cache/netdata` | `standard`
 `master.database.volumesize` | The storage space for the PVC of the master database | `2Gi`
 `master.alarms.storageclass` | The storage class for the persistent volume claim of the master's alarm log, mounted to `/var/lib/netdata` | `standard`
-`master.database.volumesize` | The storage space for the PVC of the master alarm log | `100Mi`
+`master.alarms.volumesize` | The storage space for the PVC of the master alarm log | `100Mi`
 `master.env` | Set environment parameters for the master statefulset | `{}`
 `master.stream_config` | Contents of the master's `stream.conf` | Store slave data, accept all connections, and issue alarms for slave data.
 `master.netdata_config` | Contents of the master's `netdata.conf` | `memory mode = save` and `bind to = 0.0.0.0:19999`
