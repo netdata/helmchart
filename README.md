@@ -93,7 +93,7 @@ Parameter | Description | Default
 `slave.affinity` | Affinity settings for the slave daemonsets | `{}`
 `slave.env` | Set environment parameters for the slave daemonset | `{}`
 `slave.stream_config` | Contents of the slave `stream.conf` | Send metrics to the master at netdata:19999
-`master.netdata_config` | Contents of the slave's `netdata.conf` | No persistent storage, no alarms, no UI
+`slave.netdata_config` | Contents of the slave's `netdata.conf` | No persistent storage, no alarms, no UI
 `notifications.slackurl` | URL for slack notifications | `""`
 `notifications.slackrecipient` | Slack recipient list | `""`
 `sysctlImage.enabled` | Enable an init container to modify Kernel settings | `false` |
