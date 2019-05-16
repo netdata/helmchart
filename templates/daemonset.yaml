@@ -88,6 +88,15 @@ spec:
             - name: stream
               mountPath: /etc/netdata/stream.conf
               subPath: stream.conf
+            - name: coredns
+              mountPath: /etc/netdata/go.d/coredns.conf
+              subPath: coredns.conf
+            - name: kubelet
+              mountPath: /etc/netdata/go.d/k8s_kubelet.conf
+              subPath: k8s_kubelet.conf
+            - name: kubeproxy
+              mountPath: /etc/netdata/go.d/k8s_kubeproxy.conf
+              subPath: k8s_kubeproxy.conf
           securityContext:
             capabilities:
               add:
@@ -142,4 +151,22 @@ spec:
             items:
               - key: stream.conf
                 path: stream.conf
+        - name: coredns
+          configMap:
+            name: netdata-conf-slave
+            items:
+              - key: coredns.conf
+                path: coredns.conf
+        - name: kubelet
+          configMap:
+            name: netdata-conf-slave
+            items:
+              - key: k8s_kubelet.conf
+                path: k8s_kubelet.conf
+        - name: kubeproxy
+          configMap:
+            name: netdata-conf-slave
+            items:
+              - key: k8s_kubeproxy.conf
+                path: k8s_kubeproxy.conf
       dnsPolicy: ClusterFirstWithHostNet
