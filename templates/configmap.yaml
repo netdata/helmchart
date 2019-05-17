@@ -11,6 +11,9 @@ metadata:
 data:
   netdata.conf: {{ toYaml .Values.slave.netdata_config | indent 4 }}
   stream.conf: {{ toYaml .Values.slave.stream_config | indent 4 }}
+  coredns.conf: {{ toYaml .Values.slave.coredns_config | indent 4 }}
+  k8s_kubelet.conf: {{ toYaml .Values.slave.kubelet_config | indent 4 }}
+  k8s_kubeproxy.conf: {{ toYaml .Values.slave.kubeproxy_config | indent 4 }}
 
 ---
 

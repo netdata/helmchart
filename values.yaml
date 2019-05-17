@@ -2,7 +2,7 @@ replicaCount: 1
 
 image:
   repository: netdata/netdata
-  tag: v1.13.0
+  tag: v1.14.0
   pullPolicy: Always
 
 sysctlImage:
@@ -70,6 +70,7 @@ master:
       default memory mode = save
       health enabled by default = auto
       allow from = *
+    
 
   # netdata.conf
   netdata_config: |-
@@ -86,6 +87,7 @@ master:
       go.d = no
       node.d = no
       apps = yes
+    
 
   # health_alarm_notify.conf
   health_config: |-
@@ -99,6 +101,7 @@ master:
     role_recipients_slack[webmaster]="${DEFAULT_RECIPIENT_SLACK}"
     role_recipients_slack[proxyadmin]="${DEFAULT_RECIPIENT_SLACK}"
     role_recipients_slack[sitemgr]="${DEFAULT_RECIPIENT_SLACK}"
+    
 
 slave:
   resources: {}
@@ -123,6 +126,7 @@ slave:
       memory mode = none
     [health]
       enabled = no
+    
 
   # stream.conf
   stream_config: |-
@@ -134,6 +138,31 @@ slave:
       buffer size bytes = 1048576
       reconnect delay seconds = 5
       initial clock resync iterations = 60
+      
+
+  # go.d/coredns.conf
+  coredns_config: |-
+    update_every: 1
+    autodetection_retry: 0
+    jobs:
+      - url: http://127.0.0.1:9153/metrics
+      
+
+  # go.d/k8s_kubelet.conf
+  kubelet_config: |-
+    update_every: 1
+    autodetection_retry: 0
+    jobs:
+      - url: http://127.0.0.1:10255/metrics
+      
+
+  # go.d/k8s_kubeproxy.conf
+  kubeproxy_config: |-
+    update_every: 1
+    autodetection_retry: 0
+    jobs:
+      - url: http://127.0.0.1:10249/metrics
+      
 
   env: {}
 
