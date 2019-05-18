@@ -55,10 +55,12 @@ master:
   env: {}
 
   database:
+    persistence: true
     storageclass: "standard"
     volumesize: 2Gi
 
   alarms:
+    persistence: true
     storageclass: "standard"
     volumesize: 100Mi
 

@@ -11,15 +11,19 @@ metadata:
 spec:
   serviceName: {{ template "netdata.name" . }}
   replicas: {{ .Values.replicaCount }}
+  {{- if or .Values.master.database.persistence .Values.master.alarms.persistence }}
   volumeClaimTemplates:
+  {{- if .Values.master.database.persistence }}
     - metadata:
         name: database
       spec:
         accessModes: [ "ReadWriteOnce" ]
-        storageClassName: {{ .Values.master.alarms.storageclass }}
+        storageClassName: {{ .Values.master.database.storageclass }}
         resources:
           requests:
             storage: {{ .Values.master.database.volumesize }}
+  {{- end }}
+  {{- if .Values.master.alarms.persistence }}
     - metadata:
         name: alarms
       spec:
@@ -28,6 +32,8 @@ spec:
         resources:
           requests:
             storage: {{ .Values.master.alarms.volumesize }}
+  {{- end }}
+  {{- end }}
   selector:
     matchLabels:
       app: {{ template "netdata.name" . }}
@@ -62,13 +68,26 @@ spec:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: MY_POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: MY_POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            {{- range $key, $value := .Values.master.env }}
+            - name: {{ $key }}
+              value: {{ $value | quote }}
+            {{- end }}
           lifecycle:
             preStop:
               exec:
                 command: ["/bin/sh","-c","python -c 'import uuid; import socket; print(uuid.uuid3(uuid.NAMESPACE_DNS, socket.gethostname()))' > /var/lib/netdata/registry/netdata.public.unique.id"]
             preStop:
               exec:
-                command: ["/bin/sh","-c","killall netdata; while killall -0 netdata; do sleep 1; done"] 
+                command: ["/bin/sh","-c","killall netdata; while killall -0 netdata; do sleep 1; done"]
           ports:
             - name: http
               containerPort: {{ .Values.service.port }}
@@ -102,10 +121,14 @@ spec:
             - name: alarms-example
               mountPath: /etc/netdata/health.d/example.conf
               subPath: example.conf
+            {{- if .Values.master.database.persistence }}
             - name: database
               mountPath: /var/cache/netdata
+            {{- end }}
+            {{- if .Values.master.alarms.persistence }}
             - name: alarms
               mountPath: /var/lib/netdata
+            {{- end }}
           resources:
 {{ toYaml .Values.master.resources | indent 12 }}
     {{- with .Values.master.nodeSelector }}
@@ -120,19 +143,6 @@ spec:
       tolerations:
 {{ toYaml . | indent 8 }}
     {{- end }}
-      env:
-        - name: MY_POD_NAME
-          valueFrom:
-            fieldRef:
-              fieldPath: metadata.name
-        - name: MY_POD_NAMESPACE
-          valueFrom:
-            fieldRef:
-              fieldPath: metadata.namespace
-        {{- range $key, $value := .Values.master.env }}
-        - name: {{ $key }}
-          value: {{ $value | quote }}
-        {{- end }}
       volumes:
         - name: config
           configMap:
