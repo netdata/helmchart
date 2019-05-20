@@ -158,3 +158,10 @@ must be indented with two more spaces relative to the preceding line:
     config line 1 #Need those two spaces
         config line 2 #No problem indenting more here
 ```
+#### Set ingress class 
+
+By default `kubernetes.io/ingress.class` set to be use `nginx` as ingress controller but you can set `Traefik` as your ingress controller by set `ingress.annotations`.
+```
+$ helm install ./netdata --name my-release \
+    --set ingress.annotations=kubernetes.io/ingress.class: traefik
+```
