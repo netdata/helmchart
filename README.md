@@ -132,7 +132,7 @@ To provide a new user configuration file to the master, you need to edit the fol
  - In `templates/statefulset.yaml` : `spec.template.spec.volumes` and `spec.template.spec.containers.volumeMounts`.
  - In `templates/configmap.yaml` : In the second `ConfigMap` with `metadata.name=netdata-conf-master`, update `metadata.data`.
 
-Note that with the default configuration of this chart, the master does the health checks and triggers alams, but does not collect much data. As a result, the only other 
+Note that with the default configuration of this chart, the master does the health checks and triggers alarms, but does not collect much data. As a result, the only other 
 configuration files that might make sense to add are the alarm and alarm template definitions, under `/etc/netdata/health.d`. 
 
 #### Adding a configuration file to the slaves
