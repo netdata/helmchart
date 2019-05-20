@@ -112,15 +112,17 @@ spec:
             - name: config
               mountPath: /etc/netdata/netdata.conf
               subPath: netdata.conf
-            - name: stream
+            - name: config
               mountPath: /etc/netdata/stream.conf
               subPath: stream.conf
-            - name: health
+            - name: config
               mountPath: /etc/netdata/health_alarm_notify.conf
               subPath: health_alarm_notify.conf
-            - name: alarms-example
-              mountPath: /etc/netdata/health.d/example.conf
-              subPath: example.conf
+            {{- range .Values.master.custom_configs }}
+            - name: config
+              mountPath: {{ .path }}
+              subPath: {{ .name }}
+            {{- end }}
             {{- if .Values.master.database.persistence }}
             - name: database
               mountPath: /var/cache/netdata
@@ -147,24 +149,3 @@ spec:
         - name: config
           configMap:
             name: netdata-conf-master
-            items:
-              - key: netdata.conf
-                path: netdata.conf
-        - name: stream
-          configMap:
-            name: netdata-conf-master
-            items:
-              - key: stream.conf
-                path: stream.conf
-        - name: health
-          configMap:
-            name: netdata-conf-master
-            items:
-              - key: health_alarm_notify.conf
-                path: health_alarm_notify.conf
-        - name: alarms-example
-          configMap:
-            name: netdata-conf-master
-            items:
-              - key: example.conf
-                path: example.conf

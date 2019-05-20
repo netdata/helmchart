@@ -14,9 +14,11 @@ data:
   coredns.conf: {{ toYaml .Values.slave.coredns_config | indent 4 }}
   k8s_kubelet.conf: {{ toYaml .Values.slave.kubelet_config | indent 4 }}
   k8s_kubeproxy.conf: {{ toYaml .Values.slave.kubeproxy_config | indent 4 }}
+  {{- range .Values.slave.custom_configs }}
+  {{ .name }}: {{ toYaml .data | indent 4 }}
+  {{- end }}
 
 ---
-
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -30,12 +32,6 @@ data:
   netdata.conf: {{ toYaml .Values.master.netdata_config | indent 4 }}
   stream.conf: {{ toYaml .Values.master.stream_config | indent 4 }}
   health_alarm_notify.conf: {{ toYaml .Values.master.health_config | indent 4 }}
-  example.conf: |-
-    alarm: example_alarm1
-      on: example.random
-    every: 2s
-    warn: $random1 > (($status >= $WARNING)  ? (70) : (80))
-    crit: $random1 > (($status == $CRITICAL) ? (80) : (90))
-    info: random
-      to: sysadmin
-
+  {{- range .Values.master.custom_configs }}
+  {{ .name }}: {{ toYaml .data | indent 4 }}
+  {{- end }}

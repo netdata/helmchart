@@ -105,6 +105,18 @@ master:
     role_recipients_slack[sitemgr]="${DEFAULT_RECIPIENT_SLACK}"
     
 
+  custom_configs: []
+    # - name: example
+    #   path: /etc/netdata/health.d/example.conf
+    #   data: |-
+    #     alarm: example_alarm1
+    #       on: example.random
+    #     every: 2s
+    #     warn: $random1 > (($status >= $WARNING)  ? (70) : (80))
+    #     crit: $random1 > (($status == $CRITICAL) ? (80) : (90))
+    #     info: random
+    #       to: sysadmin
+
 slave:
   resources: {}
     # limits:
@@ -165,6 +177,8 @@ slave:
     jobs:
       - url: http://127.0.0.1:10249/metrics
       
+
+  custom_configs: []
 
   env: {}
 
