@@ -17,7 +17,7 @@ The chart installs a netdata slave pod on each node of a cluster, using a
 slaves function as headless collectors that simply collect and forward all the 
 metrics to the master netdata. The master uses persistent volumes to store 
 metrics and alarms, handles alarm notifications and provides the netdata UI to 
-view the metrics, using an nginx ingress controller.
+view the metrics, using an ingress controller.
 
 ## Prerequisites
   - Kubernetes 1.8+
@@ -55,8 +55,7 @@ deletes the release.
 
 ## Configuration
 
-The following table lists the configurable parameters of the nginx-ingress 
-chart and their default values.
+The following table lists the configurable parameters of the netdata chart and their default values.
 
 Parameter | Description | Default
 --- | --- | ---
@@ -84,21 +83,13 @@ Parameter | Description | Default
 `master.alarms.storageclass` | The storage class for the persistent volume claim of the master's alarm log, mounted to `/var/lib/netdata` | `standard`
 `master.alarms.volumesize` | The storage space for the PVC of the master alarm log | `100Mi`
 `master.env` | Set environment parameters for the master statefulset | `{}`
-`master.stream_config` | Contents of the master's `stream.conf` | Store slave data, accept all connections, and issue alarms for slave data.
-`master.netdata_config` | Contents of the master's `netdata.conf` | `memory mode = save` and `bind to = 0.0.0.0:19999`
-`master.health_config` | Contents of `health_alarm_notify.conf` | Email disabled, a sample of the required settings for Slack notifications
-`master.custom_configs` | Manage custom master's configs | `[]`
+`master.configs` | Manage custom master's configs | See [Configuration files](#configuration-files).
 `slave.resources` | Resources for the slave daemonsets | `{}`
 `slave.nodeSelector` | Node selector for the slave daemonsets | `{}`
 `slave.tolerations` | Tolerations settings for the slave daemonsets | `- operator: Exists` with `effect: NoSchedule`
 `slave.affinity` | Affinity settings for the slave daemonsets | `{}`
 `slave.env` | Set environment parameters for the slave daemonset | `{}`
-`slave.stream_config` | Contents of the slave `stream.conf` | Send metrics to the master at netdata:19999
-`slave.netdata_config` | Contents of the slave's `netdata.conf` | No persistent storage, no alarms, no UI
-`slave.coredns_config` | Contents of the slave's `go.d/coredns.conf` that drives the coredns collector | Update metrics every sec, do not retry to detect the endpoint, look for the coredns metrics at http://127.0.0.1:9153/metrics
-`slave.kubelet_config` | Contents of the slave's `go.d/k8s_kubelet.conf` that drives the kubelet collector | Update metrics every sec, do not retry to detect the endpoint, look for the kubelet metrics at http://127.0.0.1:10255/metrics
-`slave.kubeproxy_config` | Contents of the slave's `go.d/k8s_kubeproxy.conf` that drives the kubeproxy collector | Update metrics every sec, do not retry to detect the endpoint, look for the coredns metrics at http://127.0.0.1:10249/metrics
-`slave.custom_configs` | Manage custom slave's configs | `[]`
+`slave.configs` | Manage custom slave's configs | See [Configuration files](#configuration-files).
 `notifications.slackurl` | URL for slack notifications | `""`
 `notifications.slackrecipient` | Slack recipient list | `""`
 `sysctlImage.enabled` | Enable an init container to modify Kernel settings | `false` |
@@ -115,7 +106,15 @@ $ helm install ./netdata --name my-release \
     --set notifications.slackrecipiet="@MyUser MyChannel"
 ```
 
-Alternatively, a YAML file that specifies the values for the parameters can be 
+Another example, to set a different ingress controller.  
+
+By default `kubernetes.io/ingress.class` set to be use `nginx` as ingress controller but you can set `Traefik` as your ingress controller by set `ingress.annotations`.
+```
+$ helm install ./netdata --name my-release \
+    --set ingress.annotations=kubernetes.io/ingress.class: traefik
+```
+
+Alternatively to passing each variable in the command line, a YAML file that specifies the values for the parameters can be 
 provided while installing the chart. For example,
 
 ```console
@@ -124,46 +123,32 @@ $ helm install ./netdata --name my-release -f values.yaml
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
 
-### Additional netdata configurations
 
-To deploy additional netdata user configuration files, you will need to modify the helm chart configuration files as explained below. 
+### Configuration files
 
-#### Adding a configuration file to the master
-
-To provide a new user configuration file to the master, you need to edit the following:
- - In `templates/statefulset.yaml` : `spec.template.spec.volumes` and `spec.template.spec.containers.volumeMounts`.
- - In `templates/configmap.yaml` : In the second `ConfigMap` with `metadata.name=netdata-conf-master`, update `metadata.data`.
+Parameter | Description | Default
+--- | --- | ---
+`master.configs.netdata` | Contents of the master's `netdata.conf` | `memory mode = save` and `bind to = 0.0.0.0:19999`
+`master.configs.stream` | Contents of the master's `stream.conf` | Store slave data, accept all connections, and issue alarms for slave data.
+`master.configs.health` | Contents of `health_alarm_notify.conf` | Email disabled, a sample of the required settings for Slack notifications
+`slave.configs.netdata` | Contents of the slave's `netdata.conf` | No persistent storage, no alarms, no UI
+`slave.configs.stream` | Contents of the slave `stream.conf` | Send metrics to the master at netdata:19999
+`slave.configs.coredns` | Contents of the slave's `go.d/coredns.conf` that drives the coredns collector | Update metrics every sec, do not retry to detect the endpoint, look for the coredns metrics at http://127.0.0.1:9153/metrics
+`slave.configs.kubelet` | Contents of the slave's `go.d/k8s_kubelet.conf` that drives the kubelet collector | Update metrics every sec, do not retry to detect the endpoint, look for the kubelet metrics at http://127.0.0.1:10255/metrics
+`slave.configs.kubeproxy` | Contents of the slave's `go.d/k8s_kubeproxy.conf` that drives the kubeproxy collector | Update metrics every sec, do not retry to detect the endpoint, look for the coredns metrics at http://127.0.0.1:10249/metrics
+ 
+To deploy additional netdata user configuration files, you will need to add similar entries to either the master.configs or the slave.configs arrays. Regardless of whether you add config files that reside directly under `/etc/netdata` or in a subdirectory 
+such as `/etc/netdata/go.d`, you can use the already provided configurations as reference. For reference, the `master.configs` array includes an `example` alarm that would get triggered if the python.d `example` module was enabled. 
 
 Note that with the default configuration of this chart, the master does the health checks and triggers alarms, but does not collect much data. As a result, the only other 
-configuration files that might make sense to add are the alarm and alarm template definitions, under `/etc/netdata/health.d`. 
+configuration files that might make sense to add to the master are the alarm and alarm template definitions, under `/etc/netdata/health.d`. 
 
-#### Adding a configuration file to the slaves
-
-To provide a new user configuration file to the slave pods, you need to edit the following:
- - In `templates/daemonset.yaml` : `spec.template.spec.volumes` and `spec.template.spec.containers.volumeMounts`.
- - In `templates/configmap.yaml` : In the first `ConfigMap` with `metadata.name=netdata-conf-slave`, update `metadata.data`.
- 
-Regardless of whether you add config files that reside directly under `/etc/netdata` or in a subdirectory 
-such as `/etc/netdata/go.d`, you can use the already provided configurations as reference. 
-
-#### Example
-
-For reference, the `yaml` templates of the master mentioned above include an `example` alarm that would get triggered if the python.d `example` module was enabled. 
-You will see in this case that we chose not to add a value for the contents of the configuration file in `values.yaml`. We use the multi-line syntax `var: |-` and enter 
-the contents of the config file underneath. 
-
-> **Tip**: Do pay attention to the indentation of the config file contents, as it matters for the parsing of the `yaml` file. Note that the first line under `var: |-` 
+> **Tip**: Do pay attention to the indentation of the config file contents, as it matters for the parsing of the `yaml` file. Note that the first line under `var: |` 
 must be indented with two more spaces relative to the preceding line:
 
 ```
-  myconfigfilecontents: |-
+  data: |-
     config line 1 #Need those two spaces
         config line 2 #No problem indenting more here
 ```
-#### Set ingress class 
 
-By default `kubernetes.io/ingress.class` set to be use `nginx` as ingress controller but you can set `Traefik` as your ingress controller by set `ingress.annotations`.
-```
-$ helm install ./netdata --name my-release \
-    --set ingress.annotations=kubernetes.io/ingress.class: traefik
-```
