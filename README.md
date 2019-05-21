@@ -17,7 +17,7 @@ The chart installs a netdata slave pod on each node of a cluster, using a
 slaves function as headless collectors that simply collect and forward all the 
 metrics to the master netdata. The master uses persistent volumes to store 
 metrics and alarms, handles alarm notifications and provides the netdata UI to 
-view the metrics, using an nginx ingress controller.
+view the metrics, using an ingress controller.
 
 ## Prerequisites
   - Kubernetes 1.8+
@@ -55,8 +55,7 @@ deletes the release.
 
 ## Configuration
 
-The following table lists the configurable parameters of the nginx-ingress 
-chart and their default values.
+The following table lists the configurable parameters of the netdata chart and their default values.
 
 Parameter | Description | Default
 --- | --- | ---
@@ -107,7 +106,15 @@ $ helm install ./netdata --name my-release \
     --set notifications.slackrecipiet="@MyUser MyChannel"
 ```
 
-Alternatively, a YAML file that specifies the values for the parameters can be 
+Another example, to set a different ingress controller.  
+
+By default `kubernetes.io/ingress.class` set to be use `nginx` as ingress controller but you can set `Traefik` as your ingress controller by set `ingress.annotations`.
+```
+$ helm install ./netdata --name my-release \
+    --set ingress.annotations=kubernetes.io/ingress.class: traefik
+```
+
+Alternatively to passing each variable in the command line, a YAML file that specifies the values for the parameters can be 
 provided while installing the chart. For example,
 
 ```console
@@ -115,6 +122,7 @@ $ helm install ./netdata --name my-release -f values.yaml
 ```
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
+
 
 ### Configuration files
 
@@ -144,10 +152,3 @@ must be indented with two more spaces relative to the preceding line:
         config line 2 #No problem indenting more here
 ```
 
-#### Set ingress class 
-
-By default `kubernetes.io/ingress.class` set to be use `nginx` as ingress controller but you can set `Traefik` as your ingress controller by set `ingress.annotations`.
-```
-$ helm install ./netdata --name my-release \
-    --set ingress.annotations=kubernetes.io/ingress.class: traefik
-```
