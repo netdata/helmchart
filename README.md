@@ -87,6 +87,7 @@ Parameter | Description | Default
 `master.stream_config` | Contents of the master's `stream.conf` | Store slave data, accept all connections, and issue alarms for slave data.
 `master.netdata_config` | Contents of the master's `netdata.conf` | `memory mode = save` and `bind to = 0.0.0.0:19999`
 `master.health_config` | Contents of `health_alarm_notify.conf` | Email disabled, a sample of the required settings for Slack notifications
+`master.custom_configs` | Manage custom master's configs | `[]`
 `slave.resources` | Resources for the slave daemonsets | `{}`
 `slave.nodeSelector` | Node selector for the slave daemonsets | `{}`
 `slave.tolerations` | Tolerations settings for the slave daemonsets | `- operator: Exists` with `effect: NoSchedule`
@@ -97,6 +98,7 @@ Parameter | Description | Default
 `slave.coredns_config` | Contents of the slave's `go.d/coredns.conf` that drives the coredns collector | Update metrics every sec, do not retry to detect the endpoint, look for the coredns metrics at http://127.0.0.1:9153/metrics
 `slave.kubelet_config` | Contents of the slave's `go.d/k8s_kubelet.conf` that drives the kubelet collector | Update metrics every sec, do not retry to detect the endpoint, look for the kubelet metrics at http://127.0.0.1:10255/metrics
 `slave.kubeproxy_config` | Contents of the slave's `go.d/k8s_kubeproxy.conf` that drives the kubeproxy collector | Update metrics every sec, do not retry to detect the endpoint, look for the coredns metrics at http://127.0.0.1:10249/metrics
+`slave.custom_configs` | Manage custom slave's configs | `[]`
 `notifications.slackurl` | URL for slack notifications | `""`
 `notifications.slackrecipient` | Slack recipient list | `""`
 `sysctlImage.enabled` | Enable an init container to modify Kernel settings | `false` |

@@ -95,21 +95,13 @@ spec:
               mountPath: /var/run/docker.sock
             - name: sys
               mountPath: /host/sys
+            {{- range $name, $config := .Values.slave.configs }}
+            {{- if $config.enabled }}
             - name: config
-              mountPath: /etc/netdata/netdata.conf
-              subPath: netdata.conf
-            - name: stream
-              mountPath: /etc/netdata/stream.conf
-              subPath: stream.conf
-            - name: coredns
-              mountPath: /etc/netdata/go.d/coredns.conf
-              subPath: coredns.conf
-            - name: kubelet
-              mountPath: /etc/netdata/go.d/k8s_kubelet.conf
-              subPath: k8s_kubelet.conf
-            - name: kubeproxy
-              mountPath: /etc/netdata/go.d/k8s_kubeproxy.conf
-              subPath: k8s_kubeproxy.conf
+              mountPath: {{ $config.path }}
+              subPath: {{ $name }}
+            {{- end }}
+            {{- end }}
           securityContext:
             capabilities:
               add:
@@ -142,31 +134,4 @@ spec:
         - name: config
           configMap:
             name: netdata-conf-slave
-            items:
-              - key: netdata.conf
-                path: netdata.conf
-        - name: stream
-          configMap:
-            name: netdata-conf-slave
-            items:
-              - key: stream.conf
-                path: stream.conf
-        - name: coredns
-          configMap:
-            name: netdata-conf-slave
-            items:
-              - key: coredns.conf
-                path: coredns.conf
-        - name: kubelet
-          configMap:
-            name: netdata-conf-slave
-            items:
-              - key: k8s_kubelet.conf
-                path: k8s_kubelet.conf
-        - name: kubeproxy
-          configMap:
-            name: netdata-conf-slave
-            items:
-              - key: k8s_kubeproxy.conf
-                path: k8s_kubeproxy.conf
       dnsPolicy: ClusterFirstWithHostNet

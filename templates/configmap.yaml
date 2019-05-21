@@ -9,14 +9,13 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 data:
-  netdata.conf: {{ toYaml .Values.slave.netdata_config | indent 4 }}
-  stream.conf: {{ toYaml .Values.slave.stream_config | indent 4 }}
-  coredns.conf: {{ toYaml .Values.slave.coredns_config | indent 4 }}
-  k8s_kubelet.conf: {{ toYaml .Values.slave.kubelet_config | indent 4 }}
-  k8s_kubeproxy.conf: {{ toYaml .Values.slave.kubeproxy_config | indent 4 }}
+  {{- range $name, $config := .Values.slave.configs }}
+  {{- if $config.enabled }}
+  {{ $name }}: {{ toYaml $config.data | indent 4 }}
+  {{- end }}
+  {{- end }}
 
 ---
-
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -27,15 +26,8 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 data:
-  netdata.conf: {{ toYaml .Values.master.netdata_config | indent 4 }}
-  stream.conf: {{ toYaml .Values.master.stream_config | indent 4 }}
-  health_alarm_notify.conf: {{ toYaml .Values.master.health_config | indent 4 }}
-  example.conf: |-
-    alarm: example_alarm1
-      on: example.random
-    every: 2s
-    warn: $random1 > (($status >= $WARNING)  ? (70) : (80))
-    crit: $random1 > (($status == $CRITICAL) ? (80) : (90))
-    info: random
-      to: sysadmin
-
+  {{- range $name, $config := .Values.master.configs }}
+  {{- if $config.enabled }}
+  {{ $name }}: {{ toYaml $config.data | indent 4 }}
+  {{- end }}
+  {{- end }}
