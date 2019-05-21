@@ -64,58 +64,59 @@ master:
     storageclass: "standard"
     volumesize: 100Mi
 
-  # stream.conf
-  stream_config: |-
-    [11111111-2222-3333-4444-555555555555]
-      enabled = yes
-      history = 3600
-      default memory mode = save
-      health enabled by default = auto
-      allow from = *
-    
-
-  # netdata.conf
-  netdata_config: |-
-    [global]
-      memory mode = save
-      bind to = 0.0.0.0:19999
-    [plugins]
-      cgroups = no
-      tc = no
-      enable running new plugins = no
-      check for new plugins every = 72000
-      python.d = no
-      charts.d = no
-      go.d = no
-      node.d = no
-      apps = yes
-    
-
-  # health_alarm_notify.conf
-  health_config: |-
-    SEND_EMAIL="NO"
-    SEND_SLACK="YES"
-    SLACK_WEBHOOK_URL=""
-    DEFAULT_RECIPIENT_SLACK=""
-    role_recipients_slack[sysadmin]="${DEFAULT_RECIPIENT_SLACK}"
-    role_recipients_slack[domainadmin]="${DEFAULT_RECIPIENT_SLACK}"
-    role_recipients_slack[dba]="${DEFAULT_RECIPIENT_SLACK}"
-    role_recipients_slack[webmaster]="${DEFAULT_RECIPIENT_SLACK}"
-    role_recipients_slack[proxyadmin]="${DEFAULT_RECIPIENT_SLACK}"
-    role_recipients_slack[sitemgr]="${DEFAULT_RECIPIENT_SLACK}"
-    
-
-  custom_configs: []
-    # - name: example
-    #   path: /etc/netdata/health.d/example.conf
-    #   data: |-
-    #     alarm: example_alarm1
-    #       on: example.random
-    #     every: 2s
-    #     warn: $random1 > (($status >= $WARNING)  ? (70) : (80))
-    #     crit: $random1 > (($status == $CRITICAL) ? (80) : (90))
-    #     info: random
-    #       to: sysadmin
+  configs:
+    stream:
+      enabled: true
+      path: /etc/netdata/stream.conf
+      data: |
+        [11111111-2222-3333-4444-555555555555]
+          enabled = yes
+          history = 3600
+          default memory mode = save
+          health enabled by default = auto
+          allow from = *
+    netdata:
+      enabled: true
+      path: /etc/netdata/netdata.conf
+      data: |
+        [global]
+          memory mode = save
+          bind to = 0.0.0.0:19999
+        [plugins]
+          cgroups = no
+          tc = no
+          enable running new plugins = no
+          check for new plugins every = 72000
+          python.d = no
+          charts.d = no
+          go.d = no
+          node.d = no
+          apps = yes
+    health:
+      enabled: true
+      path: /etc/netdata/health_alarm_notify.conf
+      data: |
+        SEND_EMAIL="NO"
+        SEND_SLACK="YES"
+        SLACK_WEBHOOK_URL=""
+        DEFAULT_RECIPIENT_SLACK=""
+        role_recipients_slack[sysadmin]="${DEFAULT_RECIPIENT_SLACK}"
+        role_recipients_slack[domainadmin]="${DEFAULT_RECIPIENT_SLACK}"
+        role_recipients_slack[dba]="${DEFAULT_RECIPIENT_SLACK}"
+        role_recipients_slack[webmaster]="${DEFAULT_RECIPIENT_SLACK}"
+        role_recipients_slack[proxyadmin]="${DEFAULT_RECIPIENT_SLACK}"
+        role_recipients_slack[sitemgr]="${DEFAULT_RECIPIENT_SLACK}"
+    example:
+      enabled: false
+      path: /etc/netdata/health.d/example.conf
+      data: |
+        alarm: example_alarm1
+          on: example.random
+        every: 2s
+        warn: $random1 > (($status >= $WARNING)  ? (70) : (80))
+        crit: $random1 > (($status == $CRITICAL) ? (80) : (90))
+        info: random
+          to: sysadmin
 
 slave:
   resources: {}
@@ -134,51 +135,51 @@ slave:
 
   affinity: {}
 
-  # netdata.conf
-  netdata_config: |-
-    [global]
-      memory mode = none
-    [health]
-      enabled = no
-    
-
-  # stream.conf
-  stream_config: |-
-    [stream]
-      enabled = yes
-      destination = netdata:19999
-      api key = 11111111-2222-3333-4444-555555555555
-      timeout seconds = 60
-      buffer size bytes = 1048576
-      reconnect delay seconds = 5
-      initial clock resync iterations = 60
-      
-
-  # go.d/coredns.conf
-  coredns_config: |-
-    update_every: 1
-    autodetection_retry: 0
-    jobs:
-      - url: http://127.0.0.1:9153/metrics
-      
-
-  # go.d/k8s_kubelet.conf
-  kubelet_config: |-
-    update_every: 1
-    autodetection_retry: 0
-    jobs:
-      - url: http://127.0.0.1:10255/metrics
-      
-
-  # go.d/k8s_kubeproxy.conf
-  kubeproxy_config: |-
-    update_every: 1
-    autodetection_retry: 0
-    jobs:
-      - url: http://127.0.0.1:10249/metrics
-      
-
-  custom_configs: []
+  configs:
+    netdata:
+      enabled: true
+      path: /etc/netdata/netdata.conf
+      data: |
+        [global]
+          memory mode = none
+        [health]
+          enabled = no
+    stream:
+      enabled: true
+      path: /etc/netdata/stream.conf
+      data: |
+        [stream]
+          enabled = yes
+          destination = netdata:19999
+          api key = 11111111-2222-3333-4444-555555555555
+          timeout seconds = 60
+          buffer size bytes = 1048576
+          reconnect delay seconds = 5
+          initial clock resync iterations = 60
+    coredns:
+      enabled: true
+      path: /etc/netdata/go.d/coredns.conf
+      data: |
+        update_every: 1
+        autodetection_retry: 0
+        jobs:
+          - url: http://127.0.0.1:9153/metrics
+    kubelet:
+      enabled: true
+      path: /etc/netdata/go.d/k8s_kubelet.conf
+      data: |
+        update_every: 1
+        autodetection_retry: 0
+        jobs:
+          - url: http://127.0.0.1:10255/metrics
+    kubeproxy:
+      enabled: true
+      path: /etc/netdata/go.d/k8s_kubeproxy.conf
+      data: |
+        update_every: 1
+        autodetection_retry: 0
+        jobs:
+          - url: http://127.0.0.1:10249/metrics
 
   env: {}
 

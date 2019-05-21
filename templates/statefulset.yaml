@@ -109,19 +109,12 @@ spec:
             successThreshold: 1
             failureThreshold: 3
           volumeMounts:
+            {{- range $name, $config := .Values.master.configs }}
+            {{- if $config.enabled }}
             - name: config
-              mountPath: /etc/netdata/netdata.conf
-              subPath: netdata.conf
-            - name: config
-              mountPath: /etc/netdata/stream.conf
-              subPath: stream.conf
-            - name: config
-              mountPath: /etc/netdata/health_alarm_notify.conf
-              subPath: health_alarm_notify.conf
-            {{- range .Values.master.custom_configs }}
-            - name: config
-              mountPath: {{ .path }}
-              subPath: {{ .name }}
+              mountPath: {{ $config.path }}
+              subPath: {{ $name }}
+            {{- end }}
             {{- end }}
             {{- if .Values.master.database.persistence }}
             - name: database

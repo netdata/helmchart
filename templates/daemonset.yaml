@@ -95,25 +95,12 @@ spec:
               mountPath: /var/run/docker.sock
             - name: sys
               mountPath: /host/sys
+            {{- range $name, $config := .Values.slave.configs }}
+            {{- if $config.enabled }}
             - name: config
-              mountPath: /etc/netdata/netdata.conf
-              subPath: netdata.conf
-            - name: config
-              mountPath: /etc/netdata/stream.conf
-              subPath: stream.conf
-            - name: config
-              mountPath: /etc/netdata/go.d/coredns.conf
-              subPath: coredns.conf
-            - name: config
-              mountPath: /etc/netdata/go.d/k8s_kubelet.conf
-              subPath: k8s_kubelet.conf
-            - name: config
-              mountPath: /etc/netdata/go.d/k8s_kubeproxy.conf
-              subPath: k8s_kubeproxy.conf
-            {{- range .Values.slave.custom_configs }}
-            - name: config
-              mountPath: {{ .path }}
-              subPath: {{ .name }}
+              mountPath: {{ $config.path }}
+              subPath: {{ $name }}
+            {{- end }}
             {{- end }}
           securityContext:
             capabilities:
