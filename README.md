@@ -83,12 +83,16 @@ Parameter | Description | Default
 `master.alarms.storageclass` | The storage class for the persistent volume claim of the master's alarm log, mounted to `/var/lib/netdata` | `standard`
 `master.alarms.volumesize` | The storage space for the PVC of the master alarm log | `100Mi`
 `master.env` | Set environment parameters for the master statefulset | `{}`
+`master.podLabels` | Additional labels to add to the master pods | `{}`
+`master.podAnnotations` | Additional annotations to add to the master pods | `{}`
 `master.configs` | Manage custom master's configs | See [Configuration files](#configuration-files).
 `slave.resources` | Resources for the slave daemonsets | `{}`
 `slave.nodeSelector` | Node selector for the slave daemonsets | `{}`
 `slave.tolerations` | Tolerations settings for the slave daemonsets | `- operator: Exists` with `effect: NoSchedule`
 `slave.affinity` | Affinity settings for the slave daemonsets | `{}`
 `slave.env` | Set environment parameters for the slave daemonset | `{}`
+`slave.podLabels` | Additional labels to add to the slave pods | `{}`
+`slave.podAnnotations` | Additional annotations to add to the slave pods | `{}`
 `slave.configs` | Manage custom slave's configs | See [Configuration files](#configuration-files).
 `notifications.slackurl` | URL for slack notifications | `""`
 `notifications.slackrecipient` | Slack recipient list | `""`
@@ -152,3 +156,19 @@ must be indented with two more spaces relative to the preceding line:
         config line 2 #No problem indenting more here
 ```
 
+### Custom pod labels and annotations
+
+Occasionally, you will want to add specific [labels](https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/) and [annotations](https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/) to the master and/or slave pods.
+You might want to do this to tell other applications on the cluster how to treat your pods, or simply to categorize applications on your cluster.
+You can label and annotate the master and slave pods by using the `podLabels` and `podAnnotations` dictionaries under the `master` and `slave` objects, respectively.
+
+For example, suppose you're installing netdata on all your database nodes, and you'd like the slave pods to be labeled with `workload: database` so that you're able to recognize this.
+At the same time, say you've configured [chaoskube](https://github.com/helm/charts/tree/master/stable/chaoskube) to kill all pods annotated with `chaoskube.io/enabled: true`, and you'd like chaoskube to be enabled for the master pod but not the slaves.
+You would do this by installing as:
+
+```console
+$ helm install ./netdata --name my-release \
+    --set slave.podLabels.workload=database \
+    --set 'slave.podAnnotations.chaoskube\.io/enabled=false' \
+    --set 'master.podAnnotations.chaoskube\.io/enabled=true'
+```

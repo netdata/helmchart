@@ -22,8 +22,14 @@ spec:
         app: {{ template "netdata.name" . }}
         release: {{ .Release.Name }}
         role: slave
+{{- with .Values.slave.podLabels }}
+{{ toYaml . | trim | indent 8 }}
+{{- end }}
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+{{- with .Values.slave.podAnnotations }}
+{{ toYaml . | trim | indent 8 }}
+{{- end }}
     spec:
       serviceAccountName: {{ .Values.serviceAccount.name }}
       restartPolicy: Always

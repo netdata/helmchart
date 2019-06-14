@@ -54,6 +54,10 @@ master:
 
   env: {}
 
+  podLabels: {}
+
+  podAnnotations: {}
+
   database:
     persistence: true
     storageclass: "standard"
@@ -134,6 +138,10 @@ slave:
       effect: NoSchedule
 
   affinity: {}
+
+  podLabels: {}
+
+  podAnnotations: {}
 
   configs:
     netdata:

@@ -45,8 +45,14 @@ spec:
         app: {{ template "netdata.name" . }}
         release: {{ .Release.Name }}
         role: master
+{{- with .Values.master.podLabels }}
+{{ toYaml . | trim | indent 8 }}
+{{- end }}
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+{{- with .Values.master.podAnnotations }}
+{{ toYaml . | trim | indent 8 }}
+{{- end }}
     spec:
       securityContext:
         fsGroup: 201
