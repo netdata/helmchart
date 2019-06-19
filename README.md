@@ -78,8 +78,10 @@ Parameter | Description | Default
 `master.nodeSelector` | Node selector for the master statefulset | `{}`
 `master.tolerations` | Tolerations settings for the master statefulset | `[]`
 `master.affinity` | Affinity settings for the master statefulset | `{}`
+`master.database.persistence` | Whether the master should use a persistent volume for the DB | `true`
 `master.database.storageclass` | The storage class for the persistent volume claim of the master's database store, mounted to `/var/cache/netdata` | `standard`
 `master.database.volumesize` | The storage space for the PVC of the master database | `2Gi`
+`master.alarms.persistence` | Whether the master should use a persistent volume for the alarms log | `true`
 `master.alarms.storageclass` | The storage class for the persistent volume claim of the master's alarm log, mounted to `/var/lib/netdata` | `standard`
 `master.alarms.volumesize` | The storage space for the PVC of the master alarm log | `100Mi`
 `master.env` | Set environment parameters for the master statefulset | `{}`
