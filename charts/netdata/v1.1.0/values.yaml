@@ -21,13 +21,12 @@ ingress:
   annotations:
     kubernetes.io/ingress.class: nginx
     kubernetes.io/tls-acme: "true"
-  path: /
   hosts:
-    - netdata.k8s.local
-#  tls:
-#    - secretName: netdata-tls
-#      hosts:
-#        - netdata.k8s.local
+    - monitoring-v2.test-trainhealthmanagement.com
+  tls:
+    - secretName: test-trainhealthmanagement
+      hosts:
+        - test-trainhealthmanagement.com
 
 rbac:
   create: true
