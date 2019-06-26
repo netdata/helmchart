@@ -60,14 +60,12 @@ master:
 
   database:
     persistence: true
-    # Set '-' as the storageclass to get a volume from the default storage class.
-    storageclass: "-"
+    storageclass: "nfs-client"
     volumesize: 2Gi
 
   alarms:
     persistence: true
-    # Set '-' as the storageclass to get a volume from the default storage class.
-    storageclass: "-"
+    storageclass: "nfs-client"
     volumesize: 100Mi
 
   configs:
