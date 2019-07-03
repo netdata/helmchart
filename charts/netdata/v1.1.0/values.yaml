@@ -96,19 +96,6 @@ master:
           go.d = no
           node.d = no
           apps = yes
-        [backend]
-          enabled = yes
-          type = json
-          destination = https://datav2-test-custom-monitoring-v2.test-trainhealthmanagement.com/minio/upload/
-          data source = average
-          prefix = netdata
-          hostname = monitoring-v2.test-trainhealthmanagement.com
-          update every = 60
-          buffer on failures = 60
-          timeout ms = 20000
-          send charts matching = *
-          send hosts matching = localhost *
-          send names instead of ids = yes
     health:
       enabled: true
       path: /etc/netdata/health_alarm_notify.conf
