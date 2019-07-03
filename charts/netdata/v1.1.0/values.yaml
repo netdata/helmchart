@@ -97,7 +97,7 @@ master:
           node.d = no
           apps = yes
         [backend]
-          enabled = yes | no
+          enabled = yes
           type = json
           destination = https://datav2-test-custom-monitoring-v2.test-trainhealthmanagement.com/minio/upload/
           data source = average
