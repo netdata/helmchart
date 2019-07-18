@@ -95,7 +95,10 @@ master:
           charts.d = no
           go.d = no
           node.d = no
-          apps = yes
+          apps = no
+          proc = no
+          idlejitter = no
+          diskspace = no
     health:
       enabled: true
       path: /etc/netdata/health_alarm_notify.conf
