@@ -1,8 +1,6 @@
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
-  annotations:
-    container.apparmor.security.beta.kubernetes.io/netdata-slave: unconfined
   name: {{ template "netdata.name" . }}-slave
   labels:
     app: {{ template "netdata.name" . }}
@@ -18,6 +16,8 @@ spec:
       role: slave
   template:
     metadata:
+      annotations:
+        container.apparmor.security.beta.kubernetes.io/netdata-slave: unconfined
       labels:
         app: {{ template "netdata.name" . }}
         release: {{ .Release.Name }}
