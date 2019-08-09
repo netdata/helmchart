@@ -17,17 +17,18 @@ spec:
   template:
     metadata:
       annotations:
+      {{- if .Values.slave.podAnnotationAppArmor.enabled }}
         container.apparmor.security.beta.kubernetes.io/netdata-slave: unconfined
+      {{- end }}
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+{{- with .Values.slave.podAnnotations }}
+{{ toYaml . | trim | indent 8 }}
+{{- end }}
       labels:
         app: {{ template "netdata.name" . }}
         release: {{ .Release.Name }}
         role: slave
 {{- with .Values.slave.podLabels }}
-{{ toYaml . | trim | indent 8 }}
-{{- end }}
-      annotations:
-        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
-{{- with .Values.slave.podAnnotations }}
 {{ toYaml . | trim | indent 8 }}
 {{- end }}
     spec:
