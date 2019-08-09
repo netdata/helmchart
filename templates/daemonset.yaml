@@ -18,7 +18,7 @@ spec:
     metadata:
       annotations:
       {{- if .Values.slave.podAnnotationAppArmor.enabled }}
-        container.apparmor.security.beta.kubernetes.io/netdata-slave: unconfined
+        container.apparmor.security.beta.kubernetes.io/{{ .Chart.Name }}: unconfined
       {{- end }}
         checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
 {{- with .Values.slave.podAnnotations }}
