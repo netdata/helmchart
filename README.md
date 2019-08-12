@@ -95,6 +95,7 @@ Parameter | Description | Default
 `slave.env` | Set environment parameters for the slave daemonset | `{}`
 `slave.podLabels` | Additional labels to add to the slave pods | `{}`
 `slave.podAnnotations` | Additional annotations to add to the slave pods | `{}`
+`slave.podAnnotationAppArmor.enabled` | Whether or not to include the AppArmor security annotation | `true`
 `slave.configs` | Manage custom slave's configs | See [Configuration files](#configuration-files).
 `notifications.slackurl` | URL for slack notifications | `""`
 `notifications.slackrecipient` | Slack recipient list | `""`
