@@ -23,4 +23,9 @@ rules:
 - apiGroups: [""]
   resources: ["nodes/metrics", "nodes/spec"]
   verbs: ["get"]
+- apiGroups: ['policy']
+  resources: ['podsecuritypolicies']
+  verbs:     ['use']
+  resourceNames:
+  - psp-netdata
 {{- end -}}
