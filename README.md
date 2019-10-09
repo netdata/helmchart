@@ -60,6 +60,7 @@ The following table lists the configurable parameters of the netdata chart and t
 Parameter | Description | Default
 --- | --- | ---
 `replicaCount` | Number of `replicas` for the master netdata `Statefulset` | `1`
+`rbac.pspEnabled` | Specifies whether a PodSecurityPolicy should be created. | `true`
 `image.repository` | Container image repo | `netdata/netdata`
 `image.tag` | Container image tag | `v1.12.2`
 `image.pullPolicy` | Container image pull policy | `Always`

@@ -1,7 +1,7 @@
 replicaCount: 1
 
-psp:
-  create: true
+rbac:
+  pspEnabled: true
 
 image:
   repository: netdata/netdata
@@ -34,7 +34,8 @@ ingress:
 
 rbac:
   create: true
-
+  pspEnabled: true
+  
 serviceAccount:
   create: true
   name: netdata
