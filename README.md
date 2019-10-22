@@ -60,7 +60,6 @@ The following table lists the configurable parameters of the netdata chart and t
 Parameter | Description | Default
 --- | --- | ---
 `replicaCount` | Number of `replicas` for the master netdata `Statefulset` | `1`
-`rbac.pspEnabled` | Specifies whether a PodSecurityPolicy should be created. | `true`
 `image.repository` | Container image repo | `netdata/netdata`
 `image.tag` | Container image tag | `v1.12.2`
 `image.pullPolicy` | Container image pull policy | `Always`
@@ -71,6 +70,7 @@ Parameter | Description | Default
 `ingress.path` | URL path for the ingress | `/`
 `ingress.hosts` | URL hostnames for the ingress (they need to resolve to the external IP of the ingress controller) | `netdata.k8s.local`
 `rbac.create` | if true, create & use RBAC resources | `true`
+`rbac.pspEnabled` | Specifies whether a PodSecurityPolicy should be created. | `true`
 `serviceAccount.create` |if true, create a service account | `true`
 `serviceAccount.name` | The name of the service account to use. If not set and create is true, a name is generated using the fullname template. | `netdata`
 `clusterrole.name` | Name of the cluster role linked with the service account | `netdata`
