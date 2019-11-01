@@ -111,7 +111,7 @@ $ helm install ./netdata --name my-release \
 
 Another example, to set a different ingress controller.  
 
-By default `kubernetes.io/ingress.class` set to use `nginx` as an ingress controller but you can set `Traefik` as your ingress controller by set `ingress.annotations`.
+By default `kubernetes.io/ingress.class` set to use `nginx` as an ingress controller but you can set `Traefik` as your ingress controller by setting `ingress.annotations`.
 ```
 $ helm install ./netdata --name my-release \
     --set ingress.annotations=kubernetes.io/ingress.class: traefik
