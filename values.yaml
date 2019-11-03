@@ -61,12 +61,14 @@ master:
 
   database:
     persistence: true
-    storageclass: "standard"
+    # Set '-' as the storageclass to get a volume from the default storage class.
+    storageclass: "-"
     volumesize: 2Gi
 
   alarms:
     persistence: true
-    storageclass: "standard"
+    # Set '-' as the storageclass to get a volume from the default storage class.
+    storageclass: "-"
     volumesize: 100Mi
 
   configs:

@@ -18,7 +18,9 @@ spec:
         name: database
       spec:
         accessModes: [ "ReadWriteOnce" ]
-        storageClassName: {{ .Values.master.database.storageclass }}
+      {{- if (ne "-" .Values.master.database.storageclass) }}
+        storageClassName: "{{ .Values.master.database.storageclass }}"
+      {{- end }}
         resources:
           requests:
             storage: {{ .Values.master.database.volumesize }}
@@ -28,7 +30,9 @@ spec:
         name: alarms
       spec:
         accessModes: [ "ReadWriteOnce" ]
-        storageClassName: {{ .Values.master.alarms.storageclass }}
+      {{- if (ne "-" .Values.master.alarms.storageclass) }}
+        storageClassName: "{{ .Values.master.alarms.storageclass }}"
+      {{- end }}
         resources:
           requests:
             storage: {{ .Values.master.alarms.volumesize }}
