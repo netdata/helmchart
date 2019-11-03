@@ -16,7 +16,7 @@ The chart installs a netdata slave pod on each node of a cluster, using a
 `Daemonset` and a netdata master pod on one node, using a `Statefulset`. The slaves function as headless collectors that simply collect and forward all the metrics to the master netdata. The master uses persistent volumes to store metrics and alarms, handles alarm notifications and provides the netdata UI to view the metrics, using an ingress controller.
 
 ## Prerequisites
-  - Kubernetes 1.8+
+  - Kubernetes 1.9+
 
 ## Installing the Chart
 
@@ -56,7 +56,7 @@ Parameter | Description | Default
 --- | --- | ---
 `replicaCount` | Number of `replicas` for the master netdata `Statefulset` | `1`
 `image.repository` | Container image repo | `netdata/netdata`
-`image.tag` | Container image tag | `v1.12.2`
+`image.tag` | Container image tag | Latest stable netdata release (e.g. `v1.18.1`)
 `image.pullPolicy` | Container image pull policy | `Always`
 `service.type` | netdata master service type | `ClusterIP`
 `service.port` | netdata master service port | `19999`
