@@ -75,10 +75,10 @@ Parameter | Description | Default
 `master.tolerations` | Tolerations settings for the master statefulset | `[]`
 `master.affinity` | Affinity settings for the master statefulset | `{}`
 `master.database.persistence` | Whether the master should use a persistent volume for the DB | `true`
-`master.database.storageclass` | The storage class for the persistent volume claim of the master's database store, mounted to `/var/cache/netdata` | `standard`
+`master.database.storageclass` | The storage class for the persistent volume claim of the master's database store, mounted to `/var/cache/netdata` | the default storage class
 `master.database.volumesize` | The storage space for the PVC of the master database | `2Gi`
 `master.alarms.persistence` | Whether the master should use a persistent volume for the alarms log | `true`
-`master.alarms.storageclass` | The storage class for the persistent volume claim of the master's alarm log, mounted to `/var/lib/netdata` | `standard`
+`master.alarms.storageclass` | The storage class for the persistent volume claim of the master's alarm log, mounted to `/var/lib/netdata` | the default storage class
 `master.alarms.volumesize` | The storage space for the PVC of the master alarm log | `100Mi`
 `master.env` | Set environment parameters for the master statefulset | `{}`
 `master.podLabels` | Additional labels to add to the master pods | `{}`
