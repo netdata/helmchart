@@ -94,9 +94,6 @@ spec:
           lifecycle:
             preStop:
               exec:
-                command: ["/bin/sh","-c","python -c 'import uuid; import socket; print(uuid.uuid3(uuid.NAMESPACE_DNS, socket.gethostname()))' > /var/lib/netdata/registry/netdata.public.unique.id"]
-            preStop:
-              exec:
                 command: ["/bin/sh","-c","killall netdata; while killall -0 netdata; do sleep 1; done"]
           ports:
             - name: http

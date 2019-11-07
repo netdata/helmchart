@@ -1,7 +1,7 @@
 apiVersion: v1
 name: netdata
 home: https://github.com/netdata/netdata
-version: 1.1.10
+version: 1.1.11
 appVersion: v1.18.1
 description: Real-time performance monitoring, done right! https://my-netdata.io/
 maintainers:
