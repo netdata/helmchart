@@ -129,6 +129,7 @@ master:
           to: sysadmin
 
 slave:
+  enabled: true
   resources: {}
     # limits:
     #  cpu: 4
