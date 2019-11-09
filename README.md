@@ -13,7 +13,7 @@ on a  [Kubernetes](http://kubernetes.io) cluster using the
 [Helm](https://helm.sh) package manager.
 
 The chart installs a netdata slave pod on each node of a cluster, using a 
-`Daemonset` and a netdata master pod on one node, using a `Statefulset`. The slaves function as headless collectors that simply collect and forward all the metrics to the master netdata. The master uses persistent volumes to store metrics and alarms, handles alarm notifications and provides the netdata UI to view the metrics, using an ingress controller.
+`Daemonset` if not disabled, and a netdata master pod on one node, using a `Statefulset`. The slaves function as headless collectors that simply collect and forward all the metrics to the master netdata. The master uses persistent volumes to store metrics and alarms, handles alarm notifications and provides the netdata UI to view the metrics, using an ingress controller.
 
 ## Prerequisites
   - Kubernetes 1.9+
