@@ -84,6 +84,7 @@ Parameter | Description | Default
 `master.podLabels` | Additional labels to add to the master pods | `{}`
 `master.podAnnotations` | Additional annotations to add to the master pods | `{}`
 `master.configs` | Manage custom master's configs | See [Configuration files](#configuration-files).
+`slave.enabled` | Install slave daemonset to gather data from nodes | `true`
 `slave.resources` | Resources for the slave daemonsets | `{}`
 `slave.nodeSelector` | Node selector for the slave daemonsets | `{}`
 `slave.tolerations` | Tolerations settings for the slave daemonsets | `- operator: Exists` with `effect: NoSchedule`
