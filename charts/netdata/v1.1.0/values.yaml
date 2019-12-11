@@ -60,12 +60,12 @@ master:
 
   database:
     persistence: true
-    storageclass: "nfs-client"
+    storageclass: "-"
     volumesize: 2Gi
 
   alarms:
     persistence: true
-    storageclass: "nfs-client"
+    storageclass: "-"
     volumesize: 100Mi
 
   configs:
