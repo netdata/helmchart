@@ -1,3 +1,4 @@
+{{- if .Values.slave.enabled -}}
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
@@ -139,3 +140,4 @@ spec:
           configMap:
             name: netdata-conf-slave
       dnsPolicy: ClusterFirstWithHostNet
+{{- end }}
