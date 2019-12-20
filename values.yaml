@@ -182,6 +182,7 @@ slave:
         autodetection_retry: 0
         jobs:
           - url: http://127.0.0.1:9153/metrics
+          - url: http://kube-dns.kube-system.svc.cluster.local:9153/metrics
     kubelet:
       enabled: true
       path: /etc/netdata/go.d/k8s_kubelet.conf
@@ -190,6 +191,8 @@ slave:
         autodetection_retry: 0
         jobs:
           - url: http://127.0.0.1:10255/metrics
+          - url: https://localhost:10250/metrics
+            tls_skip_verify: yes
     kubeproxy:
       enabled: true
       path: /etc/netdata/go.d/k8s_kubeproxy.conf
