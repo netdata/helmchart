@@ -126,6 +126,9 @@ $ helm install ./netdata --name my-release -f values.yaml
 
 > **Tip**: You can use the default [values.yaml](values.yaml)
 
+> **Note:**: To opt out of anonymous statistics, set the `DO_NOT_TRACK`
+  environment variable to non-zero or non-empty value in
+  `master.env` / `slave.env` configuration (e.g: `export DO_NOT_TRACK=1`).
 
 ### Configuration files
 

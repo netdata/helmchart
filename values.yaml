@@ -54,6 +54,8 @@ master:
   affinity: {}
 
   env: {}
+    # To disable anonymous statistics:
+    # DO_NOT_TRACK: 1
 
   podLabels: {}
 
@@ -203,4 +205,5 @@ slave:
           - url: http://127.0.0.1:10249/metrics
 
   env: {}
-
+    # To disable anonymous statistics:
+    # DO_NOT_TRACK: 1
