@@ -60,6 +60,7 @@ Parameter | Description | Default
 `image.pullPolicy` | Container image pull policy | `Always`
 `service.type` | netdata master service type | `ClusterIP`
 `service.port` | netdata master service port | `19999`
+`service.loadBalancerIP`| Static LoadBalancer IP, only to be used with service type=LoadBalancer|`""`
 `ingress.enabled` | Create Ingress to access the netdata web UI | `true`
 `ingress.annotations` | Associate annotations to the Ingress | `kubernetes.io/ingress.class: nginx` and `kubernetes.io/tls-acme: "true"`
 `ingress.path` | URL path for the ingress | `/`
