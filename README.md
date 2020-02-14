@@ -1,4 +1,4 @@
-# netdata Helm chart for kubernetes deployments
+# Netdata Helm chart for kubernetes deployments
 
 _Based on the work of varyumin (https://github.com/varyumin/netdata)_
 
