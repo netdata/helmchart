@@ -73,6 +73,8 @@ parent:
     #  cpu: 4
     #  memory: 4096Mi
 
+  terminationGracePeriodSeconds: 300
+
   nodeSelector: {}
 
   tolerations: []
@@ -179,6 +181,8 @@ child:
     # requests:
     #  cpu: 4
     #  memory: 4096Mi
+
+  terminationGracePeriodSeconds: 30
 
   nodeSelector: {}
 

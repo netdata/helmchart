@@ -74,10 +74,6 @@ spec:
             - name: {{ $key }}
               value: {{ $value | quote }}
             {{- end }}
-          lifecycle:
-            preStop:
-              exec:
-                command: ["/bin/sh","-c","killall netdata; while killall -0 netdata; do sleep 1; done"]
           ports:
             - name: http
               containerPort: {{ .Values.service.port }}
@@ -128,6 +124,7 @@ spec:
       tolerations:
 {{ toYaml . | indent 8 }}
     {{- end }}
+      terminationGracePeriodSeconds: {{ .Values.parent.terminationGracePeriodSeconds }}
       volumes:
         - name: config
           configMap:
