@@ -42,7 +42,7 @@ that can be configured during installation.
 To uninstall/delete the `my-release` deployment:
 
 ```console
-$ helm delete my-release
+$ helm delete my-release --purge
 ```
 
 The command removes all the Kubernetes components associated with the chart and 
