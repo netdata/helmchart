@@ -1,0 +1,61 @@
+apiVersion: v1
+entries:
+  netdata:
+  - apiVersion: v1
+    appVersion: v1.20.0
+    created: "2020-03-12T21:01:11.971343949+02:00"
+    description: Real-time performance monitoring, done right! https://my-netdata.io/
+    digest: c64806b6784e4f2bb79615d82483679f4b22b405ca8a3e1b5962a84c44bca43b
+    home: https://github.com/netdata/netdata
+    maintainers:
+    - email: chris@netdata.cloud
+      name: Chris Akritidis
+    - email: vryumin@gmail.com
+      name: Vladimir Ryumin
+    - email: karuppiah7890@gmail.com
+      name: Karuppiah Natarajan
+    - email: kamikaze.ua@gmail.com
+      name: Oleksii Kravchenko
+    name: netdata
+    urls:
+    - netdata-1.1.13.tgz
+    version: 1.1.13
+  - apiVersion: v1
+    appVersion: v1.19.0
+    created: "2020-03-12T21:01:11.966318544+02:00"
+    description: Real-time performance monitoring, done right! https://my-netdata.io/
+    digest: 1a71ba80696d48a503e7bdcc338cfe519d1c6b4a52559ba5924abb319c082bd2
+    home: https://github.com/netdata/netdata
+    maintainers:
+    - email: chris@netdata.cloud
+      name: Chris Akritidis
+    - email: vryumin@gmail.com
+      name: Vladimir Ryumin
+    - email: karuppiah7890@gmail.com
+      name: Karuppiah Natarajan
+    - email: kamikaze.ua@gmail.com
+      name: Oleksii Kravchenko
+    name: netdata
+    urls:
+    - netdata-1.1.12.tgz
+    version: 1.1.12
+  - apiVersion: v1
+    appVersion: v1.18.1
+    created: "2020-03-12T21:01:11.960862825+02:00"
+    description: Real-time performance monitoring, done right! https://my-netdata.io/
+    digest: 25c08047033f77f5e825ed6efe745335395c916198ca91095f18c018bda3d146
+    home: https://github.com/netdata/netdata
+    maintainers:
+    - email: chris@netdata.cloud
+      name: Chris Akritidis
+    - email: vryumin@gmail.com
+      name: Vladimir Ryumin
+    - email: karuppiah7890@gmail.com
+      name: Karuppiah Natarajan
+    - email: kamikaze.ua@gmail.com
+      name: Oleksii Kravchenko
+    name: netdata
+    urls:
+    - netdata-1.1.11.tgz
+    version: 1.1.11
+generated: "2020-03-12T21:01:11.955521019+02:00"
