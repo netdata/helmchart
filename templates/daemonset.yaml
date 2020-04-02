@@ -52,11 +52,11 @@ spec:
 {{ toYaml .Values.sysctlImage.resources | indent 12 }}
       {{- end }}
         {{- if .Values.slave.persistUniqueID }}
-        - name: init-nodeuniqueid
+        - name: init-nodeuid
           image: busybox
           volumeMounts:
-            - name: nodeuniqueid
-              mountPath: "/nodeuniqueid"
+            - name: nodeuid
+              mountPath: "/nodeuid"
           env:
             - name: MY_NODE_NAME
               valueFrom:
@@ -77,7 +77,7 @@ spec:
             UID=$(echo "${DATA}" | grep -m 1 uid | grep -o ":.*," | tr -d ": \",");
             [ -z "${UID}" ] && exit 1;
 
-            echo -n "${UID}" > /nodeuniqueid/netdata.public.unique.id;
+            echo -n "${UID}" > /nodeuid/netdata.public.unique.id;
             '
       {{- end }}
       containers:
@@ -137,7 +137,7 @@ spec:
             {{- end }}
             {{- end }}
             {{- if .Values.slave.persistUniqueID }}
-            - name: nodeuniqueid
+            - name: nodeuid
               mountPath: "/var/lib/netdata/registry/"
             {{- end }}
           securityContext:
@@ -173,7 +173,7 @@ spec:
           configMap:
             name: netdata-conf-slave
         {{- if .Values.slave.persistUniqueID }}
-        - name: nodeuniqueid
+        - name: nodeuid
           emptyDir: {}
         {{- end }}
       dnsPolicy: ClusterFirstWithHostNet
