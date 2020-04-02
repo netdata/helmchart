@@ -51,6 +51,35 @@ spec:
           resources:
 {{ toYaml .Values.sysctlImage.resources | indent 12 }}
       {{- end }}
+        {{- if .Values.slave.persistUniqueID }}
+        - name: init-nodeuniqueid
+          image: busybox
+          volumeMounts:
+            - name: nodeuniqueid
+              mountPath: "/nodeuniqueid"
+          env:
+            - name: MY_NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+          command:
+            - "/bin/sh"
+          args:
+            - "-c"
+            - '
+            TOKEN=$(cat /var/run/secrets/kubernetes.io/serviceaccount/token);
+            URL="https://${KUBERNETES_SERVICE_HOST}:${KUBERNETES_SERVICE_PORT}/api/v1/nodes/${MY_NODE_NAME}";
+            HEADER="Authorization: Bearer ${TOKEN}";
+
+            DATA=$(wget -q -T 5 --no-check-certificate --header "${HEADER}" -O - "${URL}");
+            [ -z "${DATA}" ] && exit 1;
+
+            UID=$(echo "${DATA}" | grep -m 1 uid | grep -o ":.*," | tr -d ": \",");
+            [ -z "${UID}" ] && exit 1;
+
+            echo "${UID}" > /nodeuniqueid/netdata.public.unique.id;
+            '
+      {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -60,6 +89,10 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.name
+            - name: MY_NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
             - name: MY_POD_NAMESPACE
               valueFrom:
                 fieldRef:
@@ -107,6 +140,10 @@ spec:
               subPath: {{ $name }}
             {{- end }}
             {{- end }}
+            {{- if .Values.slave.persistUniqueID }}
+            - name: nodeuniqueid
+              mountPath: "/var/lib/netdata/registry/"
+            {{- end }}
           securityContext:
             capabilities:
               add:
@@ -139,5 +176,9 @@ spec:
         - name: config
           configMap:
             name: netdata-conf-slave
+        {{- if .Values.slave.persistUniqueID }}
+        - name: nodeuniqueid
+          emptyDir: {}
+        {{- end }}
       dnsPolicy: ClusterFirstWithHostNet
 {{- end }}

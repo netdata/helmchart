@@ -11,6 +11,7 @@ sysctlImage:
   tag: latest
   pullPolicy: Always
   command: []
+  resources: {}
 
 service:
   type: ClusterIP
@@ -34,7 +35,7 @@ ingress:
 rbac:
   create: true
   pspEnabled: true
-  
+
 serviceAccount:
   create: true
   name: netdata
@@ -156,6 +157,8 @@ slave:
     enabled: true
 
   podAnnotations: {}
+
+  persistUniqueID: true
 
   configs:
     netdata:
