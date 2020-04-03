@@ -74,7 +74,10 @@ spec:
             DATA=$(wget -q -T 5 --no-check-certificate --header "${HEADER}" -O - "${URL}");
             [ -z "${DATA}" ] && exit 1;
 
-            UID=$(echo "${DATA}" | grep -m 1 uid | grep -o ":.*," | tr -d ": \",");
+            UID=$(echo "${DATA}" | grep -m 1 systemUUID | grep -o ":.*" | tr -d ": \",");
+            if [ -z "${UID}" ]; then
+              UID=$(echo "${DATA}" | grep -m 1 uid | grep -o ":.*" | tr -d ": \",");
+            fi
             [ -z "${UID}" ] && exit 1;
 
             echo -n "${UID}" > /nodeuid/netdata.public.unique.id;
