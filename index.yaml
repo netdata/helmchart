@@ -3,9 +3,9 @@ entries:
   netdata:
   - apiVersion: v1
     appVersion: v1.21.0
-    created: "2020-04-09T23:31:41.768410545+03:00"
+    created: "2020-04-09T23:39:33.180480999+03:00"
     description: Real-time performance monitoring, done right! https://my-netdata.io/
-    digest: e02693f44244c18288262f8f806a90927f335531ddd487b2cd9ee07bbd275892
+    digest: 0f984e99f8c1fe672afe2be8797eb2325383b1321afb930b6c10cca5ac5530dd
     home: https://github.com/netdata/netdata
     maintainers:
     - email: chris@netdata.cloud
@@ -77,4 +77,4 @@ entries:
     urls:
     - netdata-1.1.11.tgz
     version: 1.1.11
-generated: "2020-04-09T23:31:41.737899305+03:00"
+generated: "2020-04-09T23:39:33.154020101+03:00"
