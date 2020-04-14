@@ -1,5 +1,6 @@
 # IntelliJ project files
 .idea
+*.bak
 *.iml
 out
 gen
