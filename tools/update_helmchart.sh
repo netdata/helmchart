@@ -110,7 +110,13 @@ _main() {
     new_version="$1"
   fi
 
-  new_appVersion="$(bump_version "$old_appVersion")"
+  # Bump patch version by default
+  if [ -z "$1" ]; then
+    new_appVersion="$(bump_version "$old_appVersion")"
+  else
+    # Or use supplied new version from first argument
+    new_appVersion="$1"
+  fi
 
   printf "\n"
   printf "New Chart version:    %s\n" "$new_version"
