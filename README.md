@@ -75,6 +75,7 @@ Parameter | Description | Default
 `master.nodeSelector` | Node selector for the master statefulset | `{}`
 `master.tolerations` | Tolerations settings for the master statefulset | `[]`
 `master.affinity` | Affinity settings for the master statefulset | `{}`
+`master.priorityClassName` | Pod priority class name for the master statefulset | `""`
 `master.database.persistence` | Whether the master should use a persistent volume for the DB | `true`
 `master.database.storageclass` | The storage class for the persistent volume claim of the master's database store, mounted to `/var/cache/netdata` | the default storage class
 `master.database.volumesize` | The storage space for the PVC of the master database | `2Gi`
@@ -90,6 +91,7 @@ Parameter | Description | Default
 `slave.nodeSelector` | Node selector for the slave daemonsets | `{}`
 `slave.tolerations` | Tolerations settings for the slave daemonsets | `- operator: Exists` with `effect: NoSchedule`
 `slave.affinity` | Affinity settings for the slave daemonsets | `{}`
+`slave.priorityClassName` | Pod priority class name for the slave daemonsets | `""`
 `slave.env` | Set environment parameters for the slave daemonset | `{}`
 `slave.podLabels` | Additional labels to add to the slave pods | `{}`
 `slave.podAnnotations` | Additional annotations to add to the slave pods | `{}`
