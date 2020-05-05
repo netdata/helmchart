@@ -37,7 +37,6 @@ spec:
       restartPolicy: Always
       hostPID: true
       hostIPC: true
-      hostNetwork: true
       {{- if .Values.slave.priorityClassName }}
       priorityClassName: "{{ .Values.slave.priorityClassName }}"
       {{- end }}
@@ -183,5 +182,4 @@ spec:
         - name: nodeuid
           emptyDir: {}
         {{- end }}
-      dnsPolicy: ClusterFirstWithHostNet
 {{- end }}
