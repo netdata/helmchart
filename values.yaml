@@ -2,7 +2,7 @@ replicaCount: 1
 
 image:
   repository: netdata/netdata
-  tag: v1.21.0
+  tag: v1.21.1
   pullPolicy: Always
 
 sysctlImage:
