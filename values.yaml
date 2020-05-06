@@ -56,6 +56,8 @@ master:
 
   affinity: {}
 
+  priorityClassName: ""
+
   env: {}
     # To disable anonymous statistics:
     # DO_NOT_TRACK: 1
@@ -150,6 +152,8 @@ slave:
       effect: NoSchedule
 
   affinity: {}
+
+  priorityClassName: ""
 
   podLabels: {}
 

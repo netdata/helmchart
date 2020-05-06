@@ -61,6 +61,9 @@ spec:
       securityContext:
         fsGroup: 201
       serviceAccountName: {{ .Values.serviceAccount.name }}
+      {{- if .Values.master.priorityClassName }}
+      priorityClassName: "{{ .Values.master.priorityClassName }}"
+      {{- end }}
       initContainers:
       {{- if .Values.sysctlImage.enabled }}
         - name: init-sysctl
