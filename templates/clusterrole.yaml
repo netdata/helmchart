@@ -30,6 +30,12 @@ rules:
     verbs:
       - "get"
       - "list"
+  - apiGroups: [""]
+    resources:
+      - "nodes/metrics"
+      - "nodes/spec"
+    verbs:
+      - "get"
   - apiGroups: ["extensions"]
     resources:
       - "ingresses"
@@ -38,12 +44,6 @@ rules:
       - "list"
       - "watch"
   - nonResourceURLs: ["/version", "/healthz", "/metrics"]
-    verbs:
-      - "get"
-  - apiGroups: [""]
-    resources:
-      - "nodes/metrics"
-      - "nodes/spec"
     verbs:
       - "get"
   {{- end -}}
