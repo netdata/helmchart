@@ -11,15 +11,15 @@ metadata:
 rules:
   - apiGroups: [""]
     resources:
-      - "services"
-      - "events"
-      - "endpoints"
-      - "pods"
       - "nodes"
-      - "componentstatuses"
-      - "nodes/proxy"
+      - "pods"
+      - "services"
+      - "endpoints"
       - "configmaps"
       - "secrets"
+      - "events"
+      - "componentstatuses"
+      - "nodes/proxy"
     verbs:
       - "get"
       - "list"
