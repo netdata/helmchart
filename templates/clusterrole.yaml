@@ -18,6 +18,8 @@ rules:
       - "nodes"
       - "componentstatuses"
       - "nodes/proxy"
+      - "configmaps"
+      - "secrets"
     verbs:
       - "get"
       - "list"
