@@ -216,3 +216,42 @@ slave:
   env: {}
     # To disable anonymous statistics:
     # DO_NOT_TRACK: 1
+
+sd:
+  slave:
+    enabled: true
+    cmap_name: netdata-slave-sd-config-map
+    cmap_key: config.yml
+    config:
+      name: kubernetes
+      discovery:
+        k8s:
+          - tags: unknown
+            role: pod
+            local_mode: true
+      tag:
+        - selector: unknown
+          tags: -unknown go.d
+          match:
+            - cond: '{{and (eqAny .PortNumber "80 8080") (glob .Image "*httpd*")}}'
+              tags: apache
+            - cond: '{{and (eqAny .PortNumber "80 8080") (glob .Image "*nginx*")}}'
+              tags: nginx
+      build:
+        selector: "!unknown go.d"
+        tags: file go.d
+        apply:
+          - selector: apache
+            template: |
+              - module: apache
+                name: apache-{{.TUID}}
+                url: http://{{.Address}}/server_status?auto
+          - selector: nginx
+            template: |
+              - module: nginx
+                name: nginx-{{.TUID}}
+                url: http://{{.Address}}/server_status?auto
+      export:
+        file:
+          - selector: file go.d
+            filename: "export/output.yml"
