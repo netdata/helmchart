@@ -218,6 +218,9 @@ slave:
     # DO_NOT_TRACK: 1
 
 sd:
+  repository: ilyam8/agent-sd
+  tag: latest
+  pullPolicy: Always
   slave:
     enabled: true
     cmap_name: netdata-slave-sd-config-map
@@ -254,4 +257,4 @@ sd:
       export:
         file:
           - selector: file go.d
-            filename: "export/output.yml"
+            filename: "export/go.d.yml"
