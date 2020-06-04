@@ -48,8 +48,5 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 data:
-  {{.Values.sd.slave.cmap_key}}:
-  {{- with .Values.sd.slave.config }}
-  {{- toYaml . | nindent 4 }}
-  {{- end }}
+  {{.Values.sd.slave.cmap_key}}: | {{- with .Values.sd.slave.config }} {{ toYaml . | nindent 4 }} {{- end }}
 {{- end }}

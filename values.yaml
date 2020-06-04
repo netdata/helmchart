@@ -241,19 +241,19 @@ sd:
             - cond: '{{and (eqAny .PortNumber "80 8080") (glob .Image "*nginx*")}}'
               tags: nginx
       build:
-        selector: "!unknown go.d"
-        tags: file go.d
-        apply:
-          - selector: apache
-            template: |
-              - module: apache
-                name: apache-{{.TUID}}
+        - selector: "!unknown go.d"
+          tags: file go.d
+          apply:
+            - selector: apache
+              template: |
+                - module: apache
+                  name: apache-{{.TUID}}
                 url: http://{{.Address}}/server_status?auto
-          - selector: nginx
-            template: |
-              - module: nginx
-                name: nginx-{{.TUID}}
-                url: http://{{.Address}}/server_status?auto
+            - selector: nginx
+              template: |
+                - module: nginx
+                  name: nginx-{{.TUID}}
+                  url: http://{{.Address}}/server_status?auto
       export:
         file:
           - selector: file go.d
