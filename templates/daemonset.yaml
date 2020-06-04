@@ -153,7 +153,7 @@ spec:
             {{- end }}
             {{- if .Values.sd.slave.enabled }}
             - name: sd-shared
-              mountPath: /etc/netdata/go.d/sd/
+              mountPath: "/etc/netdata/go.d/sd/"
             {{- end }}
           securityContext:
             capabilities:
@@ -175,7 +175,7 @@ spec:
               memory: 10Mi
           env:
             - name: NETDATA_SD_CONFIG_MAP
-              value: {{ .Values.sd.slave.cmap_name}}:{{ .Values.sd.slave.cmap_key }}
+              value: "{{ .Values.sd.slave.cmap_name}}:{{ .Values.sd.slave.cmap_key }}"
         {{- end }}
     {{- with .Values.slave.nodeSelector }}
       nodeSelector:
