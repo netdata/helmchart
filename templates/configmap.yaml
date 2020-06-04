@@ -1,5 +1,23 @@
-{{- if .Values.slave.enabled -}}
 ---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: netdata-conf-master
+  labels:
+    app: {{ template "netdata.name" . }}
+    chart: {{ template "netdata.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+data:
+  {{- range $name, $config := .Values.master.configs }}
+  {{- if $config.enabled }}
+  {{ $name }}: {{ toYaml $config.data | indent 4 }}
+  {{- end }}
+  {{- end }}
+
+---
+
+{{- if .Values.slave.enabled -}}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -18,18 +36,20 @@ data:
 {{- end }}
 
 ---
+
+{{- if and (.Values.slave.enabled) (.Values.sd.slave.enabled) -}}
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: netdata-conf-master
+  name: {{.Values.sd.slave.cmap_name}}
   labels:
     app: {{ template "netdata.name" . }}
     chart: {{ template "netdata.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 data:
-  {{- range $name, $config := .Values.master.configs }}
-  {{- if $config.enabled }}
-  {{ $name }}: {{ toYaml $config.data | indent 4 }}
+  {{.Values.sd.slave.cmap_key}}:
+  {{- with .Values.sd.slave.config }}
+  {{- toYaml . | nindent 4 }}
   {{- end }}
-  {{- end }}
+{{- end }}
