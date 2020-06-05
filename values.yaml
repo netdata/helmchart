@@ -209,7 +209,7 @@ slave:
     # DO_NOT_TRACK: 1
 
 sd:
-  repository: ilyam8/agent-sd
+  repository: netdata/agent-sd
   tag: latest
   pullPolicy: Always
   slave:
