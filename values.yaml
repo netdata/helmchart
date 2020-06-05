@@ -184,7 +184,7 @@ slave:
           timeout seconds = 60
           buffer size bytes = 1048576
           reconnect delay seconds = 5
-          initial clock resync iterations = 6
+          initial clock resync iterations = 60
     go.d:
       enabled: true
       path: /etc/netdata/go.d.conf
