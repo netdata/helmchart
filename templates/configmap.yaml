@@ -48,5 +48,12 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 data:
-  {{.Values.sd.slave.cmap_key}}: | {{- with .Values.sd.slave.config }} {{ toYaml . | nindent 4 }} {{- end }}
+  {{ .Values.sd.slave.cmap_key }}: |
+    {{- with .Values.sd.slave.config }}
+    name: {{ .name }}
+    discovery: {{ toYaml .discovery | nindent 6 }}
+    tag: {{ toYaml .tag | nindent 6 }}
+    build: {{ toYaml .build | nindent 6 }}
+    export: {{ toYaml .export | nindent 6 }}
+    {{- end }}
 {{- end }}
