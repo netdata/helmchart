@@ -1,0 +1,181 @@
+name: kubernetes
+discovery:
+  k8s:
+    - tags: unknown
+      role: pod
+      local_mode: true
+tag:
+  - selector: unknown
+    tags: -unknown go.d
+    match:
+      - tags: activemq
+        cond: '{{ and (equal .Port "8161") (glob .Image "*/activemq*") }}'
+      - tags: apache
+        cond: '{{ and (equal .Port "80" "8080") (glob .Image "httpd:*" "*/httpd*") }}'
+      - tags: bind
+        cond: '{{ and (equal .Port "8653") (glob .Image "*/bind*") }}'
+      - tags: cockroachdb
+        cond: '{{ and (equal .Port "8080") (glob .Image "*/cockroach*") }}'
+      - tags: consul
+        cond: '{{ and (equal .Port "8500") (glob .Image "consul:*" "*/consul*") }}'
+      - tags: coredns
+        cond: '{{ and (equal .Port "9153") (glob .Image "*/coredns*") }}'
+      - tags: fluentd
+        cond: '{{ and (equal .Port "24220") (glob .Image "fluentd:*" "*/fluentd*") }}'
+      - tags: freeradius
+        cond: '{{ and (equal .Port "18121") (glob .Image "*/freeradius*") }}'
+      - tags: hdfs
+        cond: '{{ and (equal .Port "50070") (glob .Image "*/hdfs*") }}'
+      - tags: lighttpd
+        cond: '{{ and (equal .Port "80" "8080") (glob .Image "*/lighttpd*") }}'
+      - tags: lighttpd2
+        cond: '{{ and (equal .Port "80" "8080") (glob .Image "*/lighttpd2*") }}'
+      - tags: logstash
+        cond: '{{ and (equal .Port "9600") (glob .Image "logstash:*" "*/logstash*") }}'
+      - tags: mysql
+        cond: '{{ and (equal .Port "3306") (glob .Image "mysql:*" "*/mysql*" "mariadb:*" "*/mariadb*") }}'
+      - tags: nginx
+        cond: '{{ and (equal .Port "80" "8080") (glob .Image "nginx:*" "*/nginx*") }}'
+      - tags: openvpn
+        cond: '{{ and (equal .Port "7505") (glob .Image "*/openvpn") }}'
+      - tags: phpfpm
+        cond: '{{ and (equal .Port "80" "8080") (glob .Image "*/phpfpm*" "*/php-fpm*") }}'
+      - tags: pulsar
+        cond: '{{ and (equal .Port "8080") (glob .Image "*/pulsar*") }}'
+      - tags: rabbitmq
+        cond: '{{ and (equal .Port "15672") (glob .Image "rabbitmq:*" "*/rabbitmq*") }}'
+      - tags: solr
+        cond: '{{ and (equal .Port "8983") (glob .Image "solr:*" "*/solr*") }}'
+      - tags: tengine
+        cond: '{{ and (equal .Port "80" "8080") (glob .Image "*/tengine*") }}'
+      - tags: unbound
+        cond: '{{ and (equal .Port "8953") (glob .Image "*/unbound*") }}'
+      - tags: vernemq
+        cond: '{{ and (equal .Port "8888") (glob .Image "*/vernemq*") }}'
+      - tags: zookeeper
+        cond: '{{ and (equal .Port "2181") (glob .Image "zookeeper:*" "*/zookeeper*") }}'
+build:
+  - selector: "!unknown go.d"
+    tags: file go.d
+    apply:
+      - selector: activemq
+        template: |
+          - module: activemq
+            name: activemq-{{.TUID}}
+            url: http://{{.Address}}
+      - selector: apache
+        template: |
+          - module: apache
+            name: apache-{{.TUID}}
+            url: http://{{.Address}}/server-status?auto
+      - selector: bind
+        template: |
+          - module: bind
+            name: bind-{{.TUID}}
+            url: http://{{.Address}}/json/v1
+      - selector: cockroachdb
+        template: |
+          - module: cockroachdb
+            name: cockroachdb-{{.TUID}}
+            url: http://{{.Address}}/_status/vars
+      - selector: consul
+        template: |
+          - module: consul
+            name: consul-{{.TUID}}
+            url: http://{{.Address}}
+      - selector: coredns
+        template: |
+          - module: coredns
+            name: coredns-{{.TUID}}
+            url: http://{{.Address}}/metrics
+      - selector: fluentd
+        template: |
+          - module: fluentd
+            name: fluentd-{{.TUID}}
+            url: http://{{.Address}}
+      - selector: freeradius
+        template: |
+          - module: freeradius
+            name: freeradius-{{.TUID}}
+            address: {{.PodIP}}
+            port: {{.Port}}
+      - selector: hdfs
+        template: |
+          - module: hdfs
+            name: hdfs-{{.TUID}}
+            url: http://{{.Address}}/jmx
+      - selector: lighttpd
+        template: |
+          - module: lighttpd
+            name: lighttpd-{{.TUID}}
+            url: http://{{.Address}}/server-status?auto
+      - selector: lighttpd2
+        template: |
+          - module: lighttpd2
+            name: lighttpd2-{{.TUID}}
+            url: http://{{.Address}}/server-status?format=plain
+      - selector: logstash
+        template: |
+          - module: logstash
+            name: logstash-{{.TUID}}
+            url: http://{{.Address}}
+      - selector: mysql
+        template: |
+          - module: mysql
+            name: mysql-{{.TUID}}
+            dsn: 'netdata@tcp({{.Address}})/'
+      - selector: nginx
+        template: |
+          - module: nginx
+            name: nginx-{{.TUID}}
+            url: http://{{.Address}}/stub_status
+      - selector: openvpn
+        template: |
+          - module: openvpn
+            name: openvpn-{{.TUID}}
+            address: {{.Address}}
+      - selector: phpfpm
+        template: |
+          - module: phpfpm
+            name: phpfpm-{{.TUID}}
+            url: http://{{.Address}}/status?full&json
+      - selector: pulsar
+        template: |
+          - module: pulsar
+            name: pulsar-{{.TUID}}
+            url: http://{{.Address}}/metrics
+      - selector: rabbitmq
+        template: |
+          - module: rabbitmq
+            name: rabbitmq-{{.TUID}}
+            url: http://{{.Address}}
+      - selector: solr
+        template: |
+          - module: solr
+            name: solr-{{.TUID}}
+            url: http://{{.Address}}
+      - selector: tengine
+        template: |
+          - module: tengine
+            name: tengine-{{.TUID}}
+            url: http://{{.Address}}/us
+      - selector: unbound
+        template: |
+          - module: unbound
+            name: unbound-{{.TUID}}
+            address: {{.Address}}
+            use_tls: false
+      - selector: vernemq
+        template: |
+          - module: vernemq
+            name: vernemq-{{.TUID}}
+            url: http://{{.Address}}/metrics
+      - selector: zookeeper
+        template: |
+          - module: zookeeper
+            name: zookeeper-{{.TUID}}
+            address: {{.Address}}
+export:
+  file:
+    - selector: file go.d
+      filename: "export/go.d.yml"
