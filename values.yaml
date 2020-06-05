@@ -185,6 +185,20 @@ slave:
           buffer size bytes = 1048576
           reconnect delay seconds = 5
           initial clock resync iterations = 6
+    go.d:
+      enabled: true
+      path: /etc/netdata/go.d.conf
+      data:
+        modules:
+          apache: yes
+          bind: yes
+          freeradius: yes
+          lighttpd: yes
+          mysql: yes
+          nginx: yes
+          openvpn: yes
+          phpfpm: yes
+          rabbitmq: yes
     kubelet:
       enabled: true
       path: /etc/netdata/go.d/k8s_kubelet.conf
