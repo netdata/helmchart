@@ -227,10 +227,52 @@ sd:
         - selector: unknown
           tags: -unknown go.d
           match:
-            - cond: '{{and (eqAny .PortNumber "80 8080") (glob .Image "*httpd*")}}'
-              tags: apache
-            - cond: '{{and (eqAny .PortNumber "80 8080") (glob .Image "*nginx*")}}'
-              tags: nginx
+            - tags: activemq
+              cond: '{{ and (equal .Port "8161") (glob .Image "*/activemq*") }}'
+            - tags: apache
+              cond: '{{ and (equal .Port "80" "8080") (glob .Image "httpd:*" "*/httpd*") }}'
+            - tags: bind
+              cond: '{{ and (equal .Port "8653") (glob .Image "*/bind*") }}'
+            - tags: cockroachdb
+              cond: '{{ and (equal .Port "8080") (glob .Image "*/cockroach*") }}'
+            - tags: consul
+              cond: '{{ and (equal .Port "8500") (glob .Image "consul:*" "*/consul*") }}'
+            - tags: coredns
+              cond: '{{ and (equal .Port "9153") (glob .Image "*/coredns*") }}'
+            - tags: fluentd
+              cond: '{{ and (equal .Port "24220") (glob .Image "fluentd:*" "*/fluentd*") }}'
+            - tags: freeradius
+              cond: '{{ and (equal .Port "18121") (glob .Image "*/freeradius*") }}'
+            - tags: hdfs
+              cond: '{{ and (equal .Port "50070") (glob .Image "*/hdfs*") }}'
+            - tags: lighttpd
+              cond: '{{ and (equal .Port "80" "8080") (glob .Image "*/lighttpd*") }}'
+            - tags: lighttpd2
+              cond: '{{ and (equal .Port "80" "8080") (glob .Image "*/lighttpd2*") }}'
+            - tags: logstash
+              cond: '{{ and (equal .Port "9600") (glob .Image "logstash:*" "*/logstash*") }}'
+            - tags: mysql
+              cond: '{{ and (equal .Port "3306") (glob .Image "mysql:*" "*/mysql*" "mariadb:*" "*/mariadb*") }}'
+            - tags: nginx
+              cond: '{{ and (equal .Port "80" "8080") (glob .Image "nginx:*" "*/nginx*") }}'
+            - tags: openvpn
+              cond: '{{ and (equal .Port "7505") (glob .Image "*/openvpn") }}'
+            - tags: phpfpm
+              cond: '{{ and (equal .Port "80" "8080") (glob .Image "*/phpfpm*" "*/php-fpm*") }}'
+            - tags: pulsar
+              cond: '{{ and (equal .Port "8080") (glob .Image "*/pulsar*") }}'
+            - tags: rabbitmq
+              cond: '{{ and (equal .Port "15672") (glob .Image "rabbitmq:*" "*/rabbitmq*") }}'
+            - tags: solr
+              cond: '{{ and (equal .Port "8983") (glob .Image "solr:*" "*/solr*") }}'
+            - tags: tengine
+              cond: '{{ and (equal .Port "80" "8080") (glob .Image "*/tengine*") }}'
+            - tags: unbound
+              cond: '{{ and (equal .Port "8953") (glob .Image "*/unbound*") }}'
+            - tags: vernemq
+              cond: '{{ and (equal .Port "8888") (glob .Image "*/vernemq*") }}'
+            - tags: zookeeper
+              cond: '{{ and (equal .Port "2181") (glob .Image "zookeeper:*" "*/zookeeper*") }}'
       build:
         - selector: "!unknown go.d"
           tags: file go.d
