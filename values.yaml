@@ -188,7 +188,7 @@ slave:
     go.d:
       enabled: true
       path: /etc/netdata/go.d.conf
-      data:
+      data: |
         modules:
           apache: yes
           bind: yes
