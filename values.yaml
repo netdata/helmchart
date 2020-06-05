@@ -277,16 +277,123 @@ sd:
         - selector: "!unknown go.d"
           tags: file go.d
           apply:
+            - selector: activemq
+              template: |
+                - module: activemq
+                  name: activemq-{{.TUID}}
+                  url: http://{{.Address}}
             - selector: apache
               template: |
                 - module: apache
                   name: apache-{{.TUID}}
-                url: http://{{.Address}}/server_status?auto
+                  url: http://{{.Address}}/server-status?auto
+            - selector: bind
+              template: |
+                - module: bind
+                  name: bind-{{.TUID}}
+                  url: http://{{.Address}}/json/v1
+            - selector: cockroachdb
+              template: |
+                - module: cockroachdb
+                  name: cockroachdb-{{.TUID}}
+                  url: http://{{.Address}}/_status/vars
+            - selector: consul
+              template: |
+                - module: consul
+                  name: consul-{{.TUID}}
+                  url: http://{{.Address}}
+            - selector: coredns
+              template: |
+                - module: coredns
+                  name: coredns-{{.TUID}}
+                  url: http://{{.Address}}/metrics
+            - selector: fluentd
+              template: |
+                - module: fluentd
+                  name: fluentd-{{.TUID}}
+                  url: http://{{.Address}}
+            - selector: freeradius
+              template: |
+                - module: freeradius
+                  name: freeradius-{{.TUID}}
+                  address: {{.PodIP}}
+                  port: {{.Port}}
+            - selector: hdfs
+              template: |
+                - module: hdfs
+                  name: hdfs-{{.TUID}}
+                  url: http://{{.Address}}/jmx
+            - selector: lighttpd
+              template: |
+                - module: lighttpd
+                  name: lighttpd-{{.TUID}}
+                  url: http://{{.Address}}/server-status?auto
+            - selector: lighttpd2
+              template: |
+                - module: lighttpd2
+                  name: lighttpd2-{{.TUID}}
+                  url: http://{{.Address}}/server-status?format=plain
+            - selector: logstash
+              template: |
+                - module: logstash
+                  name: logstash-{{.TUID}}
+                  url: http://{{.Address}}
+            - selector: mysql
+              template: |
+                - module: mysql
+                  name: mysql-{{.TUID}}
+                  dsn: 'netdata@tcp({{.Address}})/'
             - selector: nginx
               template: |
                 - module: nginx
                   name: nginx-{{.TUID}}
-                  url: http://{{.Address}}/server_status?auto
+                  url: http://{{.Address}}/stub_status
+            - selector: openvpn
+              template: |
+                - module: openvpn
+                  name: openvpn-{{.TUID}}
+                  address: {{.Address}}
+            - selector: phpfpm
+              template: |
+                - module: phpfpm
+                  name: phpfpm-{{.TUID}}
+                  url: http://{{.Address}}/status?full&json
+            - selector: pulsar
+              template: |
+                - module: pulsar
+                  name: pulsar-{{.TUID}}
+                  url: http://{{.Address}}/metrics
+            - selector: rabbitmq
+              template: |
+                - module: rabbitmq
+                  name: rabbitmq-{{.TUID}}
+                  url: http://{{.Address}}
+            - selector: solr
+              template: |
+                - module: solr
+                  name: solr-{{.TUID}}
+                  url: http://{{.Address}}
+            - selector: tengine
+              template: |
+                - module: tengine
+                  name: tengine-{{.TUID}}
+                  url: http://{{.Address}}/us
+            - selector: unbound
+              template: |
+                - module: unbound
+                  name: unbound-{{.TUID}}
+                  address: {{.Address}}
+                  use_tls: false
+            - selector: vernemq
+              template: |
+                - module: vernemq
+                  name: vernemq-{{.TUID}}
+                  url: http://{{.Address}}/metrics
+            - selector: zookeeper
+              template: |
+                - module: zookeeper
+                  name: zookeeper-{{.TUID}}
+                  address: {{.Address}}
       export:
         file:
           - selector: file go.d
