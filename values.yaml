@@ -1,8 +1,8 @@
 replicaCount: 1
 
 image:
-  repository: netdata/netdata
-  tag: v1.22.1
+  repository: ilyam8/netdata-test
+  tag: latest
   pullPolicy: Always
 
 sd:
@@ -185,6 +185,8 @@ slave:
           memory mode = none
         [health]
           enabled = no
+        [plugins]
+          cgroups = no
     stream:
       enabled: true
       path: /etc/netdata/stream.conf
