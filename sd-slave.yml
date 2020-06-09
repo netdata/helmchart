@@ -40,8 +40,6 @@ tag:
         cond: '{{ and (equal .Port "7505") (glob .Image "**/openvpn") }}'
       - tags: phpfpm
         cond: '{{ and (equal .Port "80" "8080") (glob .Image "**/phpfpm*" "**/php-fpm*") }}'
-      - tags: pulsar
-        cond: '{{ and (equal .Port "8080") (glob .Image "**/pulsar*") }}'
       - tags: rabbitmq
         cond: '{{ and (equal .Port "15672") (glob .Image "rabbitmq*" "**/rabbitmq*") }}'
       - tags: solr
@@ -139,11 +137,6 @@ build:
           - module: phpfpm
             name: phpfpm-{{.TUID}}
             url: http://{{.Address}}/status?full&json
-      - selector: pulsar
-        template: |
-          - module: pulsar
-            name: pulsar-{{.TUID}}
-            url: http://{{.Address}}/metrics
       - selector: rabbitmq
         template: |
           - module: rabbitmq
