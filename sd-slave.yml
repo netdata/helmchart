@@ -9,49 +9,49 @@ tag:
     tags: -unknown go.d
     match:
       - tags: activemq
-        cond: '{{ and (equal .Port "8161") (glob .Image "**/activemq*") }}'
+        expr: '{{ and (eq .Port "8161") (glob .Image "**/activemq*") }}'
       - tags: apache
-        cond: '{{ and (equal .Port "80" "8080") (glob .Image "httpd*" "**/httpd*") }}'
+        expr: '{{ and (eq .Port "80" "8080") (glob .Image "httpd*" "**/httpd*") }}'
       - tags: bind
-        cond: '{{ and (equal .Port "8653") (glob .Image "**/bind*") }}'
+        expr: '{{ and (eq .Port "8653") (glob .Image "**/bind*") }}'
       - tags: cockroachdb
-        cond: '{{ and (equal .Port "8080") (glob .Image "**/cockroach*") }}'
+        expr: '{{ and (eq .Port "8080") (glob .Image "**/cockroach*") }}'
       - tags: consul
-        cond: '{{ and (equal .Port "8500") (glob .Image "consul*" "**/consul*") }}'
+        expr: '{{ and (eq .Port "8500") (glob .Image "consul*" "**/consul*") }}'
       - tags: coredns
-        cond: '{{ and (equal .Port "9153") (glob .Image "**/coredns*") }}'
+        expr: '{{ and (eq .Port "9153") (glob .Image "**/coredns*") }}'
       - tags: fluentd
-        cond: '{{ and (equal .Port "24220") (glob .Image "fluentd*" "**/fluentd*") }}'
+        expr: '{{ and (eq .Port "24220") (glob .Image "fluentd*" "**/fluentd*") }}'
       - tags: freeradius
-        cond: '{{ and (equal .Port "18121") (glob .Image "**/freeradius*") }}'
+        expr: '{{ and (eq .Port "18121") (glob .Image "**/freeradius*") }}'
       - tags: hdfs
-        cond: '{{ and (equal .Port "50070") (glob .Image "**/hdfs*") }}'
+        expr: '{{ and (eq .Port "50070") (glob .Image "**/hdfs*") }}'
       - tags: lighttpd
-        cond: '{{ and (equal .Port "80" "8080") (glob .Image "**/lighttpd*") }}'
+        expr: '{{ and (eq .Port "80" "8080") (glob .Image "**/lighttpd*") }}'
       - tags: lighttpd2
-        cond: '{{ and (equal .Port "80" "8080") (glob .Image "**/lighttpd2*") }}'
+        expr: '{{ and (eq .Port "80" "8080") (glob .Image "**/lighttpd2*") }}'
       - tags: logstash
-        cond: '{{ and (equal .Port "9600") (glob .Image "logstash*" "**/logstash*") }}'
+        expr: '{{ and (eq .Port "9600") (glob .Image "logstash*" "**/logstash*") }}'
       - tags: mysql
-        cond: '{{ and (equal .Port "3306") (glob .Image "mysql*" "**/mysql*" "mariadb*" "**/mariadb*") }}'
+        expr: '{{ and (eq .Port "3306") (glob .Image "mysql*" "**/mysql*" "mariadb*" "**/mariadb*") }}'
       - tags: nginx
-        cond: '{{ and (equal .Port "80" "8080") (glob .Image "nginx*" "**/nginx*") }}'
+        expr: '{{ and (eq .Port "80" "8080") (glob .Image "nginx*" "**/nginx*") }}'
       - tags: openvpn
-        cond: '{{ and (equal .Port "7505") (glob .Image "**/openvpn") }}'
+        expr: '{{ and (eq .Port "7505") (glob .Image "**/openvpn") }}'
       - tags: phpfpm
-        cond: '{{ and (equal .Port "80" "8080") (glob .Image "**/phpfpm*" "**/php-fpm*") }}'
+        expr: '{{ and (eq .Port "80" "8080") (glob .Image "**/phpfpm*" "**/php-fpm*") }}'
       - tags: rabbitmq
-        cond: '{{ and (equal .Port "15672") (glob .Image "rabbitmq*" "**/rabbitmq*") }}'
+        expr: '{{ and (eq .Port "15672") (glob .Image "rabbitmq*" "**/rabbitmq*") }}'
       - tags: solr
-        cond: '{{ and (equal .Port "8983") (glob .Image "solr*" "**/solr*") }}'
+        expr: '{{ and (eq .Port "8983") (glob .Image "solr*" "**/solr*") }}'
       - tags: tengine
-        cond: '{{ and (equal .Port "80" "8080") (glob .Image "**/tengine*") }}'
+        expr: '{{ and (eq .Port "80" "8080") (glob .Image "**/tengine*") }}'
       - tags: unbound
-        cond: '{{ and (equal .Port "8953") (glob .Image "**/unbound*") }}'
+        expr: '{{ and (eq .Port "8953") (glob .Image "**/unbound*") }}'
       - tags: vernemq
-        cond: '{{ and (equal .Port "8888") (glob .Image "**/vernemq*") }}'
+        expr: '{{ and (eq .Port "8888") (glob .Image "**/vernemq*") }}'
       - tags: zookeeper
-        cond: '{{ and (equal .Port "2181") (glob .Image "zookeeper*" "**/zookeeper*") }}'
+        expr: '{{ and (eq .Port "2181") (glob .Image "zookeeper*" "**/zookeeper*") }}'
 build:
   - selector: "!unknown go.d"
     tags: file go.d
