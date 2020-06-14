@@ -37,17 +37,17 @@ data:
 
 ---
 
-{{- if and (.Values.slave.enabled) (.Values.slave.sd.enabled) -}}
+{{- if and (.Values.slave.enabled) (.Values.sd.slave.enabled) -}}
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{.Values.slave.sd.cmap_name}}
+  name: netdata-slave-sd-config-map
   labels:
     app: {{ template "netdata.name" . }}
     chart: {{ template "netdata.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 data:
-  {{ .Values.slave.sd.cmap_key }}: |
-  {{- .Files.Get .Values.slave.sd.file | nindent 4 }}
+  config.yml: |
+  {{- .Files.Get .Values.sd.slave.file | nindent 4 }}
 {{- end }}

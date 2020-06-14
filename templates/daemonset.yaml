@@ -100,9 +100,9 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.namespace
-            {{- if .Values.slave.sd.enabled }}
+            {{- if .Values.sd.slave.enabled }}
             - name: NETDATA_PLUGINS_GOD_WATCH_PATH
-              value: '/etc/netdata/go.d/sd/go.d.yml'
+              value: "/etc/netdata/go.d/sd/go.d.yml"
             {{- end }}
             {{- range $key, $value := .Values.slave.env }}
             - name: {{ $key }}
@@ -151,7 +151,7 @@ spec:
             - name: nodeuid
               mountPath: "/var/lib/netdata/registry/"
             {{- end }}
-            {{- if .Values.slave.sd.enabled }}
+            {{- if .Values.sd.slave.enabled }}
             - name: sd-shared
               mountPath: "/etc/netdata/go.d/sd/"
             {{- end }}
@@ -162,20 +162,18 @@ spec:
                 - SYS_ADMIN
           resources:
 {{ toYaml .Values.slave.resources | indent 12 }}
-        {{- if .Values.slave.sd.enabled }}
+        {{- if .Values.sd.slave.enabled }}
         - name: sd
           image: "{{ .Values.sd.repository }}:{{ .Values.sd.tag }}"
           imagePullPolicy: {{ .Values.sd.pullPolicy }}
           volumeMounts:
             - name: sd-shared
-              mountPath: /export/
+              mountPath: "/export/"
           resources:
-            requests:
-              cpu: 1m
-              memory: 10Mi
+          {{- toYaml .Values.sd.slave.resources | nindent 12 }}
           env:
             - name: NETDATA_SD_CONFIG_MAP
-              value: "{{ .Values.slave.sd.cmap_name}}:{{ .Values.slave.sd.cmap_key }}"
+              value: "netdata-slave-sd-config-map:config.yml"
             - name: MY_POD_NAMESPACE
               valueFrom:
                 fieldRef:
@@ -214,7 +212,7 @@ spec:
         - name: nodeuid
           emptyDir: {}
         {{- end }}
-        {{- if .Values.slave.sd.enabled }}
+        {{- if .Values.sd.slave.enabled }}
         - name: sd-shared
           emptyDir: {}
         {{- end }}

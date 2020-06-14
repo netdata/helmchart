@@ -9,6 +9,16 @@ sd:
   repository: netdata/agent-sd
   tag: latest
   pullPolicy: Always
+  slave:
+    enabled: true
+    file: sd-slave.yml
+    resources: {}
+    # limits:
+    #  cpu: 50m
+    #  memory: 60Mi
+    # requests:
+    #  cpu: 50m
+    #  memory: 60Mi
 
 sysctlImage:
   enabled: false
@@ -142,12 +152,6 @@ master:
 
 slave:
   enabled: true
-
-  sd:
-    enabled: true
-    cmap_name: netdata-slave-sd-config-map
-    cmap_key: config.yml
-    file: sd-slave.yml
 
   resources: {}
     # limits:
