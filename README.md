@@ -106,6 +106,12 @@ Parameter | Description | Default
 `sysctlImage.tag` | sysctlImage Init container tag | `latest` |
 `sysctlImage.pullPolicy` | sysctlImage Init container pull policy | `Always` |
 `sysctlImage.resources` | sysctlImage Init container CPU/Memory resource requests/limits | {} |
+`sd.image.repository` | Service-discovery image repo | `netdata/agent-sd`
+`sd.image.tag` | Service-discovery image tag | Latest stable release (e.g. `v0.1.0`)
+`sd.image.pullPolicy` | Service-discovery image pull policy | `Always`
+`sd.slave.enabled` | Add service-discovery sidecar container to the netdata slave pod definition | `true`
+`sd.slave.resources` | Slave service-discovery container CPU/Memory resource requests/limits | `{}`
+`sd.slave.file` | Slave service-discovery configuration file | `sd-slave.yml`
 
 Example to set the parameters from the command line:
 ```console
