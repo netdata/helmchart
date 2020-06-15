@@ -49,9 +49,9 @@ metadata:
     heritage: {{ .Release.Service }}
 data:
   {{ .Values.sd.slave.configmap.key }}: |
-    {{- if .Values.sd.slave.configmap.from.file }}
-      {{- .Files.Get .Values.sd.slave.configmap.from.file | nindent 4 }}
-    {{- else }}
+    {{- if .Values.sd.slave.configmap.from.value }}
       {{- toYaml .Values.sd.slave.configmap.from.value | nindent 4 }}
-   {{- end}}
+    {{- else }}
+      {{- .Files.Get .Values.sd.slave.configmap.from.file | nindent 4 }}
+    {{- end}}
 {{- end }}
