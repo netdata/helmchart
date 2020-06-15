@@ -150,7 +150,6 @@ Parameter | Description | Default
 `master.configs.health` | Contents of `health_alarm_notify.conf` | Email disabled, a sample of the required settings for Slack notifications
 `slave.configs.netdata` | Contents of the slave's `netdata.conf` | No persistent storage, no alarms, no UI
 `slave.configs.stream` | Contents of the slave `stream.conf` | Send metrics to the master at netdata:19999
-`slave.configs.coredns` | Contents of the slave's `go.d/coredns.conf` that drives the coredns collector | Update metrics every sec, do not retry to detect the endpoint, look for the coredns metrics at http://127.0.0.1:9153/metrics
 `slave.configs.kubelet` | Contents of the slave's `go.d/k8s_kubelet.conf` that drives the kubelet collector | Update metrics every sec, do not retry to detect the endpoint, look for the kubelet metrics at http://127.0.0.1:10255/metrics
 `slave.configs.kubeproxy` | Contents of the slave's `go.d/k8s_kubeproxy.conf` that drives the kubeproxy collector | Update metrics every sec, do not retry to detect the endpoint, look for the coredns metrics at http://127.0.0.1:10249/metrics
  
