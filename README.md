@@ -111,7 +111,10 @@ Parameter | Description | Default
 `sd.image.pullPolicy` | Service-discovery image pull policy | `Always`
 `sd.slave.enabled` | Add service-discovery sidecar container to the netdata slave pod definition | `true`
 `sd.slave.resources` | Slave service-discovery container CPU/Memory resource requests/limits | `{}`
-`sd.slave.file` | Slave service-discovery configuration file | `sd-slave.yml`
+`sd.slave.configmap.name` | Slave service-discovery ConfigMap name | `netdata-slave-sd-config-map`
+`sd.slave.configmap.key` | Slave service-discovery ConfigMap key | `config.yml`
+`sd.slave.configmap.from.file` | File to use for slave service-discovery configuration generation | `sdconfig/sd-slave.yml`
+`sd.slave.configmap.from.value` | Value to use for slave service-discovery configuration generation | `{}`
 
 Example to set the parameters from the command line:
 ```console

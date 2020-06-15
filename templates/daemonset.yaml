@@ -173,7 +173,7 @@ spec:
           {{- toYaml .Values.sd.slave.resources | nindent 12 }}
           env:
             - name: NETDATA_SD_CONFIG_MAP
-              value: "netdata-slave-sd-config-map:config.yml"
+              value: "{{ .Values.sd.slave.configmap.name }}:{{ .Values.sd.slave.configmap.key }}"
             - name: MY_POD_NAMESPACE
               valueFrom:
                 fieldRef:

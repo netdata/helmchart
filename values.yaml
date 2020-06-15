@@ -11,7 +11,13 @@ sd:
   pullPolicy: Always
   slave:
     enabled: true
-    file: sd-slave.yml
+    configmap:
+      name: netdata-slave-sd-config-map
+      key: config.yml
+      # if 'from' is {} the ConfigMap is not generated
+      from:
+        file: sdconfig/slave.yml
+        value: {}
     resources: {}
     # limits:
     #  cpu: 50m
