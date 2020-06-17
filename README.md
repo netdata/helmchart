@@ -161,6 +161,35 @@ must be indented with two more spaces relative to the preceding line:
         config line 2 #No problem indenting more here
 ```
 
+### Service discovery and supported services
+
+Netdata's [service discovery](https://github.com/netdata/agent-service-discovery/), which is installed as part of the Helm chart installation, finds what services are running on a cluster's pods, converts that into configuration files, and exports them so they can be monitored.
+
+Service discovery currently supports the following services via their associated collector:
+
+-   [ActiveMQ](https://learn.netdata.cloud/docs/agent/collectors/go.d.plugin/modules/activemq)
+-   [Apache](https://learn.netdata.cloud/docs/agent/collectors/go.d.plugin/modules/apache)
+-   [Bind](https://learn.netdata.cloud/docs/agent/collectors/go.d.plugin/modules/bind)
+-   [CockroachDB](https://learn.netdata.cloud/docs/agent/collectors/go.d.plugin/modules/cockroachdb)
+-   [Consul](https://learn.netdata.cloud/docs/agent/collectors/go.d.plugin/modules/consul)
+-   [CoreDNS](https://learn.netdata.cloud/docs/agent/collectors/go.d.plugin/modules/coredns)
+-   [Fluentd](https://learn.netdata.cloud/docs/agent/collectors/go.d.plugin/modules/fluentd)
+-   [FreeRADIUS](https://learn.netdata.cloud/docs/agent/collectors/go.d.plugin/modules/freeradius)
+-   [HDFS](https://learn.netdata.cloud/docs/agent/collectors/go.d.plugin/modules/hdfs)
+-   [Lighttpd](https://learn.netdata.cloud/docs/agent/collectors/go.d.plugin/modules/lighttpd)
+-   [Lighttpd2](https://learn.netdata.cloud/docs/agent/collectors/go.d.plugin/modules/lighttpd2)
+-   [Logstash](https://learn.netdata.cloud/docs/agent/collectors/go.d.plugin/modules/logstash)
+-   [MySQL](https://learn.netdata.cloud/docs/agent/collectors/go.d.plugin/modules/mysql)
+-   [NGINX](https://learn.netdata.cloud/docs/agent/collectors/go.d.plugin/modules/nginx)
+-   [OpenVPN](https://learn.netdata.cloud/docs/agent/collectors/go.d.plugin/modules/openvpn)
+-   [PHP-FPM](https://learn.netdata.cloud/docs/agent/collectors/go.d.plugin/modules/phpfpm)
+-   [RabbitMQ](https://learn.netdata.cloud/docs/agent/collectors/go.d.plugin/modules/rabbitmq)
+-   [Solr](https://learn.netdata.cloud/docs/agent/collectors/go.d.plugin/modules/solr)
+-   [Tengine](https://learn.netdata.cloud/docs/agent/collectors/go.d.plugin/modules/tengine)
+-   [Unbound](https://learn.netdata.cloud/docs/agent/collectors/go.d.plugin/modules/unbound)
+-   [VerneMQ](https://learn.netdata.cloud/docs/agent/collectors/go.d.plugin/modules/vernemq)
+-   [ZooKeeper](https://learn.netdata.cloud/docs/agent/collectors/go.d.plugin/modules/zookeeper)
+
 ### Custom pod labels and annotations
 
 Occasionally, you will want to add specific [labels](https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/) and [annotations](https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/) to the master and/or slave pods.
