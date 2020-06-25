@@ -9,18 +9,41 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 rules:
-- apiGroups: [""]
-  resources: ["services", "events", "endpoints", "pods", "nodes", "componentstatuses", "nodes/proxy" ]
-  verbs: ["get", "list", "watch"]
-- apiGroups: [""]
-  resources: ["resourcequotas"]
-  verbs: ["get", "list"]
-- apiGroups: ["extensions"]
-  resources: ["ingresses"]
-  verbs: ["get", "list", "watch"]
-- nonResourceURLs: ["/version", "/healthz", "/metrics"]
-  verbs: ["get"]
-- apiGroups: [""]
-  resources: ["nodes/metrics", "nodes/spec"]
-  verbs: ["get"]
-{{- end -}}
+  - apiGroups: [""]
+    resources:
+      - "nodes"
+      - "pods"
+      - "services"
+      - "endpoints"
+      - "configmaps"
+      - "secrets"
+      - "events"
+      - "componentstatuses"
+      - "nodes/proxy"
+    verbs:
+      - "get"
+      - "list"
+      - "watch"
+  - apiGroups: [""]
+    resources:
+      - "resourcequotas"
+    verbs:
+      - "get"
+      - "list"
+  - apiGroups: [""]
+    resources:
+      - "nodes/metrics"
+      - "nodes/spec"
+    verbs:
+      - "get"
+  - apiGroups: ["extensions"]
+    resources:
+      - "ingresses"
+    verbs:
+      - "get"
+      - "list"
+      - "watch"
+  - nonResourceURLs: ["/version", "/healthz", "/metrics"]
+    verbs:
+      - "get"
+  {{- end -}}

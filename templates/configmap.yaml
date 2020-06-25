@@ -1,5 +1,23 @@
-{{- if .Values.slave.enabled -}}
 ---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: netdata-conf-master
+  labels:
+    app: {{ template "netdata.name" . }}
+    chart: {{ template "netdata.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+data:
+  {{- range $name, $config := .Values.master.configs }}
+  {{- if $config.enabled }}
+  {{ $name }}: {{ toYaml $config.data | indent 4 }}
+  {{- end }}
+  {{- end }}
+
+---
+
+{{- if .Values.slave.enabled -}}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -18,18 +36,22 @@ data:
 {{- end }}
 
 ---
+
+{{- if and .Values.slave.enabled .Values.sd.slave.enabled .Values.sd.slave.configmap.from -}}
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: netdata-conf-master
+  name: {{ .Values.sd.slave.configmap.name }}
   labels:
     app: {{ template "netdata.name" . }}
     chart: {{ template "netdata.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 data:
-  {{- range $name, $config := .Values.master.configs }}
-  {{- if $config.enabled }}
-  {{ $name }}: {{ toYaml $config.data | indent 4 }}
-  {{- end }}
-  {{- end }}
+  {{ .Values.sd.slave.configmap.key }}: |
+    {{- if .Values.sd.slave.configmap.from.value }}
+      {{- toYaml .Values.sd.slave.configmap.from.value | nindent 4 }}
+    {{- else }}
+      {{- .Files.Get .Values.sd.slave.configmap.from.file | nindent 4 }}
+    {{- end}}
+{{- end }}

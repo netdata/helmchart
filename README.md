@@ -106,6 +106,15 @@ Parameter | Description | Default
 `sysctlImage.tag` | sysctlImage Init container tag | `latest` |
 `sysctlImage.pullPolicy` | sysctlImage Init container pull policy | `Always` |
 `sysctlImage.resources` | sysctlImage Init container CPU/Memory resource requests/limits | {} |
+`sd.image.repository` | Service-discovery image repo | `netdata/agent-sd`
+`sd.image.tag` | Service-discovery image tag | Latest stable release (e.g. `v0.1.0`)
+`sd.image.pullPolicy` | Service-discovery image pull policy | `Always`
+`sd.slave.enabled` | Add service-discovery sidecar container to the netdata slave pod definition | `true`
+`sd.slave.resources` | Slave service-discovery container CPU/Memory resource requests/limits | `{}`
+`sd.slave.configmap.name` | Slave service-discovery ConfigMap name | `netdata-slave-sd-config-map`
+`sd.slave.configmap.key` | Slave service-discovery ConfigMap key | `config.yml`
+`sd.slave.configmap.from.file` | File to use for slave service-discovery configuration generation | `sdconfig/sd-slave.yml`
+`sd.slave.configmap.from.value` | Value to use for slave service-discovery configuration generation | `{}`
 
 Example to set the parameters from the command line:
 ```console
@@ -144,7 +153,6 @@ Parameter | Description | Default
 `master.configs.health` | Contents of `health_alarm_notify.conf` | Email disabled, a sample of the required settings for Slack notifications
 `slave.configs.netdata` | Contents of the slave's `netdata.conf` | No persistent storage, no alarms, no UI
 `slave.configs.stream` | Contents of the slave `stream.conf` | Send metrics to the master at netdata:19999
-`slave.configs.coredns` | Contents of the slave's `go.d/coredns.conf` that drives the coredns collector | Update metrics every sec, do not retry to detect the endpoint, look for the coredns metrics at http://127.0.0.1:9153/metrics
 `slave.configs.kubelet` | Contents of the slave's `go.d/k8s_kubelet.conf` that drives the kubelet collector | Update metrics every sec, do not retry to detect the endpoint, look for the kubelet metrics at http://127.0.0.1:10255/metrics
 `slave.configs.kubeproxy` | Contents of the slave's `go.d/k8s_kubeproxy.conf` that drives the kubeproxy collector | Update metrics every sec, do not retry to detect the endpoint, look for the coredns metrics at http://127.0.0.1:10249/metrics
  
