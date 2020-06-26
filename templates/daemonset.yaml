@@ -1,35 +1,35 @@
-{{- if .Values.slave.enabled -}}
+{{- if .Values.child.enabled -}}
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
-  name: {{ template "netdata.name" . }}-slave
+  name: {{ template "netdata.name" . }}-child
   labels:
     app: {{ template "netdata.name" . }}
     chart: {{ template "netdata.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
-    role: slave
+    role: child
 spec:
   selector:
     matchLabels:
       app: {{ template "netdata.name" . }}
       release: {{ .Release.Name }}
-      role: slave
+      role: child
   template:
     metadata:
       annotations:
-      {{- if .Values.slave.podAnnotationAppArmor.enabled }}
+      {{- if .Values.child.podAnnotationAppArmor.enabled }}
         container.apparmor.security.beta.kubernetes.io/{{ .Chart.Name }}: unconfined
       {{- end }}
         checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
-{{- with .Values.slave.podAnnotations }}
+{{- with .Values.child.podAnnotations }}
 {{ toYaml . | trim | indent 8 }}
 {{- end }}
       labels:
         app: {{ template "netdata.name" . }}
         release: {{ .Release.Name }}
-        role: slave
-{{- with .Values.slave.podLabels }}
+        role: child
+{{- with .Values.child.podLabels }}
 {{ toYaml . | trim | indent 8 }}
 {{- end }}
     spec:
@@ -38,8 +38,8 @@ spec:
       hostPID: true
       hostIPC: true
       hostNetwork: true
-      {{- if .Values.slave.priorityClassName }}
-      priorityClassName: "{{ .Values.slave.priorityClassName }}"
+      {{- if .Values.child.priorityClassName }}
+      priorityClassName: "{{ .Values.child.priorityClassName }}"
       {{- end }}
       initContainers:
       {{- if .Values.sysctlImage.enabled }}
@@ -54,7 +54,7 @@ spec:
           resources:
 {{ toYaml .Values.sysctlImage.resources | indent 12 }}
       {{- end }}
-        {{- if .Values.slave.persistUniqueID }}
+        {{- if .Values.child.persistUniqueID }}
         - name: init-nodeuid
           image: netdata/wget
           volumeMounts:
@@ -100,11 +100,11 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.namespace
-            {{- if .Values.sd.slave.enabled }}
+            {{- if .Values.sd.child.enabled }}
             - name: NETDATA_PLUGINS_GOD_WATCH_PATH
               value: "/etc/netdata/go.d/sd/go.d.yml"
             {{- end }}
-            {{- range $key, $value := .Values.slave.env }}
+            {{- range $key, $value := .Values.child.env }}
             - name: {{ $key }}
               value: {{ $value | quote }}
             {{- end }}
@@ -140,18 +140,18 @@ spec:
               mountPath: /var/run/docker.sock
             - name: sys
               mountPath: /host/sys
-            {{- range $name, $config := .Values.slave.configs }}
+            {{- range $name, $config := .Values.child.configs }}
             {{- if $config.enabled }}
             - name: config
               mountPath: {{ $config.path }}
               subPath: {{ $name }}
             {{- end }}
             {{- end }}
-            {{- if .Values.slave.persistUniqueID }}
+            {{- if .Values.child.persistUniqueID }}
             - name: nodeuid
               mountPath: "/var/lib/netdata/registry/"
             {{- end }}
-            {{- if .Values.sd.slave.enabled }}
+            {{- if .Values.sd.child.enabled }}
             - name: sd-shared
               mountPath: "/etc/netdata/go.d/sd/"
             {{- end }}
@@ -161,8 +161,8 @@ spec:
                 - SYS_PTRACE
                 - SYS_ADMIN
           resources:
-{{ toYaml .Values.slave.resources | indent 12 }}
-        {{- if .Values.sd.slave.enabled }}
+{{ toYaml .Values.child.resources | indent 12 }}
+        {{- if .Values.sd.child.enabled }}
         - name: sd
           image: "{{ .Values.sd.repository }}:{{ .Values.sd.tag }}"
           imagePullPolicy: {{ .Values.sd.pullPolicy }}
@@ -170,10 +170,10 @@ spec:
             - name: sd-shared
               mountPath: "/export/"
           resources:
-          {{- toYaml .Values.sd.slave.resources | nindent 12 }}
+          {{- toYaml .Values.sd.child.resources | nindent 12 }}
           env:
             - name: NETDATA_SD_CONFIG_MAP
-              value: "{{ .Values.sd.slave.configmap.name }}:{{ .Values.sd.slave.configmap.key }}"
+              value: "{{ .Values.sd.child.configmap.name }}:{{ .Values.sd.child.configmap.key }}"
             - name: MY_POD_NAMESPACE
               valueFrom:
                 fieldRef:
@@ -183,15 +183,15 @@ spec:
                 fieldRef:
                   fieldPath: spec.nodeName
         {{- end }}
-    {{- with .Values.slave.nodeSelector }}
+    {{- with .Values.child.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}
     {{- end }}
-    {{- with .Values.slave.affinity }}
+    {{- with .Values.child.affinity }}
       affinity:
 {{ toYaml . | indent 8 }}
     {{- end }}
-    {{- with .Values.slave.tolerations }}
+    {{- with .Values.child.tolerations }}
       tolerations:
 {{ toYaml . | indent 8 }}
     {{- end }}
@@ -207,12 +207,12 @@ spec:
             path: /sys
         - name: config
           configMap:
-            name: netdata-conf-slave
-        {{- if .Values.slave.persistUniqueID }}
+            name: netdata-conf-child
+        {{- if .Values.child.persistUniqueID }}
         - name: nodeuid
           emptyDir: {}
         {{- end }}
-        {{- if .Values.sd.slave.enabled }}
+        {{- if .Values.sd.child.enabled }}
         - name: sd-shared
           emptyDir: {}
         {{- end }}
