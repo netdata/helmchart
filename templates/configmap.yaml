@@ -2,14 +2,14 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: netdata-conf-master
+  name: netdata-conf-parent
   labels:
     app: {{ template "netdata.name" . }}
     chart: {{ template "netdata.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 data:
-  {{- range $name, $config := .Values.master.configs }}
+  {{- range $name, $config := .Values.parent.configs }}
   {{- if $config.enabled }}
   {{ $name }}: {{ toYaml $config.data | indent 4 }}
   {{- end }}
@@ -17,18 +17,18 @@ data:
 
 ---
 
-{{- if .Values.slave.enabled -}}
+{{- if .Values.child.enabled -}}
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: netdata-conf-slave
+  name: netdata-conf-child
   labels:
     app: {{ template "netdata.name" . }}
     chart: {{ template "netdata.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 data:
-  {{- range $name, $config := .Values.slave.configs }}
+  {{- range $name, $config := .Values.child.configs }}
   {{- if $config.enabled }}
   {{ $name }}: {{ toYaml $config.data | indent 4 }}
   {{- end }}
@@ -37,21 +37,21 @@ data:
 
 ---
 
-{{- if and .Values.slave.enabled .Values.sd.slave.enabled .Values.sd.slave.configmap.from -}}
+{{- if and .Values.child.enabled .Values.sd.child.enabled .Values.sd.child.configmap.from -}}
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ .Values.sd.slave.configmap.name }}
+  name: {{ .Values.sd.child.configmap.name }}
   labels:
     app: {{ template "netdata.name" . }}
     chart: {{ template "netdata.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 data:
-  {{ .Values.sd.slave.configmap.key }}: |
-    {{- if .Values.sd.slave.configmap.from.value }}
-      {{- toYaml .Values.sd.slave.configmap.from.value | nindent 4 }}
+  {{ .Values.sd.child.configmap.key }}: |
+    {{- if .Values.sd.child.configmap.from.value }}
+      {{- toYaml .Values.sd.child.configmap.from.value | nindent 4 }}
     {{- else }}
-      {{- .Files.Get .Values.sd.slave.configmap.from.file | nindent 4 }}
+      {{- .Files.Get .Values.sd.child.configmap.from.file | nindent 4 }}
     {{- end}}
 {{- end }}
