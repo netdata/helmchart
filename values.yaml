@@ -9,14 +9,14 @@ sd:
   repository: netdata/agent-sd
   tag: v0.1.0
   pullPolicy: Always
-  slave:
+  child:
     enabled: true
     configmap:
-      name: netdata-slave-sd-config-map
+      name: netdata-child-sd-config-map
       key: config.yml
       # if 'from' is {} the ConfigMap is not generated
       from:
-        file: sdconfig/slave.yml
+        file: sdconfig/child.yml
         value: {}
     resources: {}
     # limits:
@@ -62,7 +62,7 @@ serviceAccount:
   name: netdata
 
 
-master:
+parent:
   resources: {}
     # limits:
     #  cpu: 4
@@ -156,7 +156,7 @@ master:
         info: random
           to: sysadmin
 
-slave:
+child:
   enabled: true
 
   resources: {}

@@ -1,68 +1,68 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: {{ template "netdata.name" . }}-master
+  name: {{ template "netdata.name" . }}-parent
   labels:
     app: {{ template "netdata.name" . }}
     chart: {{ template "netdata.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
-    role: master
+    role: parent
 spec:
   serviceName: {{ template "netdata.name" . }}
   replicas: {{ .Values.replicaCount }}
-  {{- if or .Values.master.database.persistence .Values.master.alarms.persistence }}
+  {{- if or .Values.parent.database.persistence .Values.parent.alarms.persistence }}
   volumeClaimTemplates:
-  {{- if .Values.master.database.persistence }}
+  {{- if .Values.parent.database.persistence }}
     - metadata:
         name: database
       spec:
         accessModes: [ "ReadWriteOnce" ]
-      {{- if (ne "-" .Values.master.database.storageclass) }}
-        storageClassName: "{{ .Values.master.database.storageclass }}"
+      {{- if (ne "-" .Values.parent.database.storageclass) }}
+        storageClassName: "{{ .Values.parent.database.storageclass }}"
       {{- end }}
         resources:
           requests:
-            storage: {{ .Values.master.database.volumesize }}
+            storage: {{ .Values.parent.database.volumesize }}
   {{- end }}
-  {{- if .Values.master.alarms.persistence }}
+  {{- if .Values.parent.alarms.persistence }}
     - metadata:
         name: alarms
       spec:
         accessModes: [ "ReadWriteOnce" ]
-      {{- if (ne "-" .Values.master.alarms.storageclass) }}
-        storageClassName: "{{ .Values.master.alarms.storageclass }}"
+      {{- if (ne "-" .Values.parent.alarms.storageclass) }}
+        storageClassName: "{{ .Values.parent.alarms.storageclass }}"
       {{- end }}
         resources:
           requests:
-            storage: {{ .Values.master.alarms.volumesize }}
+            storage: {{ .Values.parent.alarms.volumesize }}
   {{- end }}
   {{- end }}
   selector:
     matchLabels:
       app: {{ template "netdata.name" . }}
       release: {{ .Release.Name }}
-      role: master
+      role: parent
   template:
     metadata:
       labels:
         app: {{ template "netdata.name" . }}
         release: {{ .Release.Name }}
-        role: master
-{{- with .Values.master.podLabels }}
+        role: parent
+{{- with .Values.parent.podLabels }}
 {{ toYaml . | trim | indent 8 }}
 {{- end }}
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
-{{- with .Values.master.podAnnotations }}
+{{- with .Values.parent.podAnnotations }}
 {{ toYaml . | trim | indent 8 }}
 {{- end }}
     spec:
       securityContext:
         fsGroup: 201
       serviceAccountName: {{ .Values.serviceAccount.name }}
-      {{- if .Values.master.priorityClassName }}
-      priorityClassName: "{{ .Values.master.priorityClassName }}"
+      {{- if .Values.parent.priorityClassName }}
+      priorityClassName: "{{ .Values.parent.priorityClassName }}"
       {{- end }}
       initContainers:
       {{- if .Values.sysctlImage.enabled }}
@@ -90,7 +90,7 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.namespace
-            {{- range $key, $value := .Values.master.env }}
+            {{- range $key, $value := .Values.parent.env }}
             - name: {{ $key }}
               value: {{ $value | quote }}
             {{- end }}
@@ -119,36 +119,36 @@ spec:
             successThreshold: 1
             failureThreshold: 3
           volumeMounts:
-            {{- range $name, $config := .Values.master.configs }}
+            {{- range $name, $config := .Values.parent.configs }}
             {{- if $config.enabled }}
             - name: config
               mountPath: {{ $config.path }}
               subPath: {{ $name }}
             {{- end }}
             {{- end }}
-            {{- if .Values.master.database.persistence }}
+            {{- if .Values.parent.database.persistence }}
             - name: database
               mountPath: /var/cache/netdata
             {{- end }}
-            {{- if .Values.master.alarms.persistence }}
+            {{- if .Values.parent.alarms.persistence }}
             - name: alarms
               mountPath: /var/lib/netdata
             {{- end }}
           resources:
-{{ toYaml .Values.master.resources | indent 12 }}
-    {{- with .Values.master.nodeSelector }}
+{{ toYaml .Values.parent.resources | indent 12 }}
+    {{- with .Values.parent.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}
     {{- end }}
-    {{- with .Values.master.affinity }}
+    {{- with .Values.parent.affinity }}
       affinity:
 {{ toYaml . | indent 8 }}
     {{- end }}
-    {{- with .Values.master.tolerations }}
+    {{- with .Values.parent.tolerations }}
       tolerations:
 {{ toYaml . | indent 8 }}
     {{- end }}
       volumes:
         - name: config
           configMap:
-            name: netdata-conf-master
+            name: netdata-conf-parent
