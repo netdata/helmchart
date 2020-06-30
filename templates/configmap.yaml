@@ -58,4 +58,4 @@ data:
         {{- $.Files.Get .file | nindent 4 }}
       {{- end}}
     {{- end}}
-  {{- end }}
+{{- end }}
