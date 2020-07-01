@@ -49,9 +49,13 @@ metadata:
     heritage: {{ .Release.Service }}
 data:
   {{ .Values.sd.child.configmap.key }}: |
-    {{- if .Values.sd.child.configmap.from.value }}
-      {{- toYaml .Values.sd.child.configmap.from.value | nindent 4 }}
-    {{- else }}
-      {{- .Files.Get .Values.sd.child.configmap.from.file | nindent 4 }}
+    {{- with .Values.sd.child.configmap.from }}
+      {{- if and (.value) (kindIs "string" .value) }}
+        {{- .value | nindent 4 }}
+      {{- else if .value }}
+        {{- toYaml .value | nindent 4 }}
+      {{- else }}
+        {{- $.Files.Get .file | nindent 4 }}
+      {{- end}}
     {{- end}}
 {{- end }}
