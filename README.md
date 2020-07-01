@@ -207,7 +207,7 @@ You might want to do this to tell other applications on the cluster how to treat
 You can label and annotate the parent and child pods by using the `podLabels` and `podAnnotations` dictionaries under the `parent` and `child` objects, respectively.
 
 For example, suppose you're installing netdata on all your database nodes, and you'd like the child pods to be labeled with `workload: database` so that you're able to recognize this.
-At the same time, say you've configured [chaoskube](https://github.com/helm/charts/tree/parent/stable/chaoskube) to kill all pods annotated with `chaoskube.io/enabled: true`, and you'd like chaoskube to be enabled for the parent pod but not the childs.
+At the same time, say you've configured [chaoskube](https://github.com/helm/charts/tree/master/stable/chaoskube) to kill all pods annotated with `chaoskube.io/enabled: true`, and you'd like chaoskube to be enabled for the parent pod but not the childs.
 You would do this by installing as:
 
 ```console
