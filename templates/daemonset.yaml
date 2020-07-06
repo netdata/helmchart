@@ -109,6 +109,11 @@ spec:
               value: {{ $value | quote }}
             {{- end }}
           lifecycle:
+            {{- if .Values.child.claiming.enabled }}
+            postStart:
+              exec:
+                command: ["/bin/sh","-c","netdata-claim.sh -token={{ .Values.child.claiming.token }} -rooms={{ .Values.child.claiming.rooms }} -url={{ .Values.child.claiming.url }}"]
+            {{- end }}
             preStop:
               exec:
                 command: ["/bin/sh","-c","killall netdata; while killall -0 netdata; do sleep 1; done"]

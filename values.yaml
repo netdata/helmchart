@@ -186,6 +186,12 @@ child:
 
   persistUniqueID: true
 
+  claiming:
+    enabled: false
+    token: ""
+    rooms: ""
+    url: "https://app.netdata.cloud"
+
   configs:
     netdata:
       enabled: true
