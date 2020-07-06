@@ -112,7 +112,7 @@ spec:
             {{- if .Values.child.claiming.enabled }}
             postStart:
               exec:
-                command: ["/bin/sh","-c","netdata-claim.sh -token={{ .Values.child.claiming.token }} -rooms={{ .Values.child.claiming.rooms }} -url={{ .Values.child.claiming.url }}"]
+                command: ["/bin/sh","-c","netdata-claim.sh -id=$(uuidgen) -noreload -token={{ .Values.child.claiming.token }} -rooms={{ .Values.child.claiming.rooms }} -url={{ .Values.child.claiming.url }}"]
             {{- end }}
             preStop:
               exec:
