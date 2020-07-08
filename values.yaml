@@ -159,6 +159,11 @@ parent:
 child:
   enabled: true
 
+  updateStrategy: {}
+    # type: RollingUpdate
+    # rollingUpdate:
+    #   maxUnavailable: 1
+
   resources: {}
     # limits:
     #  cpu: 4

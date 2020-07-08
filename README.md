@@ -89,6 +89,7 @@ Parameter | Description | Default
 `parent.podAnnotations` | Additional annotations to add to the parent pods | `{}`
 `parent.configs` | Manage custom parent's configs | See [Configuration files](#configuration-files).
 `child.enabled` | Install child daemonset to gather data from nodes | `true`
+`child.updateStrategy` | An update strategy to replace existing DaemonSet pods with new pods | `{}`
 `child.resources` | Resources for the child daemonsets | `{}`
 `child.nodeSelector` | Node selector for the child daemonsets | `{}`
 `child.tolerations` | Tolerations settings for the child daemonsets | `- operator: Exists` with `effect: NoSchedule`

@@ -10,6 +10,9 @@ metadata:
     heritage: {{ .Release.Service }}
     role: child
 spec:
+  {{- with .Values.child.updateStrategy }}
+  updateStrategy: {{- toYaml . | nindent 4 }}
+  {{- end }}
   selector:
     matchLabels:
       app: {{ template "netdata.name" . }}
