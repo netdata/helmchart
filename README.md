@@ -41,8 +41,8 @@ To install the chart with the release name `netdata`:
 helm install netdata ./netdata-helmchart
 ```
 
-The command deploys nginx-ingress on the Kubernetes cluster in the default configuration. The
-[configuration](#configuration) section lists the parameters that can be configured during installation.
+The command deploys ingress on the Kubernetes cluster in the default configuration. The [configuration](#configuration)
+section lists the parameters that can be configured during installation.
 
 > **Tip**: List all releases using `helm list`.
 
