@@ -1,50 +1,61 @@
-# Netdata Helm chart for kubernetes deployments
+# Netdata Helm chart for Kubernetes deployments
 
-_Based on the work of varyumin (https://github.com/varyumin/netdata)_
+_Based on the work of varyumin (https://github.com/varyumin/netdata)_.
 
-**This Helm chart is in Beta**. 
-Please validate that the settings are suitable for your cluster, before using 
-them in production 
+**This Helm chart is in beta**. 
 
 ## Introduction
 
-This chart bootstraps a [netdata](https://github.com/netdata/netdata) deployment 
-on a  [Kubernetes](http://kubernetes.io) cluster using the 
-[Helm](https://helm.sh) package manager.
+This chart bootstraps a [Netdata](https://github.com/netdata/netdata) deployment on a [Kubernetes](http://kubernetes.io)
+cluster using the [Helm](https://helm.sh) package manager.
 
-The chart installs a netdata child pod on each node of a cluster, using a 
-`Daemonset` if not disabled, and a netdata parent pod on one node, using a `Statefulset`.
-The child function as headless collectors that simply collect and forward all the metrics to the parent netdata.
-The parent uses persistent volumes to store metrics and alarms, handles alarm notifications and provides the netdata UI to view the metrics, using an ingress controller.
+The chart installs a Netdata child pod on each node of a cluster, using a `Daemonset` if not disabled, and a Netdata
+parent pod on one node, using a `Statefulset`. The child pods function as headless collectors that collect and forward
+all the metrics to the parent pod. The parent pod uses persistent volumes to store metrics and alarms, handle alarm
+notifications, and provide the Netdata UI to view metrics using an ingress controller.
+
+Please validate that the settings are suitable for your cluster before using them in production.
 
 ## Prerequisites
-  - Kubernetes 1.9+
+
+-   A working cluster running Kubernetes v1.9 or newer.
+-   The [kubectl](https://kubernetes.io/docs/reference/kubectl/overview/) command line tool, within [one minor version
+    difference](https://kubernetes.io/docs/tasks/tools/install-kubectl/#before-you-begin) of your cluster, on an
+    administrative system.
+-   The [Helm package manager](https://helm.sh/) v3.0.0 or newer on the same administrative system.
 
 ## Installing the Chart
 
-Clone the repository locally
+**See our [install Netdata on Kubernetes](https://learn.netdata.cloud/docs/agent/packaging/installer/methods/kubernetes)
+documentation for detailed installation and configuration instructions.**
+
+Clone the repository locally.
 
 ```console
-$ git clone https://github.com/netdata/helmchart.git netdata
+git clone https://github.com/netdata/helmchart.git netdata-helmchart
 ```
 
-To install the chart with the release name `my-release`:
+To install the chart with the release name `netdata`:
 
 ```console
-$ helm install --name my-release ./netdata
+helm install netdata ./netdata-helmchart
 ```
 
-The command deploys nginx-ingress on the Kubernetes cluster in the default configuration.
-The [configuration](#configuration) section lists the parameters that can be configured during installation.
+The command deploys ingress on the Kubernetes cluster in the default configuration. The [configuration](#configuration)
+section lists the parameters that can be configured during installation.
 
-> **Tip**: List all releases using `helm list`
+> **Tip**: List all releases using `helm list`.
+
+Once the Netdata deployment is up and running, read our guide, [_Monitor a Kubernetes (k8s) cluster with
+Netdata_](https://learn.netdata.cloud/guides/monitor/kubernetes-k8s-netdata), for a breakdown of all the collectors,
+metrics, and charts available for health monitoring and performance troubleshooting.
 
 ## Uninstalling the Chart
 
 To uninstall/delete the `my-release` deployment:
 
 ```console
-$ helm delete my-release --purge
+ helm delete netdata
 ```
 
 The command removes all the Kubernetes components associated with the chart and 
