@@ -100,6 +100,9 @@ Parameter | Description | Default
 `child.podAnnotationAppArmor.enabled` | Whether or not to include the AppArmor security annotation | `true`
 `child.persistUniqueID` | Whether or not to persist `netdata.public.unique.id` across restarts | `true`
 `child.configs` | Manage custom child's configs | See [Configuration files](#configuration-files).
+`child.claiming.enabled` | Enable node claiming for netdata cloud | `false`
+`child.claiming.token` | Claim token | `""`
+`child.claiming.room` | Claim room ID | `""`
 `notifications.slackurl` | URL for slack notifications | `""`
 `notifications.slackrecipient` | Slack recipient list | `""`
 `sysctlImage.enabled` | Enable an init container to modify Kernel settings | `false` |

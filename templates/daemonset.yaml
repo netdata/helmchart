@@ -87,6 +87,13 @@ spec:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- if and .Values.child.claiming.enabled .Values.child.claiming.token .Values.child.claiming.rooms }}
+          command:
+            - sh
+            - '-c'
+            - >
+              /usr/sbin/run.sh -W set2 cloud global enabled true -W set2 cloud global "cloud base url" "https://app.netdata.cloud" -W "claim -token={{ .Values.child.claiming.token }} -rooms={{ .Values.child.claiming.rooms }} -url={{ .Values.child.claiming.url }}"
+          {{- end }}
           env:
             - name: MY_POD_NAME
               valueFrom:
@@ -109,11 +116,6 @@ spec:
               value: {{ $value | quote }}
             {{- end }}
           lifecycle:
-            {{- if .Values.child.claiming.enabled }}
-            postStart:
-              exec:
-                command: ["/bin/sh","-c","netdata-claim.sh -id=$(uuidgen) -noreload -token={{ .Values.child.claiming.token }} -rooms={{ .Values.child.claiming.rooms }} -url={{ .Values.child.claiming.url }}"]
-            {{- end }}
             preStop:
               exec:
                 command: ["/bin/sh","-c","killall netdata; while killall -0 netdata; do sleep 1; done"]
@@ -159,6 +161,10 @@ spec:
             {{- if .Values.sd.child.enabled }}
             - name: sd-shared
               mountPath: "/etc/netdata/go.d/sd/"
+            {{- end }}
+            {{- if and .Values.child.claiming.enabled .Values.child.claiming.token .Values.child.claiming.rooms }}
+            - name: claim
+              mountPath: "/var/lib/netdata/cloud.d"
             {{- end }}
           securityContext:
             capabilities:
@@ -219,6 +225,10 @@ spec:
         {{- end }}
         {{- if .Values.sd.child.enabled }}
         - name: sd-shared
+          emptyDir: {}
+        {{- end }}
+        {{- if and .Values.child.claiming.enabled .Values.child.claiming.token .Values.child.claiming.rooms }}
+        - name: claim
           emptyDir: {}
         {{- end }}
       dnsPolicy: ClusterFirstWithHostNet
