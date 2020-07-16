@@ -2,8 +2,27 @@ apiVersion: v1
 entries:
   netdata:
   - apiVersion: v1
+    appVersion: v1.23.2
+    created: "2020-07-16T22:08:37.147200727+03:00"
+    description: Real-time performance monitoring, done right! https://my-netdata.io/
+    digest: e741c5e4e28d8e89c7f217c8af4d77d7c5447dc7e18fe883cd6bb7b6a65e2a74
+    home: https://github.com/netdata/netdata
+    maintainers:
+    - email: chris@netdata.cloud
+      name: Chris Akritidis
+    - email: vryumin@gmail.com
+      name: Vladimir Ryumin
+    - email: karuppiah7890@gmail.com
+      name: Karuppiah Natarajan
+    - email: kamikaze.ua@gmail.com
+      name: Oleksii Kravchenko
+    name: netdata
+    urls:
+    - netdata-2.0.3.tgz
+    version: 2.0.3
+  - apiVersion: v1
     appVersion: v1.23.1
-    created: "2020-07-14T13:34:57.232924859+03:00"
+    created: "2020-07-16T22:08:37.145110129+03:00"
     description: Real-time performance monitoring, done right! https://my-netdata.io/
     digest: 1ada34ee125cd710ed30e79d735c3ed634f864300ee87548c309ef13a114243b
     home: https://github.com/netdata/netdata
@@ -134,4 +153,4 @@ entries:
     urls:
     - netdata-1.1.11.tgz
     version: 1.1.11
-generated: "2020-07-14T13:34:57.175624398+03:00"
+generated: "2020-07-16T22:08:37.100373312+03:00"
