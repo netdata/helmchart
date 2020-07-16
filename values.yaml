@@ -2,7 +2,7 @@ replicaCount: 1
 
 image:
   repository: netdata/netdata
-  tag: v1.23.1
+  tag: v1.23.2
   pullPolicy: Always
 
 sd:
