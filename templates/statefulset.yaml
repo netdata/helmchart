@@ -81,6 +81,13 @@ spec:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- if and .Values.parent.claiming.enabled .Values.parent.claiming.token .Values.parent.claiming.rooms }}
+          command:
+            - sh
+            - '-c'
+            - >
+              /usr/sbin/run.sh -W set2 cloud global enabled true -W set2 cloud global "cloud base url" "https://app.netdata.cloud" -W "claim -token={{ .Values.parent.claiming.token }} -rooms={{ .Values.parent.claiming.rooms }} -url={{ .Values.parent.claiming.url }}"
+          {{- end }}
           env:
             - name: MY_POD_NAME
               valueFrom:

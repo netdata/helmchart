@@ -156,6 +156,12 @@ parent:
         info: random
           to: sysadmin
 
+  claiming:
+    enabled: false
+    token: ""
+    rooms: ""
+    url: "https://app.netdata.cloud"
+
 child:
   enabled: true
 
