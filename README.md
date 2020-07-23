@@ -99,6 +99,9 @@ Parameter | Description | Default
 `parent.podLabels` | Additional labels to add to the parent pods | `{}`
 `parent.podAnnotations` | Additional annotations to add to the parent pods | `{}`
 `parent.configs` | Manage custom parent's configs | See [Configuration files](#configuration-files).
+`parent.claiming.enabled` | Enable parent claiming for netdata cloud | `false`
+`parent.claiming.token` | Claim token | `""`
+`parent.claiming.room` | Comma separated list of claim rooms IDs | `""`
 `child.enabled` | Install child daemonset to gather data from nodes | `true`
 `child.updateStrategy` | An update strategy to replace existing DaemonSet pods with new pods | `{}`
 `child.resources` | Resources for the child daemonsets | `{}`
