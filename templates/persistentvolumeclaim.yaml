@@ -1,0 +1,41 @@
+{{- if .Values.parent.database.persistence }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ template "netdata.name" . }}-parent-database
+  labels:
+    app: {{ template "netdata.name" . }}
+    chart: {{ template "netdata.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    role: parent
+spec:
+  accessModes: [ "ReadWriteOnce" ]
+  {{- if (ne "-" .Values.parent.alarms.storageclass) }}
+  storageClassName: "{{ .Values.parent.database.storageclass }}"
+  {{- end }}
+  resources:
+    requests:
+      storage: {{ .Values.parent.database.volumesize }}
+---
+{{- end }}
+{{- if .Values.parent.alarms.persistence }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ template "netdata.name" . }}-parent-alarms
+  labels:
+    app: {{ template "netdata.name" . }}
+    chart: {{ template "netdata.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    role: parent
+spec:
+  accessModes: [ "ReadWriteOnce" ]
+  {{- if (ne "-" .Values.parent.alarms.storageclass) }}
+  storageClassName: "{{ .Values.parent.alarms.storageclass }}"
+  {{- end }}
+  resources:
+    requests:
+      storage: {{ .Values.parent.alarms.volumesize }}
+{{- end }}

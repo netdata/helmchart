@@ -1,4 +1,6 @@
 replicaCount: 1
+deploymentStrategy:
+  type: Recreate
 
 image:
   repository: netdata/netdata
