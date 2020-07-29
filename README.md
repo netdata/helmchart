@@ -10,7 +10,7 @@ This chart bootstraps a [Netdata](https://github.com/netdata/netdata) deployment
 cluster using the [Helm](https://helm.sh) package manager.
 
 The chart installs a Netdata child pod on each node of a cluster, using a `Daemonset` if not disabled, and a Netdata
-parent pod on one node, using a `Statefulset`. The child pods function as headless collectors that collect and forward
+parent pod on one node, using a `Deployment`. The child pods function as headless collectors that collect and forward
 all the metrics to the parent pod. The parent pod uses persistent volumes to store metrics and alarms, handle alarm
 notifications, and provide the Netdata UI to view metrics using an ingress controller.
 
@@ -67,7 +67,7 @@ The following table lists the configurable parameters of the netdata chart and t
 
 Parameter | Description | Default
 --- | --- | ---
-`replicaCount` | Number of `replicas` for the parent netdata `Statefulset` | `1`
+`replicaCount` | Number of `replicas` for the parent netdata `Deployment` | `1`
 `image.repository` | Container image repo | `netdata/netdata`
 `image.tag` | Container image tag | Latest stable netdata release (e.g. `v1.23.2`)
 `image.pullPolicy` | Container image pull policy | `Always`
@@ -84,18 +84,18 @@ Parameter | Description | Default
 `serviceAccount.name` | The name of the service account to use. If not set and create is true, a name is generated using the fullname template. | `netdata`
 `clusterrole.name` | Name of the cluster role linked with the service account | `netdata`
 `APIKEY` | The key shared between the parent and the child netdata for streaming | `11111111-2222-3333-4444-555555555555`
-`parent.resources` | Resources for the parent statefulset | `{}`
-`parent.nodeSelector` | Node selector for the parent statefulset | `{}`
-`parent.tolerations` | Tolerations settings for the parent statefulset | `[]`
-`parent.affinity` | Affinity settings for the parent statefulset | `{}`
-`parent.priorityClassName` | Pod priority class name for the parent statefulset | `""`
+`parent.resources` | Resources for the parent deployment | `{}`
+`parent.nodeSelector` | Node selector for the parent deployment | `{}`
+`parent.tolerations` | Tolerations settings for the parent deployment | `[]`
+`parent.affinity` | Affinity settings for the parent deployment | `{}`
+`parent.priorityClassName` | Pod priority class name for the parent deployment | `""`
 `parent.database.persistence` | Whether the parent should use a persistent volume for the DB | `true`
 `parent.database.storageclass` | The storage class for the persistent volume claim of the parent's database store, mounted to `/var/cache/netdata` | the default storage class
 `parent.database.volumesize` | The storage space for the PVC of the parent database | `2Gi`
 `parent.alarms.persistence` | Whether the parent should use a persistent volume for the alarms log | `true`
 `parent.alarms.storageclass` | The storage class for the persistent volume claim of the parent's alarm log, mounted to `/var/lib/netdata` | the default storage class
 `parent.alarms.volumesize` | The storage space for the PVC of the parent alarm log | `100Mi`
-`parent.env` | Set environment parameters for the parent statefulset | `{}`
+`parent.env` | Set environment parameters for the parent deployment | `{}`
 `parent.podLabels` | Additional labels to add to the parent pods | `{}`
 `parent.podAnnotations` | Additional annotations to add to the parent pods | `{}`
 `parent.configs` | Manage custom parent's configs | See [Configuration files](#configuration-files).
