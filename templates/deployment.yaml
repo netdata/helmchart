@@ -1,5 +1,5 @@
 apiVersion: apps/v1
-kind: StatefulSet
+kind: Deployment
 metadata:
   name: {{ template "netdata.name" . }}-parent
   labels:
@@ -9,35 +9,8 @@ metadata:
     heritage: {{ .Release.Service }}
     role: parent
 spec:
-  serviceName: {{ template "netdata.name" . }}
   replicas: {{ .Values.replicaCount }}
-  {{- if or .Values.parent.database.persistence .Values.parent.alarms.persistence }}
-  volumeClaimTemplates:
-  {{- if .Values.parent.database.persistence }}
-    - metadata:
-        name: database
-      spec:
-        accessModes: [ "ReadWriteOnce" ]
-      {{- if (ne "-" .Values.parent.database.storageclass) }}
-        storageClassName: "{{ .Values.parent.database.storageclass }}"
-      {{- end }}
-        resources:
-          requests:
-            storage: {{ .Values.parent.database.volumesize }}
-  {{- end }}
-  {{- if .Values.parent.alarms.persistence }}
-    - metadata:
-        name: alarms
-      spec:
-        accessModes: [ "ReadWriteOnce" ]
-      {{- if (ne "-" .Values.parent.alarms.storageclass) }}
-        storageClassName: "{{ .Values.parent.alarms.storageclass }}"
-      {{- end }}
-        resources:
-          requests:
-            storage: {{ .Values.parent.alarms.volumesize }}
-  {{- end }}
-  {{- end }}
+  strategy: {{- toYaml .Values.deploymentStrategy | nindent 4 }}
   selector:
     matchLabels:
       app: {{ template "netdata.name" . }}
@@ -159,3 +132,13 @@ spec:
         - name: config
           configMap:
             name: netdata-conf-parent
+        {{- if .Values.parent.database.persistence }}
+        - name: database
+          persistentVolumeClaim:
+            claimName: {{ template "netdata.name" . }}-parent-database
+        {{- end }}
+        {{- if .Values.parent.alarms.persistence }}
+        - name: alarms
+          persistentVolumeClaim:
+            claimName: {{ template "netdata.name" . }}-parent-alarms
+        {{- end }}
