@@ -11,7 +11,7 @@ metadata:
     role: parent
 spec:
   accessModes: [ "ReadWriteOnce" ]
-  {{- if (ne "-" .Values.parent.alarms.storageclass) }}
+  {{- if (ne "-" .Values.parent.database.storageclass) }}
   storageClassName: "{{ .Values.parent.database.storageclass }}"
   {{- end }}
   resources:
