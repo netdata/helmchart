@@ -188,7 +188,9 @@ must be indented with two more spaces relative to the preceding line:
 
 ### Service discovery and supported services
 
-Netdata's [service discovery](https://github.com/netdata/agent-service-discovery/), which is installed as part of the Helm chart installation, finds what services are running on a cluster's pods, converts that into configuration files, and exports them so they can be monitored.
+Netdata's [service discovery](https://github.com/netdata/agent-service-discovery/), which is installed as part of the
+Helm chart installation, finds what services are running on a cluster's pods, converts that into configuration files,
+and exports them so they can be monitored.
 
 Service discovery currently supports the following services via their associated collector:
 
@@ -214,6 +216,34 @@ Service discovery currently supports the following services via their associated
 -   [Unbound](https://learn.netdata.cloud/docs/agent/collectors/go.d.plugin/modules/unbound)
 -   [VerneMQ](https://learn.netdata.cloud/docs/agent/collectors/go.d.plugin/modules/vernemq)
 -   [ZooKeeper](https://learn.netdata.cloud/docs/agent/collectors/go.d.plugin/modules/zookeeper)
+
+#### Configure service discovery
+
+If your cluster runs services on non-default ports or uses non-default names, you may need to configure service
+discovery to start collecting metrics from your services. You have to edit the [default
+ConfigMap](https://github.com/netdata/helmchart/blob/master/sdconfig/child.yml) that is shipped with the Helmchart and
+deploy that to your cluster.
+
+First, copy `netdata-helmchart/sdconfig/child.yml` to a new location outside the `netdata-helmchart` directory. The
+destination can be anywhere you like, but the following examples assume it resides next to the `netdata-helmchart`
+directory.
+
+```bash
+cp netdata-helmchart/sdconfig/child.yml .
+```
+
+Edit the new `child.yml` file according to your needs. See the [Helm chart
+configuration](https://github.com/netdata/helmchart#configuration) and the file itself for details. You can then run
+`helm install`/`helm upgrade` with the `--set-file` argument to use your configured `child.yml` file instead of the
+default, changing the path if you copied it elsewhere.
+
+```bash
+helm install --set-file sd.child.configmap.from.value=./child.yml netdata ./netdata-helmchart
+helm upgrade --set-file sd.child.configmap.from.value=./child.yml netdata ./netdata-helmchart
+```
+
+Now that you pushed an edited ConfigMap to your cluster, service discovery should find and set up metrics collection
+from your non-default service.
 
 ### Custom pod labels and annotations
 
