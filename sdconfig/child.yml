@@ -52,6 +52,14 @@ tag:
         expr: '{{ and (eq .Port "8888") (glob .Image "**/vernemq*") }}'
       - tags: zookeeper
         expr: '{{ and (eq .Port "2181") (glob .Image "zookeeper*" "**/zookeeper*") }}'
+  - selector: unknown
+    tags: -unknown go.d
+    match:
+      - tags: prometheus
+        expr: |
+          {{ $isTarget := eq (get .Annotations "prometheus.io/scrape") "true" -}}
+          {{ $isBad := glob .Image "netdata/netdata*" -}}
+          {{ and $isTarget (not $isBad) }}
 build:
   - selector: "!unknown go.d"
     tags: file go.d
@@ -168,6 +176,17 @@ build:
           - module: zookeeper
             name: zookeeper-{{.TUID}}
             address: {{.Address}}
+  - selector: "!unknown prometheus"
+    tags: file go.d
+    apply:
+      - selector: prometheus
+        template: |
+          {{ $path := default "/metrics" (get .Annotations "prometheus.io/path") -}}
+          - module: prometheus
+            name: prometheus-{{.TUID}}
+            url: http://{{.Address}}{{$path}}
+            update_every: 10
+            max_time_series: 1000
 export:
   file:
     - selector: file go.d
