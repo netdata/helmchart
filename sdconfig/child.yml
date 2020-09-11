@@ -5,8 +5,17 @@ discovery:
       role: pod
       local_mode: true
 tag:
-  - selector: unknown
-    tags: -unknown go.d
+  - name: "Control-Plane"
+    selector: unknown
+    tags: -unknown control_plane
+    match:
+      - tags: kube_scheduler
+        expr: '{{ glob .Image "*/kube-scheduler*" }}'
+      - tags: kube_controller_manager
+        expr: '{{ glob .Image "k8s.gcr.io/kube-controller-manager:*" }}'
+  - name: "Applications"
+    selector: unknown
+    tags: -unknown applications
     match:
       - tags: activemq
         expr: '{{ and (eq .Port "8161") (glob .Image "**/activemq*") }}'
@@ -52,18 +61,50 @@ tag:
         expr: '{{ and (eq .Port "8888") (glob .Image "**/vernemq*") }}'
       - tags: zookeeper
         expr: '{{ and (eq .Port "2181") (glob .Image "zookeeper*" "**/zookeeper*") }}'
-  - selector: unknown
-    tags: -unknown go.d
+  - name: "Prometheus Generic Applications"
+    selector: unknown
+    tags: -unknown prometheus_generic
     match:
-      - tags: prometheus
+      - tags: prometheus_generic
         expr: |
           {{ $scrapeOK := eq (get .Annotations "prometheus.io/scrape") "true" -}}
           {{ $portOK := eq (default .Port (get .Annotations "prometheus.io/port")) .Port -}}
           {{ $imageOK := not (glob .Image "netdata/netdata*") -}}
           {{ and $scrapeOK $portOK $imageOK }}
 build:
-  - selector: "!unknown go.d"
-    tags: file go.d
+  - name: "Control-Plane"
+    selector: '!unknown control_plane'
+    tags: file
+    apply:
+      - selector: kube_scheduler
+        template: |
+          - module: prometheus
+            name: prometheus-{{.TUID}}
+            url: http://{{.PodIP}}:10251/metrics
+            update_every: 10
+            max_time_series: 1000
+      - selector: kube_controller_manager
+        template: |
+          - module: prometheus
+            name: prometheus-{{.TUID}}
+            url: http://{{.PodIP}}:10252/metrics
+            update_every: 10
+            max_time_series: 2000
+  - name: "Prometheus Generic Applications"
+    selector: '!unknown prometheus_generic'
+    tags: file
+    apply:
+      - selector: prometheus_generic
+        template: |
+          {{ $path := default "/metrics" (get .Annotations "prometheus.io/path") -}}
+          - module: prometheus
+            name: prometheus-{{.TUID}}
+            url: http://{{.Address}}{{$path}}
+            update_every: 10
+            max_time_series: 1000
+  - name: "Applications"
+    selector: '!unknown applications'
+    tags: file
     apply:
       - selector: activemq
         template: |
@@ -177,18 +218,7 @@ build:
           - module: zookeeper
             name: zookeeper-{{.TUID}}
             address: {{.Address}}
-  - selector: "!unknown prometheus"
-    tags: file go.d
-    apply:
-      - selector: prometheus
-        template: |
-          {{ $path := default "/metrics" (get .Annotations "prometheus.io/path") -}}
-          - module: prometheus
-            name: prometheus-{{.TUID}}
-            url: http://{{.Address}}{{$path}}
-            update_every: 10
-            max_time_series: 1000
 export:
   file:
-    - selector: file go.d
+    - selector: file
       filename: "/export/go.d.yml"
