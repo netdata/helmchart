@@ -10,7 +10,7 @@ tag:
     tags: -unknown control_plane
     match:
       - tags: kube_scheduler
-        expr: '{{ glob .Image "*/kube-scheduler*" }}'
+        expr: '{{ glob .Image "k8s.gcr.io/kube-scheduler:*" }}'
       - tags: kube_controller_manager
         expr: '{{ glob .Image "k8s.gcr.io/kube-controller-manager:*" }}'
   - name: "Applications"
@@ -29,8 +29,6 @@ tag:
         expr: '{{ and (eq .Port "8500") (glob .Image "consul*" "**/consul*") }}'
       - tags: coredns
         expr: '{{ and (eq .Port "9153") (glob .Image "**/coredns*") }}'
-      - tags: elasticsearch
-        expr: '{{ and (eq .Port "9200") (glob .Image "elasticsearch:*" "*/elasticsearch:*") }}'
       - tags: fluentd
         expr: '{{ and (eq .Port "24220") (glob .Image "fluentd*" "**/fluentd*") }}'
       - tags: freeradius
@@ -82,14 +80,14 @@ build:
         template: |
           - module: prometheus
             name: prometheus-{{.TUID}}
-            url: http://{{.PodIP}}:10251/metrics
+            url: http://{{.PodIP}}:{{default "10251" .Port}}/metrics
             update_every: 10
             max_time_series: 1000
       - selector: kube_controller_manager
         template: |
           - module: prometheus
             name: prometheus-{{.TUID}}
-            url: http://{{.PodIP}}:10252/metrics
+            url: http://{{.PodIP}}:{{default "10252" .Port}}/metrics
             update_every: 10
             max_time_series: 2000
   - name: "Prometheus Generic Applications"
