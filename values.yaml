@@ -234,6 +234,7 @@ child:
           openvpn: yes
           phpfpm: yes
           rabbitmq: yes
+          prometheus: yes
     kubelet:
       enabled: true
       path: /etc/netdata/go.d/k8s_kubelet.conf
