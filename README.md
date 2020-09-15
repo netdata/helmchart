@@ -69,7 +69,7 @@ Parameter | Description | Default
 --- | --- | ---
 `replicaCount` | Number of `replicas` for the parent netdata `Deployment` | `1`
 `image.repository` | Container image repo | `netdata/netdata`
-`image.tag` | Container image tag | Latest stable netdata release (e.g. `v1.24.0`)
+`image.tag` | Container image tag | Latest stable netdata release (e.g. `v1.25.0`)
 `image.pullPolicy` | Container image pull policy | `Always`
 `service.type` | netdata parent service type | `ClusterIP`
 `service.port` | netdata parent service port | `19999`
