@@ -29,6 +29,8 @@ tag:
         expr: '{{ and (eq .Port "8500") (glob .Image "consul*" "**/consul*") }}'
       - tags: coredns
         expr: '{{ and (eq .Port "9153") (glob .Image "**/coredns*") }}'
+      - tags: elasticsearch
+        expr: '{{ and (eq .Port "9200") (glob .Image "elasticsearch:*" "**/elasticsearch:*") }}'
       - tags: fluentd
         expr: '{{ and (eq .Port "24220") (glob .Image "fluentd*" "**/fluentd*") }}'
       - tags: freeradius
@@ -136,6 +138,11 @@ build:
           - module: coredns
             name: coredns-{{.TUID}}
             url: http://{{.Address}}/metrics
+      - selector: elasticsearch
+        template: |
+          - module: elasticsearch
+            name: elasticsearch-{{.TUID}}
+            url: http://{{.Address}}
       - selector: fluentd
         template: |
           - module: fluentd
