@@ -19,8 +19,8 @@ sd:
       # if 'from' is {} the ConfigMap is not generated
       from:
         file: sdconfig/child.yml
-        value: { }
-    resources: { }
+        value: {}
+    resources: {}
     # limits:
     #  cpu: 50m
     #  memory: 60Mi
@@ -33,8 +33,8 @@ sysctlImage:
   repository: alpine
   tag: latest
   pullPolicy: Always
-  command: [ ]
-  resources: { }
+  command: []
+  resources: {}
 
 service:
   type: ClusterIP
@@ -65,7 +65,7 @@ serviceAccount:
 
 
 parent:
-  resources: { }
+  resources: {}
     # limits:
     #  cpu: 4
     #  memory: 4096Mi
@@ -73,21 +73,21 @@ parent:
     #  cpu: 4
   #  memory: 4096Mi
 
-  nodeSelector: { }
+  nodeSelector: {}
 
-  tolerations: [ ]
+  tolerations: []
 
-  affinity: { }
+  affinity: {}
 
   priorityClassName: ""
 
-  env: { }
+  env: {}
     # To disable anonymous statistics:
   # DO_NOT_TRACK: 1
 
-  podLabels: { }
+  podLabels: {}
 
-  podAnnotations: { }
+  podAnnotations: {}
 
   database:
     persistence: true
@@ -167,12 +167,12 @@ parent:
 child:
   enabled: true
 
-  updateStrategy: { }
+  updateStrategy: {}
     # type: RollingUpdate
     # rollingUpdate:
   #   maxUnavailable: 1
 
-  resources: { }
+  resources: {}
     # limits:
     #  cpu: 4
     #  memory: 4096Mi
@@ -180,22 +180,22 @@ child:
     #  cpu: 4
   #  memory: 4096Mi
 
-  nodeSelector: { }
+  nodeSelector: {}
 
   tolerations:
     - operator: Exists
       effect: NoSchedule
 
-  affinity: { }
+  affinity: {}
 
   priorityClassName: ""
 
-  podLabels: { }
+  podLabels: {}
 
   podAnnotationAppArmor:
     enabled: true
 
-  podAnnotations: { }
+  podAnnotations: {}
 
   persistUniqueID: true
 
@@ -246,6 +246,6 @@ child:
         jobs:
           - url: http://127.0.0.1:10249/metrics
 
-  env: { }
+  env: {}
     # To disable anonymous statistics:
-  # DO_NOT_TRACK: 1
+    # DO_NOT_TRACK: 1
