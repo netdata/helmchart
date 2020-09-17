@@ -71,7 +71,7 @@ parent:
     #  memory: 4096Mi
     # requests:
     #  cpu: 4
-  #  memory: 4096Mi
+    #  memory: 4096Mi
 
   nodeSelector: {}
 
@@ -83,7 +83,7 @@ parent:
 
   env: {}
     # To disable anonymous statistics:
-  # DO_NOT_TRACK: 1
+    # DO_NOT_TRACK: 1
 
   podLabels: {}
 
@@ -170,7 +170,7 @@ child:
   updateStrategy: {}
     # type: RollingUpdate
     # rollingUpdate:
-  #   maxUnavailable: 1
+    #   maxUnavailable: 1
 
   resources: {}
     # limits:
@@ -178,7 +178,7 @@ child:
     #  memory: 4096Mi
     # requests:
     #  cpu: 4
-  #  memory: 4096Mi
+    #  memory: 4096Mi
 
   nodeSelector: {}
 
