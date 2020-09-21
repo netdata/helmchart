@@ -5,8 +5,17 @@ discovery:
       role: pod
       local_mode: true
 tag:
-  - selector: unknown
-    tags: -unknown go.d
+  - name: "Control-Plane"
+    selector: unknown
+    tags: -unknown control_plane
+    match:
+      - tags: kube_scheduler
+        expr: '{{ glob .Image "k8s.gcr.io/kube-scheduler:*" }}'
+      - tags: kube_controller_manager
+        expr: '{{ glob .Image "k8s.gcr.io/kube-controller-manager:*" }}'
+  - name: "Applications"
+    selector: unknown
+    tags: -unknown applications
     match:
       - tags: activemq
         expr: '{{ and (eq .Port "8161") (glob .Image "**/activemq*") }}'
@@ -20,6 +29,8 @@ tag:
         expr: '{{ and (eq .Port "8500") (glob .Image "consul*" "**/consul*") }}'
       - tags: coredns
         expr: '{{ and (eq .Port "9153") (glob .Image "**/coredns*") }}'
+      - tags: elasticsearch
+        expr: '{{ and (eq .Port "9200") (glob .Image "elasticsearch:*" "**/elasticsearch:*") }}'
       - tags: fluentd
         expr: '{{ and (eq .Port "24220") (glob .Image "fluentd*" "**/fluentd*") }}'
       - tags: freeradius
@@ -52,9 +63,50 @@ tag:
         expr: '{{ and (eq .Port "8888") (glob .Image "**/vernemq*") }}'
       - tags: zookeeper
         expr: '{{ and (eq .Port "2181") (glob .Image "zookeeper*" "**/zookeeper*") }}'
+  - name: "Prometheus Generic Applications"
+    selector: unknown
+    tags: -unknown prometheus_generic
+    match:
+      - tags: prometheus_generic
+        expr: |
+          {{ $scrapeOK := eq (get .Annotations "prometheus.io/scrape") "true" -}}
+          {{ $portOK := eq (default .Port (get .Annotations "prometheus.io/port")) .Port -}}
+          {{ $imageOK := not (glob .Image "netdata/netdata*" "**pulsar*" "**telegraf*") -}}
+          {{ and $scrapeOK $portOK $imageOK }}
 build:
-  - selector: "!unknown go.d"
-    tags: file go.d
+  - name: "Control-Plane"
+    selector: '!unknown control_plane'
+    tags: file
+    apply:
+      - selector: kube_scheduler
+        template: |
+          - module: prometheus
+            name: prometheus-{{.TUID}}
+            url: http://{{.PodIP}}:{{default "10251" .Port}}/metrics
+            update_every: 10
+            max_time_series: 1000
+      - selector: kube_controller_manager
+        template: |
+          - module: prometheus
+            name: prometheus-{{.TUID}}
+            url: http://{{.PodIP}}:{{default "10252" .Port}}/metrics
+            update_every: 10
+            max_time_series: 2000
+  - name: "Prometheus Generic Applications"
+    selector: '!unknown prometheus_generic'
+    tags: file
+    apply:
+      - selector: prometheus_generic
+        template: |
+          {{ $path := default "/metrics" (get .Annotations "prometheus.io/path") -}}
+          - module: prometheus
+            name: prometheus-{{.TUID}}
+            url: http://{{.Address}}{{$path}}
+            update_every: 10
+            max_time_series: 1000
+  - name: "Applications"
+    selector: '!unknown applications'
+    tags: file
     apply:
       - selector: activemq
         template: |
@@ -86,6 +138,11 @@ build:
           - module: coredns
             name: coredns-{{.TUID}}
             url: http://{{.Address}}/metrics
+      - selector: elasticsearch
+        template: |
+          - module: elasticsearch
+            name: elasticsearch-{{.TUID}}
+            url: http://{{.Address}}
       - selector: fluentd
         template: |
           - module: fluentd
@@ -170,5 +227,5 @@ build:
             address: {{.Address}}
 export:
   file:
-    - selector: file go.d
+    - selector: file
       filename: "/export/go.d.yml"

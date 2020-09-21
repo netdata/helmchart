@@ -9,7 +9,7 @@ image:
 
 sd:
   repository: netdata/agent-sd
-  tag: v0.1.0
+  tag: v0.2.1
   pullPolicy: Always
   child:
     enabled: true
@@ -225,15 +225,8 @@ child:
       path: /etc/netdata/go.d.conf
       data: |
         modules:
-          apache: yes
-          bind: yes
-          freeradius: yes
-          lighttpd: yes
-          mysql: yes
-          nginx: yes
-          openvpn: yes
-          phpfpm: yes
-          rabbitmq: yes
+          pulsar: no
+          prometheus: yes
     kubelet:
       enabled: true
       path: /etc/netdata/go.d/k8s_kubelet.conf
