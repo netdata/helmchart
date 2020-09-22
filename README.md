@@ -192,7 +192,9 @@ Netdata's [service discovery](https://github.com/netdata/agent-service-discovery
 Helm chart installation, finds what services are running on a cluster's pods, converts that into configuration files,
 and exports them so they can be monitored.
 
-Service discovery currently supports the following services via their associated collector:
+#### Applications
+
+Service discovery currently supports the following applications via their associated collector:
 
 -   [ActiveMQ](https://learn.netdata.cloud/docs/agent/collectors/go.d.plugin/modules/activemq)
 -   [Apache](https://learn.netdata.cloud/docs/agent/collectors/go.d.plugin/modules/apache)
@@ -200,6 +202,7 @@ Service discovery currently supports the following services via their associated
 -   [CockroachDB](https://learn.netdata.cloud/docs/agent/collectors/go.d.plugin/modules/cockroachdb)
 -   [Consul](https://learn.netdata.cloud/docs/agent/collectors/go.d.plugin/modules/consul)
 -   [CoreDNS](https://learn.netdata.cloud/docs/agent/collectors/go.d.plugin/modules/coredns)
+-   [Elasticsearch](https://learn.netdata.cloud/docs/agent/collectors/go.d.plugin/modules/Elasticsearch)
 -   [Fluentd](https://learn.netdata.cloud/docs/agent/collectors/go.d.plugin/modules/fluentd)
 -   [FreeRADIUS](https://learn.netdata.cloud/docs/agent/collectors/go.d.plugin/modules/freeradius)
 -   [HDFS](https://learn.netdata.cloud/docs/agent/collectors/go.d.plugin/modules/hdfs)
@@ -216,6 +219,16 @@ Service discovery currently supports the following services via their associated
 -   [Unbound](https://learn.netdata.cloud/docs/agent/collectors/go.d.plugin/modules/unbound)
 -   [VerneMQ](https://learn.netdata.cloud/docs/agent/collectors/go.d.plugin/modules/vernemq)
 -   [ZooKeeper](https://learn.netdata.cloud/docs/agent/collectors/go.d.plugin/modules/zookeeper)
+
+#### Prometheus endpoints
+
+Prometheus endpoints scraping via [Prometheus](https://learn.netdata.cloud/docs/agent/collectors/go.d.plugin/modules/prometheus) collector.
+
+Annotations on pods allow a fine control of the scraping process:
+
+-   `prometheus.io/scrape`: The default configuration will scrape all pods and, if set to false, this annotation will exclude the pod from the scraping process.
+-   `prometheus.io/path`: If the metrics path is not _/metrics_, define it with this annotation.
+-   `prometheus.io/port`: Scrape the pod on the indicated port instead of the pod’s declared ports.
 
 #### Configure service discovery
 
