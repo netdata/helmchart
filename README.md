@@ -222,7 +222,7 @@ Service discovery currently supports the following applications via their associ
 
 #### Prometheus endpoints
 
-Prometheus endpoints scraping via [Prometheus](https://learn.netdata.cloud/docs/agent/collectors/go.d.plugin/modules/prometheus) collector.
+Service discovery supports Prometheus endpoints via the [Prometheus](https://learn.netdata.cloud/docs/agent/collectors/go.d.plugin/modules/prometheus) collector.
 
 Annotations on pods allow a fine control of the scraping process:
 
