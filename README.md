@@ -202,7 +202,7 @@ Service discovery currently supports the following applications via their associ
 -   [CockroachDB](https://learn.netdata.cloud/docs/agent/collectors/go.d.plugin/modules/cockroachdb)
 -   [Consul](https://learn.netdata.cloud/docs/agent/collectors/go.d.plugin/modules/consul)
 -   [CoreDNS](https://learn.netdata.cloud/docs/agent/collectors/go.d.plugin/modules/coredns)
--   [Elasticsearch](https://learn.netdata.cloud/docs/agent/collectors/go.d.plugin/modules/Elasticsearch)
+-   [Elasticsearch](https://learn.netdata.cloud/docs/agent/collectors/go.d.plugin/modules/elasticsearch)
 -   [Fluentd](https://learn.netdata.cloud/docs/agent/collectors/go.d.plugin/modules/fluentd)
 -   [FreeRADIUS](https://learn.netdata.cloud/docs/agent/collectors/go.d.plugin/modules/freeradius)
 -   [HDFS](https://learn.netdata.cloud/docs/agent/collectors/go.d.plugin/modules/hdfs)
