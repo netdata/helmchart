@@ -4,7 +4,7 @@ deploymentStrategy:
 
 image:
   repository: netdata/netdata
-  tag: v1.25.0
+  tag: "{{ .Chart.AppVersion }}"
   pullPolicy: Always
 
 sd:
