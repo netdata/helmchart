@@ -52,7 +52,7 @@ spec:
       {{- end }}
       containers:
         - name: {{ .Chart.Name }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          image: "{{ .Values.image.repository }}:{{ tpl .Values.image.tag . }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           {{- if and .Values.parent.claiming.enabled .Values.parent.claiming.token .Values.parent.claiming.rooms }}
           command:
