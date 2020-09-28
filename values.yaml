@@ -73,17 +73,6 @@ parent:
     #  cpu: 4
     #  memory: 4096Mi
 
-  livenessProbe:
-    failureThreshold: 3
-    periodSeconds: 30
-    successThreshold: 1
-    timeoutSeconds: 1
-  readinessProbe:
-    failureThreshold: 3
-    periodSeconds: 30
-    successThreshold: 1
-    timeoutSeconds: 1
-
   terminationGracePeriodSeconds: 300
 
   nodeSelector: {}
@@ -192,17 +181,6 @@ child:
     # requests:
     #  cpu: 4
     #  memory: 4096Mi
-
-  livenessProbe:
-    failureThreshold: 3
-    periodSeconds: 30
-    successThreshold: 1
-    timeoutSeconds: 1
-  readinessProbe:
-    failureThreshold: 3
-    periodSeconds: 30
-    successThreshold: 1
-    timeoutSeconds: 1
 
   terminationGracePeriodSeconds: 30
 

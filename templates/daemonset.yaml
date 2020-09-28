@@ -119,18 +119,18 @@ spec:
             httpGet:
               path: /api/v1/info
               port: http
-            failureThreshold: {{ .Values.child.livenessProbe.failureThreshold }}
-            periodSeconds: {{ .Values.child.livenessProbe.periodSeconds }}
-            successThreshold: {{ .Values.child.livenessProbe.successThreshold }}
-            timeoutSeconds: {{ .Values.child.livenessProbe.timeoutSeconds }}
+            timeoutSeconds: 1
+            periodSeconds: 30
+            successThreshold: 1
+            failureThreshold: 3
           readinessProbe:
             httpGet:
               path: /api/v1/info
               port: http
-            failureThreshold: {{ .Values.child.readinessProbe.failureThreshold }}
-            periodSeconds: {{ .Values.child.readinessProbe.periodSeconds }}
-            successThreshold: {{ .Values.child.readinessProbe.successThreshold }}
-            timeoutSeconds: {{ .Values.child.readinessProbe.timeoutSeconds }}
+            timeoutSeconds: 1
+            periodSeconds: 30
+            successThreshold: 1
+            failureThreshold: 3
           volumeMounts:
             - name: proc
               readOnly: true
