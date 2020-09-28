@@ -85,6 +85,7 @@ Parameter | Description | Default
 `clusterrole.name` | Name of the cluster role linked with the service account | `netdata`
 `APIKEY` | The key shared between the parent and the child netdata for streaming | `11111111-2222-3333-4444-555555555555`
 `parent.resources` | Resources for the parent deployment | `{}`
+`parent.terminationGracePeriodSeconds` | Duration in seconds the pod needs to terminate gracefully | `300`
 `parent.nodeSelector` | Node selector for the parent deployment | `{}`
 `parent.tolerations` | Tolerations settings for the parent deployment | `[]`
 `parent.affinity` | Affinity settings for the parent deployment | `{}`
@@ -105,6 +106,7 @@ Parameter | Description | Default
 `child.enabled` | Install child daemonset to gather data from nodes | `true`
 `child.updateStrategy` | An update strategy to replace existing DaemonSet pods with new pods | `{}`
 `child.resources` | Resources for the child daemonsets | `{}`
+`child.terminationGracePeriodSeconds` | Duration in seconds the pod needs to terminate gracefully | `30`
 `child.nodeSelector` | Node selector for the child daemonsets | `{}`
 `child.tolerations` | Tolerations settings for the child daemonsets | `- operator: Exists` with `effect: NoSchedule`
 `child.affinity` | Affinity settings for the child daemonsets | `{}`
