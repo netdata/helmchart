@@ -82,18 +82,18 @@ spec:
             httpGet:
               path: /api/v1/info
               port: http
-            timeoutSeconds: 1
-            periodSeconds: 30
-            successThreshold: 1
-            failureThreshold: 3
+            failureThreshold: {{ .Values.parent.livenessProbe.failureThreshold }}
+            periodSeconds: {{ .Values.parent.livenessProbe.periodSeconds }}
+            successThreshold: {{ .Values.parent.livenessProbe.successThreshold }}
+            timeoutSeconds: {{ .Values.parent.livenessProbe.timeoutSeconds }}
           readinessProbe:
             httpGet:
               path: /api/v1/info
               port: http
-            timeoutSeconds: 1
-            periodSeconds: 30
-            successThreshold: 1
-            failureThreshold: 3
+            failureThreshold: {{ .Values.parent.readinessProbe.failureThreshold }}
+            periodSeconds: {{ .Values.parent.readinessProbe.periodSeconds }}
+            successThreshold: {{ .Values.parent.readinessProbe.successThreshold }}
+            timeoutSeconds: {{ .Values.parent.readinessProbe.timeoutSeconds }}
           volumeMounts:
             {{- range $name, $config := .Values.parent.configs }}
             {{- if $config.enabled }}

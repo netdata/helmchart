@@ -85,6 +85,14 @@ Parameter | Description | Default
 `clusterrole.name` | Name of the cluster role linked with the service account | `netdata`
 `APIKEY` | The key shared between the parent and the child netdata for streaming | `11111111-2222-3333-4444-555555555555`
 `parent.resources` | Resources for the parent deployment | `{}`
+`parent.livenessProbe.failureThreshold` | When a liveness probe fails, Kubernetes will try failureThreshold times before giving up. Giving up the liveness probe means restarting the container | `3`
+`parent.livenessProbe.periodSeconds` | How often (in seconds) to perform the liveness probe | `30`
+`parent.livenessProbe.successThreshold` | Minimum consecutive successes for the liveness probe to be considered successful after having failed | `1`
+`parent.livenessProbe.timeoutSeconds` | Number of seconds after which the liveness probe times out | `1`
+`parent.readinessProbe.failureThreshold` | When a readiness probe fails, Kubernetes will try failureThreshold times before giving up. Giving up the readiness probe means marking the Pod Unready | `3`
+`parent.readinessProbe.periodSeconds` | How often (in seconds) to perform the readiness probe | `30`
+`parent.readinessProbe.successThreshold` | Minimum consecutive successes for the readiness probe to be considered successful after having failed | `1`
+`parent.readinessProbe.timeoutSeconds` | Number of seconds after which the readiness probe times out | `1`
 `parent.terminationGracePeriodSeconds` | Duration in seconds the pod needs to terminate gracefully | `300`
 `parent.nodeSelector` | Node selector for the parent deployment | `{}`
 `parent.tolerations` | Tolerations settings for the parent deployment | `[]`
@@ -106,6 +114,14 @@ Parameter | Description | Default
 `child.enabled` | Install child daemonset to gather data from nodes | `true`
 `child.updateStrategy` | An update strategy to replace existing DaemonSet pods with new pods | `{}`
 `child.resources` | Resources for the child daemonsets | `{}`
+`child.livenessProbe.failureThreshold` | When a liveness probe fails, Kubernetes will try failureThreshold times before giving up. Giving up the liveness probe means restarting the container | `3`
+`child.livenessProbe.periodSeconds` | How often (in seconds) to perform the liveness probe | `30`
+`child.livenessProbe.successThreshold` | Minimum consecutive successes for the liveness probe to be considered successful after having failed | `1`
+`child.livenessProbe.timeoutSeconds` | Number of seconds after which the liveness probe times out | `1`
+`child.readinessProbe.failureThreshold` | When a readiness probe fails, Kubernetes will try failureThreshold times before giving up. Giving up the readiness probe means marking the Pod Unready | `3`
+`child.readinessProbe.periodSeconds` | How often (in seconds) to perform the readiness probe | `30`
+`child.readinessProbe.successThreshold` | Minimum consecutive successes for the readiness probe to be considered successful after having failed | `1`
+`child.readinessProbe.timeoutSeconds` | Number of seconds after which the readiness probe times out | `1`
 `child.terminationGracePeriodSeconds` | Duration in seconds the pod needs to terminate gracefully | `30`
 `child.nodeSelector` | Node selector for the child daemonsets | `{}`
 `child.tolerations` | Tolerations settings for the child daemonsets | `- operator: Exists` with `effect: NoSchedule`
