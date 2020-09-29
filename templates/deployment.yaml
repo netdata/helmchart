@@ -59,7 +59,7 @@ spec:
             - sh
             - '-c'
             - >
-              /usr/sbin/run.sh -W set2 cloud global enabled true -W set2 cloud global "cloud base url" "{{ .Values.parent.claiming.url }}" -W "claim -token={{ .Values.parent.claiming.token }} -rooms={{ .Values.parent.claiming.rooms }} -url={{ .Values.parent.claiming.url }}"
+              exec /usr/sbin/run.sh -W set2 cloud global enabled true -W set2 cloud global "cloud base url" "{{ .Values.parent.claiming.url }}" -W "claim -token={{ .Values.parent.claiming.token }} -rooms={{ .Values.parent.claiming.rooms }} -url={{ .Values.parent.claiming.url }}"
           {{- end }}
           env:
             - name: MY_POD_NAME
