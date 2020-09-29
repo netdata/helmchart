@@ -121,7 +121,7 @@ _main() {
   sed -i.bak \
     -e "s/$old_version/$new_version/g" \
     -e "s/$old_appVersion/v$new_appVersion/g" \
-    README.md Chart.yaml values.yaml
+    README.md Chart.yaml
 
   git add -A -p
   git commit -m "Bump NetData Helm Chart from $old_appVersion => v$new_appVersion"
