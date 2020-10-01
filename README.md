@@ -2,7 +2,7 @@
 
 _Based on the work of varyumin (https://github.com/varyumin/netdata)_.
 
-**This Helm chart is in beta**. 
+**This Helm chart is in beta**.
 
 ## Introduction
 
@@ -58,98 +58,98 @@ To uninstall/delete the `my-release` deployment:
  helm delete netdata
 ```
 
-The command removes all the Kubernetes components associated with the chart and 
+The command removes all the Kubernetes components associated with the chart and
 deletes the release.
 
 ## Configuration
 
 The following table lists the configurable parameters of the netdata chart and their default values.
 
-Parameter | Description | Default
---- | --- | ---
-`replicaCount` | Number of `replicas` for the parent netdata `Deployment` | `1`
-`image.repository` | Container image repo | `netdata/netdata`
-`image.tag` | Container image tag | Latest stable netdata release (e.g. `v1.25.0`)
-`image.pullPolicy` | Container image pull policy | `Always`
-`service.type` | netdata parent service type | `ClusterIP`
-`service.port` | netdata parent service port | `19999`
-`service.loadBalancerIP`| Static LoadBalancer IP, only to be used with service type=LoadBalancer|`""`
-`ingress.enabled` | Create Ingress to access the netdata web UI | `true`
-`ingress.annotations` | Associate annotations to the Ingress | `kubernetes.io/ingress.class: nginx` and `kubernetes.io/tls-acme: "true"`
-`ingress.path` | URL path for the ingress | `/`
-`ingress.hosts` | URL hostnames for the ingress (they need to resolve to the external IP of the ingress controller) | `netdata.k8s.local`
-`rbac.create` | if true, create & use RBAC resources | `true`
-`rbac.pspEnabled` | Specifies whether a PodSecurityPolicy should be created. | `true`
-`serviceAccount.create` |if true, create a service account | `true`
-`serviceAccount.name` | The name of the service account to use. If not set and create is true, a name is generated using the fullname template. | `netdata`
-`clusterrole.name` | Name of the cluster role linked with the service account | `netdata`
-`APIKEY` | The key shared between the parent and the child netdata for streaming | `11111111-2222-3333-4444-555555555555`
-`parent.resources` | Resources for the parent deployment | `{}`
-`parent.livenessProbe.failureThreshold` | When a liveness probe fails, Kubernetes will try failureThreshold times before giving up. Giving up the liveness probe means restarting the container | `3`
-`parent.livenessProbe.periodSeconds` | How often (in seconds) to perform the liveness probe | `30`
-`parent.livenessProbe.successThreshold` | Minimum consecutive successes for the liveness probe to be considered successful after having failed | `1`
-`parent.livenessProbe.timeoutSeconds` | Number of seconds after which the liveness probe times out | `1`
-`parent.readinessProbe.failureThreshold` | When a readiness probe fails, Kubernetes will try failureThreshold times before giving up. Giving up the readiness probe means marking the Pod Unready | `3`
-`parent.readinessProbe.periodSeconds` | How often (in seconds) to perform the readiness probe | `30`
-`parent.readinessProbe.successThreshold` | Minimum consecutive successes for the readiness probe to be considered successful after having failed | `1`
-`parent.readinessProbe.timeoutSeconds` | Number of seconds after which the readiness probe times out | `1`
-`parent.terminationGracePeriodSeconds` | Duration in seconds the pod needs to terminate gracefully | `300`
-`parent.nodeSelector` | Node selector for the parent deployment | `{}`
-`parent.tolerations` | Tolerations settings for the parent deployment | `[]`
-`parent.affinity` | Affinity settings for the parent deployment | `{}`
-`parent.priorityClassName` | Pod priority class name for the parent deployment | `""`
-`parent.database.persistence` | Whether the parent should use a persistent volume for the DB | `true`
-`parent.database.storageclass` | The storage class for the persistent volume claim of the parent's database store, mounted to `/var/cache/netdata` | the default storage class
-`parent.database.volumesize` | The storage space for the PVC of the parent database | `2Gi`
-`parent.alarms.persistence` | Whether the parent should use a persistent volume for the alarms log | `true`
-`parent.alarms.storageclass` | The storage class for the persistent volume claim of the parent's alarm log, mounted to `/var/lib/netdata` | the default storage class
-`parent.alarms.volumesize` | The storage space for the PVC of the parent alarm log | `100Mi`
-`parent.env` | Set environment parameters for the parent deployment | `{}`
-`parent.podLabels` | Additional labels to add to the parent pods | `{}`
-`parent.podAnnotations` | Additional annotations to add to the parent pods | `{}`
-`parent.configs` | Manage custom parent's configs | See [Configuration files](#configuration-files).
-`parent.claiming.enabled` | Enable parent claiming for netdata cloud | `false`
-`parent.claiming.token` | Claim token | `""`
-`parent.claiming.room` | Comma separated list of claim rooms IDs | `""`
-`child.enabled` | Install child daemonset to gather data from nodes | `true`
-`child.updateStrategy` | An update strategy to replace existing DaemonSet pods with new pods | `{}`
-`child.resources` | Resources for the child daemonsets | `{}`
-`child.livenessProbe.failureThreshold` | When a liveness probe fails, Kubernetes will try failureThreshold times before giving up. Giving up the liveness probe means restarting the container | `3`
-`child.livenessProbe.periodSeconds` | How often (in seconds) to perform the liveness probe | `30`
-`child.livenessProbe.successThreshold` | Minimum consecutive successes for the liveness probe to be considered successful after having failed | `1`
-`child.livenessProbe.timeoutSeconds` | Number of seconds after which the liveness probe times out | `1`
-`child.readinessProbe.failureThreshold` | When a readiness probe fails, Kubernetes will try failureThreshold times before giving up. Giving up the readiness probe means marking the Pod Unready | `3`
-`child.readinessProbe.periodSeconds` | How often (in seconds) to perform the readiness probe | `30`
-`child.readinessProbe.successThreshold` | Minimum consecutive successes for the readiness probe to be considered successful after having failed | `1`
-`child.readinessProbe.timeoutSeconds` | Number of seconds after which the readiness probe times out | `1`
-`child.terminationGracePeriodSeconds` | Duration in seconds the pod needs to terminate gracefully | `30`
-`child.nodeSelector` | Node selector for the child daemonsets | `{}`
-`child.tolerations` | Tolerations settings for the child daemonsets | `- operator: Exists` with `effect: NoSchedule`
-`child.affinity` | Affinity settings for the child daemonsets | `{}`
-`child.priorityClassName` | Pod priority class name for the child daemonsets | `""`
-`child.env` | Set environment parameters for the child daemonset | `{}`
-`child.podLabels` | Additional labels to add to the child pods | `{}`
-`child.podAnnotations` | Additional annotations to add to the child pods | `{}`
-`child.podAnnotationAppArmor.enabled` | Whether or not to include the AppArmor security annotation | `true`
-`child.persistUniqueID` | Whether or not to persist `netdata.public.unique.id` across restarts | `true`
-`child.configs` | Manage custom child's configs | See [Configuration files](#configuration-files).
-`notifications.slackurl` | URL for slack notifications | `""`
-`notifications.slackrecipient` | Slack recipient list | `""`
-`sysctlImage.enabled` | Enable an init container to modify Kernel settings | `false` |
-`sysctlImage.command` | sysctlImage command to execute | [] |
-`sysctlImage.repository`| sysctlImage Init container name | `alpine` |
-`sysctlImage.tag` | sysctlImage Init container tag | `latest` |
-`sysctlImage.pullPolicy` | sysctlImage Init container pull policy | `Always` |
-`sysctlImage.resources` | sysctlImage Init container CPU/Memory resource requests/limits | {} |
-`sd.image.repository` | Service-discovery image repo | `netdata/agent-sd`
-`sd.image.tag` | Service-discovery image tag | Latest stable release (e.g. `v0.1.0`)
-`sd.image.pullPolicy` | Service-discovery image pull policy | `Always`
-`sd.child.enabled` | Add service-discovery sidecar container to the netdata child pod definition | `true`
-`sd.child.resources` | Child service-discovery container CPU/Memory resource requests/limits | `{}`
-`sd.child.configmap.name` | Child service-discovery ConfigMap name | `netdata-child-sd-config-map`
-`sd.child.configmap.key` | Child service-discovery ConfigMap key | `config.yml`
-`sd.child.configmap.from.file` | File to use for child service-discovery configuration generation | `sdconfig/sd-child.yml`
-`sd.child.configmap.from.value` | Value to use for child service-discovery configuration generation | `{}`
+| Parameter                                | Description                                                                                                                                            | Default                                                                   |
+|------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------|
+| `replicaCount`                           | Number of `replicas` for the parent netdata `Deployment`                                                                                               | `1`                                                                       |
+| `image.repository`                       | Container image repo                                                                                                                                   | `netdata/netdata`                                                         |
+| `image.tag`                              | Container image tag                                                                                                                                    | Latest stable netdata release (e.g. `v1.25.0`)                            |
+| `image.pullPolicy`                       | Container image pull policy                                                                                                                            | `Always`                                                                  |
+| `service.type`                           | netdata parent service type                                                                                                                            | `ClusterIP`                                                               |
+| `service.port`                           | netdata parent service port                                                                                                                            | `19999`                                                                   |
+| `service.loadBalancerIP`                 | Static LoadBalancer IP, only to be used with service type=LoadBalancer                                                                                 | `""`                                                                      |
+| `ingress.enabled`                        | Create Ingress to access the netdata web UI                                                                                                            | `true`                                                                    |
+| `ingress.annotations`                    | Associate annotations to the Ingress                                                                                                                   | `kubernetes.io/ingress.class: nginx` and `kubernetes.io/tls-acme: "true"` |
+| `ingress.path`                           | URL path for the ingress                                                                                                                               | `/`                                                                       |
+| `ingress.hosts`                          | URL hostnames for the ingress (they need to resolve to the external IP of the ingress controller)                                                      | `netdata.k8s.local`                                                       |
+| `rbac.create`                            | if true, create & use RBAC resources                                                                                                                   | `true`                                                                    |
+| `rbac.pspEnabled`                        | Specifies whether a PodSecurityPolicy should be created.                                                                                               | `true`                                                                    |
+| `serviceAccount.create`                  | if true, create a service account                                                                                                                      | `true`                                                                    |
+| `serviceAccount.name`                    | The name of the service account to use. If not set and create is true, a name is generated using the fullname template.                                | `netdata`                                                                 |
+| `clusterrole.name`                       | Name of the cluster role linked with the service account                                                                                               | `netdata`                                                                 |
+| `APIKEY`                                 | The key shared between the parent and the child netdata for streaming                                                                                  | `11111111-2222-3333-4444-555555555555`                                    |
+| `parent.resources`                       | Resources for the parent deployment                                                                                                                    | `{}`                                                                      |
+| `parent.livenessProbe.failureThreshold`  | When a liveness probe fails, Kubernetes will try failureThreshold times before giving up. Giving up the liveness probe means restarting the container  | `3`                                                                       |
+| `parent.livenessProbe.periodSeconds`     | How often (in seconds) to perform the liveness probe                                                                                                   | `30`                                                                      |
+| `parent.livenessProbe.successThreshold`  | Minimum consecutive successes for the liveness probe to be considered successful after having failed                                                   | `1`                                                                       |
+| `parent.livenessProbe.timeoutSeconds`    | Number of seconds after which the liveness probe times out                                                                                             | `1`                                                                       |
+| `parent.readinessProbe.failureThreshold` | When a readiness probe fails, Kubernetes will try failureThreshold times before giving up. Giving up the readiness probe means marking the Pod Unready | `3`                                                                       |
+| `parent.readinessProbe.periodSeconds`    | How often (in seconds) to perform the readiness probe                                                                                                  | `30`                                                                      |
+| `parent.readinessProbe.successThreshold` | Minimum consecutive successes for the readiness probe to be considered successful after having failed                                                  | `1`                                                                       |
+| `parent.readinessProbe.timeoutSeconds`   | Number of seconds after which the readiness probe times out                                                                                            | `1`                                                                       |
+| `parent.terminationGracePeriodSeconds`   | Duration in seconds the pod needs to terminate gracefully                                                                                              | `300`                                                                     |
+| `parent.nodeSelector`                    | Node selector for the parent deployment                                                                                                                | `{}`                                                                      |
+| `parent.tolerations`                     | Tolerations settings for the parent deployment                                                                                                         | `[]`                                                                      |
+| `parent.affinity`                        | Affinity settings for the parent deployment                                                                                                            | `{}`                                                                      |
+| `parent.priorityClassName`               | Pod priority class name for the parent deployment                                                                                                      | `""`                                                                      |
+| `parent.database.persistence`            | Whether the parent should use a persistent volume for the DB                                                                                           | `true`                                                                    |
+| `parent.database.storageclass`           | The storage class for the persistent volume claim of the parent's database store, mounted to `/var/cache/netdata`                                      | the default storage class                                                 |
+| `parent.database.volumesize`             | The storage space for the PVC of the parent database                                                                                                   | `2Gi`                                                                     |
+| `parent.alarms.persistence`              | Whether the parent should use a persistent volume for the alarms log                                                                                   | `true`                                                                    |
+| `parent.alarms.storageclass`             | The storage class for the persistent volume claim of the parent's alarm log, mounted to `/var/lib/netdata`                                             | the default storage class                                                 |
+| `parent.alarms.volumesize`               | The storage space for the PVC of the parent alarm log                                                                                                  | `100Mi`                                                                   |
+| `parent.env`                             | Set environment parameters for the parent deployment                                                                                                   | `{}`                                                                      |
+| `parent.podLabels`                       | Additional labels to add to the parent pods                                                                                                            | `{}`                                                                      |
+| `parent.podAnnotations`                  | Additional annotations to add to the parent pods                                                                                                       | `{}`                                                                      |
+| `parent.configs`                         | Manage custom parent's configs                                                                                                                         | See [Configuration files](#configuration-files).                          |
+| `parent.claiming.enabled`                | Enable parent claiming for netdata cloud                                                                                                               | `false`                                                                   |
+| `parent.claiming.token`                  | Claim token                                                                                                                                            | `""`                                                                      |
+| `parent.claiming.room`                   | Comma separated list of claim rooms IDs                                                                                                                | `""`                                                                      |
+| `child.enabled`                          | Install child daemonset to gather data from nodes                                                                                                      | `true`                                                                    |
+| `child.updateStrategy`                   | An update strategy to replace existing DaemonSet pods with new pods                                                                                    | `{}`                                                                      |
+| `child.resources`                        | Resources for the child daemonsets                                                                                                                     | `{}`                                                                      |
+| `child.livenessProbe.failureThreshold`   | When a liveness probe fails, Kubernetes will try failureThreshold times before giving up. Giving up the liveness probe means restarting the container  | `3`                                                                       |
+| `child.livenessProbe.periodSeconds`      | How often (in seconds) to perform the liveness probe                                                                                                   | `30`                                                                      |
+| `child.livenessProbe.successThreshold`   | Minimum consecutive successes for the liveness probe to be considered successful after having failed                                                   | `1`                                                                       |
+| `child.livenessProbe.timeoutSeconds`     | Number of seconds after which the liveness probe times out                                                                                             | `1`                                                                       |
+| `child.readinessProbe.failureThreshold`  | When a readiness probe fails, Kubernetes will try failureThreshold times before giving up. Giving up the readiness probe means marking the Pod Unready | `3`                                                                       |
+| `child.readinessProbe.periodSeconds`     | How often (in seconds) to perform the readiness probe                                                                                                  | `30`                                                                      |
+| `child.readinessProbe.successThreshold`  | Minimum consecutive successes for the readiness probe to be considered successful after having failed                                                  | `1`                                                                       |
+| `child.readinessProbe.timeoutSeconds`    | Number of seconds after which the readiness probe times out                                                                                            | `1`                                                                       |
+| `child.terminationGracePeriodSeconds`    | Duration in seconds the pod needs to terminate gracefully                                                                                              | `30`                                                                      |
+| `child.nodeSelector`                     | Node selector for the child daemonsets                                                                                                                 | `{}`                                                                      |
+| `child.tolerations`                      | Tolerations settings for the child daemonsets                                                                                                          | `- operator: Exists` with `effect: NoSchedule`                            |
+| `child.affinity`                         | Affinity settings for the child daemonsets                                                                                                             | `{}`                                                                      |
+| `child.priorityClassName`                | Pod priority class name for the child daemonsets                                                                                                       | `""`                                                                      |
+| `child.env`                              | Set environment parameters for the child daemonset                                                                                                     | `{}`                                                                      |
+| `child.podLabels`                        | Additional labels to add to the child pods                                                                                                             | `{}`                                                                      |
+| `child.podAnnotations`                   | Additional annotations to add to the child pods                                                                                                        | `{}`                                                                      |
+| `child.podAnnotationAppArmor.enabled`    | Whether or not to include the AppArmor security annotation                                                                                             | `true`                                                                    |
+| `child.persistUniqueID`                  | Whether or not to persist `netdata.public.unique.id` across restarts                                                                                   | `true`                                                                    |
+| `child.configs`                          | Manage custom child's configs                                                                                                                          | See [Configuration files](#configuration-files).                          |
+| `notifications.slackurl`                 | URL for slack notifications                                                                                                                            | `""`                                                                      |
+| `notifications.slackrecipient`           | Slack recipient list                                                                                                                                   | `""`                                                                      |
+| `sysctlImage.enabled`                    | Enable an init container to modify Kernel settings                                                                                                     | `false`                                                                   |
+| `sysctlImage.command`                    | sysctlImage command to execute                                                                                                                         | []                                                                        |
+| `sysctlImage.repository`                 | sysctlImage Init container name                                                                                                                        | `alpine`                                                                  |
+| `sysctlImage.tag`                        | sysctlImage Init container tag                                                                                                                         | `latest`                                                                  |
+| `sysctlImage.pullPolicy`                 | sysctlImage Init container pull policy                                                                                                                 | `Always`                                                                  |
+| `sysctlImage.resources`                  | sysctlImage Init container CPU/Memory resource requests/limits                                                                                         | {}                                                                        |
+| `sd.image.repository`                    | Service-discovery image repo                                                                                                                           | `netdata/agent-sd`                                                        |
+| `sd.image.tag`                           | Service-discovery image tag                                                                                                                            | Latest stable release (e.g. `v0.1.0`)                                     |
+| `sd.image.pullPolicy`                    | Service-discovery image pull policy                                                                                                                    | `Always`                                                                  |
+| `sd.child.enabled`                       | Add service-discovery sidecar container to the netdata child pod definition                                                                            | `true`                                                                    |
+| `sd.child.resources`                     | Child service-discovery container CPU/Memory resource requests/limits                                                                                  | `{}`                                                                      |
+| `sd.child.configmap.name`                | Child service-discovery ConfigMap name                                                                                                                 | `netdata-child-sd-config-map`                                             |
+| `sd.child.configmap.key`                 | Child service-discovery ConfigMap key                                                                                                                  | `config.yml`                                                              |
+| `sd.child.configmap.from.file`           | File to use for child service-discovery configuration generation                                                                                       | `sdconfig/sd-child.yml`                                                   |
+| `sd.child.configmap.from.value`          | Value to use for child service-discovery configuration generation                                                                                      | `{}`                                                                      |
 
 Example to set the parameters from the command line:
 ```console
@@ -158,7 +158,7 @@ $ helm install ./netdata --name my-release \
     --set notifications.slackrecipiet="@MyUser MyChannel"
 ```
 
-Another example, to set a different ingress controller.  
+Another example, to set a different ingress controller.
 
 By default `kubernetes.io/ingress.class` set to use `nginx` as an ingress controller but you can set `Traefik` as your ingress controller by setting `ingress.annotations`.
 ```
@@ -181,21 +181,21 @@ $ helm install ./netdata --name my-release -f values.yaml
 
 ### Configuration files
 
-Parameter | Description | Default
---- | --- | ---
-`parent.configs.netdata` | Contents of the parent's `netdata.conf` | `memory mode = save` and `bind to = 0.0.0.0:19999`
-`parent.configs.stream` | Contents of the parent's `stream.conf` | Store child data, accept all connections, and issue alarms for child data.
-`parent.configs.health` | Contents of `health_alarm_notify.conf` | Email disabled, a sample of the required settings for Slack notifications
-`child.configs.netdata` | Contents of the child's `netdata.conf` | No persistent storage, no alarms, no UI
-`child.configs.stream` | Contents of the child `stream.conf` | Send metrics to the parent at netdata:19999
-`child.configs.kubelet` | Contents of the child's `go.d/k8s_kubelet.conf` that drives the kubelet collector | Update metrics every sec, do not retry to detect the endpoint, look for the kubelet metrics at http://127.0.0.1:10255/metrics
-`child.configs.kubeproxy` | Contents of the child's `go.d/k8s_kubeproxy.conf` that drives the kubeproxy collector | Update metrics every sec, do not retry to detect the endpoint, look for the coredns metrics at http://127.0.0.1:10249/metrics
- 
-To deploy additional netdata user configuration files, you will need to add similar entries to either the parent.configs or the child. configs arrays. Regardless of whether you add config files that reside directly under `/etc/netdata` or in a subdirectory such as `/etc/netdata/go.d`, you can use the already provided configurations as reference. For reference, the `parent.configs` the array includes an `example` alarm that would get triggered if the python.d `example` module was enabled. 
+| Parameter                 | Description                                                                           | Default                                                                                                                       |
+|---------------------------|---------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------|
+| `parent.configs.netdata`  | Contents of the parent's `netdata.conf`                                               | `memory mode = save` and `bind to = 0.0.0.0:19999`                                                                            |
+| `parent.configs.stream`   | Contents of the parent's `stream.conf`                                                | Store child data, accept all connections, and issue alarms for child data.                                                    |
+| `parent.configs.health`   | Contents of `health_alarm_notify.conf`                                                | Email disabled, a sample of the required settings for Slack notifications                                                     |
+| `child.configs.netdata`   | Contents of the child's `netdata.conf`                                                | No persistent storage, no alarms, no UI                                                                                       |
+| `child.configs.stream`    | Contents of the child `stream.conf`                                                   | Send metrics to the parent at netdata:19999                                                                                   |
+| `child.configs.kubelet`   | Contents of the child's `go.d/k8s_kubelet.conf` that drives the kubelet collector     | Update metrics every sec, do not retry to detect the endpoint, look for the kubelet metrics at http://127.0.0.1:10255/metrics |
+| `child.configs.kubeproxy` | Contents of the child's `go.d/k8s_kubeproxy.conf` that drives the kubeproxy collector | Update metrics every sec, do not retry to detect the endpoint, look for the coredns metrics at http://127.0.0.1:10249/metrics |
 
-Note that with the default configuration of this chart, the parent does the health checks and triggers alarms, but does not collect much data. As a result, the only other configuration files that might make sense to add to the parent are the alarm and alarm template definitions, under `/etc/netdata/health.d`. 
+To deploy additional netdata user configuration files, you will need to add similar entries to either the parent.configs or the child. configs arrays. Regardless of whether you add config files that reside directly under `/etc/netdata` or in a subdirectory such as `/etc/netdata/go.d`, you can use the already provided configurations as reference. For reference, the `parent.configs` the array includes an `example` alarm that would get triggered if the python.d `example` module was enabled.
 
-> **Tip**: Do pay attention to the indentation of the config file contents, as it matters for the parsing of the `yaml` file. Note that the first line under `var: |` 
+Note that with the default configuration of this chart, the parent does the health checks and triggers alarms, but does not collect much data. As a result, the only other configuration files that might make sense to add to the parent are the alarm and alarm template definitions, under `/etc/netdata/health.d`.
+
+> **Tip**: Do pay attention to the indentation of the config file contents, as it matters for the parsing of the `yaml` file. Note that the first line under `var: |`
 must be indented with two more spaces relative to the preceding line:
 
 ```
