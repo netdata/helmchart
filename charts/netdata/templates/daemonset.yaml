@@ -103,6 +103,8 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.namespace
+            - name: NETDATA_LISTENER_PORT
+              value: '{{ .Values.service.port }}'
             {{- if .Values.sd.child.enabled }}
             - name: NETDATA_PLUGINS_GOD_WATCH_PATH
               value: "/etc/netdata/go.d/sd/go.d.yml"
