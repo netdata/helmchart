@@ -29,6 +29,12 @@ Please validate that the settings are suitable for your cluster before using the
 **See our [install Netdata on Kubernetes](https://learn.netdata.cloud/docs/agent/packaging/installer/methods/kubernetes)
 documentation for detailed installation and configuration instructions.**
 
+### Installing via our Helm repository
+
+To use Netdata's Helm repository, please follow the instructions [here](https://netdata.github.io/helmchart/)
+
+### Install by cloning the repository
+
 Clone the repository locally.
 
 ```console
@@ -38,7 +44,7 @@ git clone https://github.com/netdata/helmchart.git netdata-helmchart
 To install the chart with the release name `netdata`:
 
 ```console
-helm install netdata ./netdata-helmchart
+helm install netdata ./netdata-helmchart/charts/netdata
 ```
 
 The command deploys ingress on the Kubernetes cluster in the default configuration. The [configuration](#configuration)
