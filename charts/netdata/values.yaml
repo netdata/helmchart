@@ -159,6 +159,10 @@ parent:
         role_recipients_slack[webmaster]="${DEFAULT_RECIPIENT_SLACK}"
         role_recipients_slack[proxyadmin]="${DEFAULT_RECIPIENT_SLACK}"
         role_recipients_slack[sitemgr]="${DEFAULT_RECIPIENT_SLACK}"
+    exporting:
+      enabled: false
+      path: /etc/netdata/exporting.conf
+      data: ""
     example:
       enabled: false
       path: /etc/netdata/health.d/example.conf
@@ -246,6 +250,10 @@ child:
           buffer size bytes = 1048576
           reconnect delay seconds = 5
           initial clock resync iterations = 60
+    exporting:
+      enabled: false
+      path: /etc/netdata/exporting.conf
+      data: ""
     go.d:
       enabled: true
       path: /etc/netdata/go.d.conf
