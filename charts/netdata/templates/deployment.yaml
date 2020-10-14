@@ -70,6 +70,8 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.namespace
+            - name: NETDATA_LISTENER_PORT
+              value: '{{ .Values.service.port }}'
             {{- range $key, $value := .Values.parent.env }}
             - name: {{ $key }}
               value: {{ $value | quote }}
