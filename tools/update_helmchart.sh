@@ -99,8 +99,8 @@ bump_version() {
 }
 
 _main() {
-  old_version="$(grep -o -E '^version\:[[:space:]]+([0-9.]+)$' Chart.yaml | sed -E -e 's/^version\:[[:space:]]+([0-9.]+)$/\1/')"
-  old_appVersion="$(grep -o -E '^appVersion\:[[:space:]]+(v[0-9.]+)$' Chart.yaml | sed -E -e 's/^appVersion\:[[:space:]]+(v[0-9.]+)$/\1/')"
+  old_version="$(grep -o -E '^version\:[[:space:]]+([0-9.]+)$' charts/netdata/Chart.yaml | sed -E -e 's/^version\:[[:space:]]+([0-9.]+)$/\1/')"
+  old_appVersion="$(grep -o -E '^appVersion\:[[:space:]]+(v[0-9.]+)$' charts/netdata/Chart.yaml | sed -E -e 's/^appVersion\:[[:space:]]+(v[0-9.]+)$/\1/')"
   printf "Old Chart version:    %s\n" "$old_version"
   printf "Old Chart appVersion: %s\n" "$old_appVersion"
 
@@ -121,10 +121,10 @@ _main() {
   sed -i.bak \
     -e "s/$old_version/$new_version/g" \
     -e "s/$old_appVersion/v$new_appVersion/g" \
-    README.md Chart.yaml
+    README.md charts/netdata/Chart.yaml
 
   git add -A -p
-  git commit -m "Bump NetData Helm Chart from $old_appVersion => v$new_appVersion"
+  git commit -m "Bump Netdata Helm Chart from $old_appVersion => v$new_appVersion"
   git push -u
 }
 
