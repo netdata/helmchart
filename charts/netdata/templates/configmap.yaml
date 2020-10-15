@@ -11,7 +11,7 @@ metadata:
 data:
   {{- range $name, $config := .Values.parent.configs }}
   {{- if $config.enabled }}
-  {{ $name }}: {{ toYaml $config.data | indent 4 }}
+  {{ $name }}: {{ tpl $config.data $ | toYaml | indent 4 }}
   {{- end }}
   {{- end }}
 
@@ -30,7 +30,7 @@ metadata:
 data:
   {{- range $name, $config := .Values.child.configs }}
   {{- if $config.enabled }}
-  {{ $name }}: {{ toYaml $config.data | indent 4 }}
+  {{ $name }}: {{ tpl $config.data $ | toYaml | indent 4 }}
   {{- end }}
   {{- end }}
 {{- end }}
