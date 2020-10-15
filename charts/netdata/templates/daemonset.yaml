@@ -104,7 +104,7 @@ spec:
                 fieldRef:
                   fieldPath: metadata.namespace
             - name: NETDATA_LISTENER_PORT
-              value: '{{ .Values.service.port }}'
+              value: '{{ tpl (.Values.child.port | toString) . }}'
             {{- if .Values.sd.child.enabled }}
             - name: NETDATA_PLUGINS_GOD_WATCH_PATH
               value: "/etc/netdata/go.d/sd/go.d.yml"
@@ -115,7 +115,7 @@ spec:
             {{- end }}
           ports:
             - name: http
-              containerPort: {{ .Values.service.port }}
+              containerPort: {{ tpl (.Values.child.port | toString) . }}
               protocol: TCP
           livenessProbe:
             httpGet:
