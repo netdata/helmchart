@@ -1,5 +1,7 @@
 # Netdata Helm chart for Kubernetes deployments
 
+[![Artifact HUB](https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/netdata)](https://artifacthub.io/packages/search?repo=netdata)
+
 _Based on the work of varyumin (https://github.com/varyumin/netdata)_.
 
 **This Helm chart is in beta**.
