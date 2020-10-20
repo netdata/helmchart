@@ -183,6 +183,7 @@ parent:
 
 child:
   enabled: true
+  port: "{{ .Values.service.port }}"
 
   updateStrategy: {}
     # type: RollingUpdate
