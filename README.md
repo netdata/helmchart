@@ -2,8 +2,6 @@
 
 _Based on the work of varyumin (https://github.com/varyumin/netdata)_.
 
-**This Helm chart is in beta**.
-
 ## Introduction
 
 This chart bootstraps a [Netdata](https://github.com/netdata/netdata) deployment on a [Kubernetes](http://kubernetes.io)
