@@ -1,8 +1,7 @@
-apiVersion: v2
+apiVersion: v1
 name: netdata
-version: 3.0.0
+version: 2.0.12
 description: Real-time performance monitoring, done right! https://netdata.cloud/
-type: application
 keywords:
   - alerting
   - metric
