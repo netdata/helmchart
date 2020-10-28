@@ -70,7 +70,8 @@ tag:
       - tags: prometheus_generic
         expr: |
           {{ $scrapeOK := eq (get .Annotations "prometheus.io/scrape") "true" -}}
-          {{ $portOK := eq (default .Port (get .Annotations "prometheus.io/port")) .Port -}}
+          {{ $port := default .Port (get .Annotations "prometheus.io/port") }}
+          {{ $portOK := or (eq $port .Port) (eq $port .PortName) -}}
           {{ $imageOK := not (glob .Image "netdata/netdata*" "**pulsar*" "**telegraf*") -}}
           {{ and $scrapeOK $portOK $imageOK }}
 build:
