@@ -26,11 +26,11 @@ Please validate that the settings are suitable for your cluster before using the
 
 ## Installing the Helm chart
 
-You can install the Helm chart via our repository, or by cloning this repository.
+You can install the Helm chart via our Helm repository, or by cloning this repository.
 
-### Installing via our Helm repository
+### Installing via our Helm repository (recommended)
 
-To use Netdata's Helm repository, please follow the instructions [here](https://netdata.github.io/helmchart/).
+To use Netdata's Helm repository, run the following commands:
 
 ```bash
 helm repo add netdata https://netdata.github.io/helmchart/
@@ -38,7 +38,9 @@ helm install netdata netdata/netdata
 ```
 
 **See our [install Netdata on Kubernetes](https://learn.netdata.cloud/docs/agent/packaging/installer/methods/kubernetes)
-documentation for detailed installation and configuration instructions.**
+documentation for detailed installation and configuration instructions.** The remainder of this document assumes you 
+installed the Helm chart by cloning this repository, and thus uses slightly different `helm install`/`helm upgrade` 
+commands.
 
 ### Install by cloning the repository
 
