@@ -24,14 +24,21 @@ Please validate that the settings are suitable for your cluster before using the
     administrative system.
 -   The [Helm package manager](https://helm.sh/) v3.0.0 or newer on the same administrative system.
 
-## Installing the Chart
+## Installing the Helm chart
 
-**See our [install Netdata on Kubernetes](https://learn.netdata.cloud/docs/agent/packaging/installer/methods/kubernetes)
-documentation for detailed installation and configuration instructions.**
+You can install the Helm chart via our repository, or by cloning this repository.
 
 ### Installing via our Helm repository
 
-To use Netdata's Helm repository, please follow the instructions [here](https://netdata.github.io/helmchart/)
+To use Netdata's Helm repository, please follow the instructions [here](https://netdata.github.io/helmchart/).
+
+```bash
+helm repo add netdata https://netdata.github.io/helmchart/
+helm install netdata netdata/netdata
+```
+
+**See our [install Netdata on Kubernetes](https://learn.netdata.cloud/docs/agent/packaging/installer/methods/kubernetes)
+documentation for detailed installation and configuration instructions.**
 
 ### Install by cloning the repository
 
@@ -278,8 +285,8 @@ configuration](https://github.com/netdata/helmchart#configuration) and the file 
 default, changing the path if you copied it elsewhere.
 
 ```bash
-helm install --set-file sd.child.configmap.from.value=./child.yml netdata ./netdata-helmchart
-helm upgrade --set-file sd.child.configmap.from.value=./child.yml netdata ./netdata-helmchart
+helm install --set-file sd.child.configmap.from.value=./child.yml netdata ./netdata-helmchart/charts/netdata
+helm upgrade --set-file sd.child.configmap.from.value=./child.yml netdata ./netdata-helmchart/charts/netdata
 ```
 
 Now that you pushed an edited ConfigMap to your cluster, service discovery should find and set up metrics collection
@@ -291,13 +298,16 @@ Occasionally, you will want to add specific [labels](https://kubernetes.io/docs/
 You might want to do this to tell other applications on the cluster how to treat your pods, or simply to categorize applications on your cluster.
 You can label and annotate the parent and child pods by using the `podLabels` and `podAnnotations` dictionaries under the `parent` and `child` objects, respectively.
 
-For example, suppose you're installing netdata on all your database nodes, and you'd like the child pods to be labeled with `workload: database` so that you're able to recognize this.
+For example, suppose you're installing Netdata on all your database nodes, and you'd like the child pods to be labeled with `workload: database` so that you're able to recognize this.
+
 At the same time, say you've configured [chaoskube](https://github.com/helm/charts/tree/master/stable/chaoskube) to kill all pods annotated with `chaoskube.io/enabled: true`, and you'd like chaoskube to be enabled for the parent pod but not the childs.
+
 You would do this by installing as:
 
 ```console
-$ helm install ./netdata --name my-release \
-    --set child.podLabels.workload=database \
-    --set 'child.podAnnotations.chaoskube\.io/enabled=false' \
-    --set 'parent.podAnnotations.chaoskube\.io/enabled=true'
+$ helm install \
+  --set child.podLabels.workload=database \
+  --set 'child.podAnnotations.chaoskube\.io/enabled=false' \
+  --set 'parent.podAnnotations.chaoskube\.io/enabled=true' \
+  netdata ./netdata-helmchart/charts/netdata
 ```
