@@ -48,6 +48,7 @@ spec:
       {{- if .Values.sysctlImage.enabled }}
         - name: init-sysctl
           image: "{{ .Values.sysctlImage.repository }}:{{ .Values.sysctlImage.tag }}"
+          imagePullPolicy: {{ .Values.sysctlImage.pullPolicy }}
           command:
 {{ toYaml .Values.sysctlImage.command | indent 12 }}
           securityContext:
@@ -59,7 +60,8 @@ spec:
       {{- end }}
         {{- if .Values.child.persistUniqueID }}
         - name: init-nodeuid
-          image: netdata/wget
+          image: "{{ .Values.wgetImage.repository }}:{{ .Values.wgetImage.tag }}"
+          imagePullPolicy: {{ .Values.wgetImage.pullPolicy }}
           volumeMounts:
             - name: nodeuid
               mountPath: "/nodeuid"
