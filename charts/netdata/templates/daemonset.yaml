@@ -61,6 +61,9 @@ spec:
         {{- if .Values.child.persistUniqueID }}
         - name: init-nodeuid
           image: "{{ .Values.wgetImage.repository }}:{{ .Values.wgetImage.tag }}"
+          resources:
+            requests:
+              cpu: 1m
           imagePullPolicy: {{ .Values.wgetImage.pullPolicy }}
           volumeMounts:
             - name: nodeuid
