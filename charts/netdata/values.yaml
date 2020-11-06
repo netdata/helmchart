@@ -36,6 +36,11 @@ sysctlImage:
   command: []
   resources: {}
 
+wgetImage:
+  repository: netdata/wget
+  tag: latest
+  pullPolicy: Always
+
 service:
   type: ClusterIP
   port: 19999
