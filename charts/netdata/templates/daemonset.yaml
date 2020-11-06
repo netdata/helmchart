@@ -63,7 +63,7 @@ spec:
           image: "{{ .Values.wgetImage.repository }}:{{ .Values.wgetImage.tag }}"
           resources:
             requests:
-              cpu: 1m
+              cpu: 10m
           imagePullPolicy: {{ .Values.wgetImage.pullPolicy }}
           volumeMounts:
             - name: nodeuid
