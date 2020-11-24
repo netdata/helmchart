@@ -26,6 +26,7 @@ rules:
       - "watch"
   - apiGroups: [""]
     resources:
+      - "namespaces"
       - "resourcequotas"
     verbs:
       - "get"
