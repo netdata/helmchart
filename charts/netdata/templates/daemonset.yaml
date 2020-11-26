@@ -95,6 +95,13 @@ spec:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ tpl .Values.image.tag . }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- if and .Values.child.claiming.enabled .Values.child.claiming.token .Values.child.claiming.rooms }}
+          command:
+            - sh
+            - '-c'
+            - >
+              exec /usr/sbin/run.sh -W set2 cloud global enabled true -W set2 cloud global "cloud base url" "{{ .Values.child.claiming.url }}" -W "claim -token={{ .Values.child.claiming.token }} -rooms={{ .Values.child.claiming.rooms }} -url={{ .Values.child.claiming.url }}"
+          {{- end }}
           env:
             - name: MY_POD_NAME
               valueFrom:

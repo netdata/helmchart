@@ -38,8 +38,8 @@ helm install netdata netdata/netdata
 ```
 
 **See our [install Netdata on Kubernetes](https://learn.netdata.cloud/docs/agent/packaging/installer/methods/kubernetes)
-documentation for detailed installation and configuration instructions.** The remainder of this document assumes you 
-installed the Helm chart by cloning this repository, and thus uses slightly different `helm install`/`helm upgrade` 
+documentation for detailed installation and configuration instructions.** The remainder of this document assumes you
+installed the Helm chart by cloning this repository, and thus uses slightly different `helm install`/`helm upgrade`
 commands.
 
 ### Install by cloning the repository
@@ -149,6 +149,9 @@ The following table lists the configurable parameters of the netdata chart and t
 | `child.podAnnotationAppArmor.enabled`    | Whether or not to include the AppArmor security annotation                                                                                             | `true`                                                                    |
 | `child.persistUniqueID`                  | Whether or not to persist `netdata.public.unique.id` across restarts                                                                                   | `true`                                                                    |
 | `child.configs`                          | Manage custom child's configs                                                                                                                          | See [Configuration files](#configuration-files).                          |
+| `child.claiming.enabled`                 | Enable child claiming for netdata cloud                                                                                                                | `false`                                                                   |
+| `child.claiming.token`                   | Claim token                                                                                                                                            | `""`                                                                      |
+| `child.claiming.room`                    | Comma separated list of claim rooms IDs                                                                                                                | `""`                                                                      |
 | `notifications.slackurl`                 | URL for slack notifications                                                                                                                            | `""`                                                                      |
 | `notifications.slackrecipient`           | Slack recipient list                                                                                                                                   | `""`                                                                      |
 | `sysctlImage.enabled`                    | Enable an init container to modify Kernel settings                                                                                                     | `false`                                                                   |
