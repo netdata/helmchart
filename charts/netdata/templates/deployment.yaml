@@ -60,11 +60,10 @@ spec:
           command:
             - "/bin/sh"
             - "-c"
-            - >-
-              exec /usr/sbin/run.sh
-                -W set2 cloud global enabled true
-                -W set2 cloud global "cloud base url" "{{ .url }}"
-                -W "claim -token={{ .token }} -rooms={{ .rooms }} -url={{ .url }}"
+            - exec /usr/sbin/run.sh
+              -W set2 cloud global enabled true
+              -W set2 cloud global "cloud base url" "{{ .url }}"
+              -W "claim -token={{ .token }} -rooms={{ .rooms }} -url={{ .url }}"
           {{- end }}
           {{- end }}
           env:
