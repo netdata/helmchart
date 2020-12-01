@@ -289,3 +289,9 @@ child:
   env: {}
     # To disable anonymous statistics:
     # DO_NOT_TRACK: 1
+
+  claiming:
+    enabled: false
+    token: ""
+    rooms: ""
+    url: "https://app.netdata.cloud"
