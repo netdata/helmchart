@@ -47,6 +47,7 @@ service:
   annotations: {}
   # Use a static loadBalancerIP. Only to be used with type LoadBalancer
   # loadBalancerIP: 10.0.1.69
+  # loadBalancerSourceRanges: []
   # externalTrafficPolicy: Local
 
 ingress:
