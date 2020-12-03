@@ -44,8 +44,10 @@ wgetImage:
 service:
   type: ClusterIP
   port: 19999
+  annotations: {}
   # Use a static loadBalancerIP. Only to be used with type LoadBalancer
   # loadBalancerIP: 10.0.1.69
+  # externalTrafficPolicy: Local
 
 ingress:
   enabled: true
@@ -70,6 +72,7 @@ serviceAccount:
 
 
 parent:
+  port: 19999
   resources: {}
     # limits:
     #  cpu: 4
@@ -188,7 +191,7 @@ parent:
 
 child:
   enabled: true
-  port: "{{ .Values.service.port }}"
+  port: "{{ .Values.parent.port }}"
 
   updateStrategy: {}
     # type: RollingUpdate

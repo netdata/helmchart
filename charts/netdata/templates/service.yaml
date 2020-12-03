@@ -8,10 +8,17 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
     role: parent
+  annotations:
+{{- with .Values.service.annotations }}
+{{ toYaml . | trim | indent 4 }}
+{{- end }}
 spec:
   type: {{ .Values.service.type }}
   {{- if .Values.service.loadBalancerIP }}
   loadBalancerIP: {{ .Values.service.loadBalancerIP }}
+  {{- end }}
+  {{- if .Values.service.externalTrafficPolicy }}
+  et: {{ .Values.service.externalTrafficPolicy }}
   {{- end }}
   ports:
     - port: {{ .Values.service.port }}
