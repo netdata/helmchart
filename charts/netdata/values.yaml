@@ -45,10 +45,14 @@ service:
   type: ClusterIP
   port: 19999
   annotations: {}
-  # Use a static loadBalancerIP. Only to be used with type LoadBalancer
+  ## Only to be used with type LoadBalancer
   # loadBalancerIP: 10.0.1.69
   # loadBalancerSourceRanges: []
   # externalTrafficPolicy: Local
+  ## Only to be used with type LoadBalancer and external traffic policy Local
+  # healthCheckNodePort:
+  ## Only to be used with type ClusterIP
+  # clusterIP: 10.1.2.3
 
 ingress:
   enabled: true
@@ -104,7 +108,7 @@ parent:
   priorityClassName: ""
 
   env: {}
-    # To disable anonymous statistics:
+    ## To disable anonymous statistics:
     # DO_NOT_TRACK: 1
 
   podLabels: {}
@@ -113,13 +117,13 @@ parent:
 
   database:
     persistence: true
-    # Set '-' as the storageclass to get a volume from the default storage class.
+    ## Set '-' as the storageclass to get a volume from the default storage class.
     storageclass: "-"
     volumesize: 2Gi
 
   alarms:
     persistence: true
-    # Set '-' as the storageclass to get a volume from the default storage class.
+    ## Set '-' as the storageclass to get a volume from the default storage class.
     storageclass: "-"
     volumesize: 100Mi
 
@@ -291,7 +295,7 @@ child:
           - url: http://127.0.0.1:10249/metrics
 
   env: {}
-    # To disable anonymous statistics:
+    ## To disable anonymous statistics:
     # DO_NOT_TRACK: 1
 
   claiming:
