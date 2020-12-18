@@ -1,6 +1,6 @@
 # Netdata Helm chart for Kubernetes deployments
 
-[![Artifact HUB](https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/netdata)](https://artifacthub.io/packages/search?repo=netdata) ![Version: 3.4.0](https://img.shields.io/badge/Version-3.4.0-informational) ![AppVersion: v1.27.0](https://img.shields.io/badge/AppVersion-v1.27.0-informational)
+[![Artifact HUB](https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/netdata)](https://artifacthub.io/packages/search?repo=netdata) ![Version: 3.4.1](https://img.shields.io/badge/Version-3.4.1-informational) ![AppVersion: v1.27.1](https://img.shields.io/badge/AppVersion-v1.27.1-informational)
 
 _Based on the work of varyumin (https://github.com/varyumin/netdata)_.
 
@@ -84,7 +84,7 @@ The following table lists the configurable parameters of the netdata chart and t
 |------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------|
 | `replicaCount`                           | Number of `replicas` for the parent netdata `Deployment`                                                                                               | `1`                                                                       |
 | `image.repository`                       | Container image repo                                                                                                                                   | `netdata/netdata`                                                         |
-| `image.tag`                              | Container image tag                                                                                                                                    | Latest stable netdata release (e.g. `v1.27.0`)                            |
+| `image.tag`                              | Container image tag                                                                                                                                    | Latest stable netdata release (e.g. `v1.27.1`)                            |
 | `image.pullPolicy`                       | Container image pull policy                                                                                                                            | `Always`                                                                  |
 | `service.type`                           | Parent service type                                                                                                                                    | `ClusterIP`                                                               |
 | `service.port`                           | Parent service port                                                                                                                                    | `19999`                                                                   |
