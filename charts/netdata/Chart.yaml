@@ -1,6 +1,6 @@
 apiVersion: v2
 name: netdata
-version: 3.4.1
+version: 3.4.2
 description: Real-time performance monitoring, done right!
 type: application
 keywords:
@@ -25,4 +25,4 @@ maintainers:
   - name: Oleksii Kravchenko
     email: kamikaze.ua@gmail.com
 icon: https://netdata.github.io/helmchart/logo.png
-appVersion: v1.27.1
+appVersion: v1.28.0
