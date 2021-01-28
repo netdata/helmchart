@@ -25,9 +25,9 @@ spec:
   {{- end }}
   {{- if and (eq .Values.service.type "LoadBalancer") .Values.service.externalTrafficPolicy }}
   externalTrafficPolicy: {{ .Values.service.externalTrafficPolicy }}
-  {{- end }}
-  {{- if and (eq .Values.service.type "LoadBalancer") (eq .Values.service.externalTrafficPolicy "Local") .Values.service.healthCheckNodePort }}
+  {{- if and (eq .Values.service.externalTrafficPolicy "Local") .Values.service.healthCheckNodePort }}
   healthCheckNodePort: {{ .Values.service.healthCheckNodePort }}
+  {{- end }}
   {{- end }}
   {{- if and (eq .Values.service.type "ClusterIP") .Values.service.clusterIP }}
   clusterIP: {{ .Values.service.clusterIP }}
