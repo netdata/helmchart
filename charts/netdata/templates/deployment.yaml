@@ -76,14 +76,14 @@ spec:
                 fieldRef:
                   fieldPath: metadata.namespace
             - name: NETDATA_LISTENER_PORT
-              value: '{{ .Values.service.port }}'
+              value: '{{ .Values.parent.port }}'
             {{- range $key, $value := .Values.parent.env }}
             - name: {{ $key }}
               value: {{ $value | quote }}
             {{- end }}
           ports:
             - name: http
-              containerPort: {{ .Values.service.port }}
+              containerPort: {{ .Values.parent.port }}
               protocol: TCP
           livenessProbe:
             httpGet:
