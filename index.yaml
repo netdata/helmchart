@@ -2,6 +2,38 @@ apiVersion: v1
 entries:
   netdata:
   - apiVersion: v2
+    appVersion: v1.29.1
+    created: "2021-02-10T09:54:31.440970217Z"
+    description: Real-time performance monitoring, done right!
+    digest: e82f770375e4aad4ed1b148a93bd0dd3eb13315fa1f048dd44ad10fc53605899
+    home: https://netdata.cloud/
+    icon: https://netdata.github.io/helmchart/logo.png
+    keywords:
+    - alerting
+    - metric
+    - monitoring
+    maintainers:
+    - email: ilya@netdata.cloud
+      name: Ilya Mashchenko
+    - email: knatsakis@netdata.cloud
+      name: Konstantinos Natsakis
+    - email: mansour@netdata.cloud
+      name: Mansour Behabadi
+    - email: vryumin@gmail.com
+      name: Vladimir Ryumin
+    - email: karuppiah7890@gmail.com
+      name: Karuppiah Natarajan
+    - email: kamikaze.ua@gmail.com
+      name: Oleksii Kravchenko
+    name: netdata
+    sources:
+    - https://github.com/netdata/helmchart
+    - https://github.com/netdata/netdata
+    type: application
+    urls:
+    - https://github.com/netdata/helmchart/releases/download/netdata-3.5.1/netdata-3.5.1.tgz
+    version: 3.5.1
+  - apiVersion: v2
     appVersion: v1.29.0
     created: "2021-02-08T18:54:28.087245344Z"
     description: Real-time performance monitoring, done right!
