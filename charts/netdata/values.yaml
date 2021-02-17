@@ -246,8 +246,6 @@ child:
     userID: 201
     varlib: true
 
-  persistUniqueID: true
-
   configs:
     netdata:
       enabled: true
