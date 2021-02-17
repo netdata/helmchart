@@ -221,7 +221,7 @@ spec:
             name: netdata-conf-child
         {{- with .Values.child.persistence }}
         {{- if  and .rootDir .varlib }}
-        {{- $rd := ternary (printf "%s/%s" .rootDir $.Release.Namespace) .rootDir .namespaceAware }}
+        {{- $rd := ternary (printf "%s/ns_%s" .rootDir $.Release.Namespace) .rootDir .namespaceAware }}
         - name: persistencerootdir
           hostPath:
             path: {{ $rd }}
