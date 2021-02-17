@@ -244,7 +244,7 @@ child:
   persistence:
     rootDir: /opt/k8s-netdata
     userID: 201
-    varlib: yes
+    varlib: true
 
   persistUniqueID: true
 
