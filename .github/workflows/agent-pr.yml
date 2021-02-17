@@ -27,5 +27,5 @@ jobs:
         uses: repo-sync/pull-request@v2
         with:
           source_branch: agent-${{ github.event.inputs.agent_version }}
-          pr_title: "Update agent version to ${{ github.event.inputs.agent_version }}.'
+          pr_title: 'Update agent version to ${{ github.event.inputs.agent_version }}.'
           github_token: ${{ secrets.GITHUB_TOKEN }}
