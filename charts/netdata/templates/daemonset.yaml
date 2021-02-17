@@ -68,7 +68,7 @@ spec:
           imagePullPolicy: {{ $.Values.wgetImage.pullPolicy }}
           env:
            - name: USER_ID
-             value: "{{ .netdataUserUID }}"
+             value: "{{ .userID }}"
            - name: CHOWN_VAR_LIB
              value: "{{ ternary "yes" "no" .varlib }}"
           volumeMounts:
