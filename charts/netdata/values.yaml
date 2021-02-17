@@ -241,6 +241,11 @@ child:
 
   podAnnotations: {}
 
+  persistence:
+    rootDir: /opt/k8s-netdata
+    netdataUserUID: 201
+    varlib: yes
+
   persistUniqueID: true
 
   configs:

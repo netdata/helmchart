@@ -58,24 +58,31 @@ spec:
           resources:
 {{ toYaml .Values.sysctlImage.resources | indent 12 }}
       {{- end }}
-        {{- if .Values.child.persistUniqueID }}
-        - name: init-persist-varlibnetdata
-          image: "{{ .Values.wgetImage.repository }}:{{ .Values.wgetImage.tag }}"
+        {{- with .Values.child.persistence }}
+        {{- if and .rootDir .varlib }}
+        - name: init-persistence
+          image: "{{ $.Values.wgetImage.repository }}:{{ $.Values.wgetImage.tag }}"
           resources:
             requests:
               cpu: 10m
-          imagePullPolicy: {{ .Values.wgetImage.pullPolicy }}
+          imagePullPolicy: {{ $.Values.wgetImage.pullPolicy }}
+          env:
+           - name: USER_ID
+             value: "{{ .netdataUserUID }}"
+           - name: CHOWN_VAR_LIB
+             value: "{{ ternary "yes" "no" .varlib }}"
           volumeMounts:
-            - name: hostvarlib
-              mountPath: "/host/var/lib"
+            - name: persistencerootdir
+              mountPath: "/host"
           command:
             - "/bin/sh"
           args:
             - "-c"
             - '
-            [ -d "/host/var/lib/netdata" ] || exit 1;
-            chown 201:201 /host/var/lib/netdata || exit 1;
+            [ -d "/host" ] || exit 1;
+            [ "$CHOWN_VAR_LIB" == "yes" ] && (chown "$USER_ID":"$USER_ID" /host/var/lib/netdata || exit 1);
             '
+      {{- end }}
       {{- end }}
       containers:
         - name: {{ .Chart.Name }}
@@ -150,9 +157,9 @@ spec:
               subPath: {{ $name }}
             {{- end }}
             {{- end }}
-            {{- if .Values.child.persistUniqueID }}
-            - name: netdatavarlib
-              mountPath: "/var/lib/netdata/"
+            {{- if and .Values.child.persistence.rootDir .Values.child.persistence.varlib }}
+            - name: persistencevarlibdir
+              mountPath: /var/lib/netdata
             {{- end }}
             {{- if .Values.sd.child.enabled }}
             - name: sd-shared
@@ -212,15 +219,19 @@ spec:
         - name: config
           configMap:
             name: netdata-conf-child
-        {{- if .Values.child.persistUniqueID }}
-        - name: hostvarlib
+        {{- with .Values.child.persistence }}
+        {{- if  and .rootDir .varlib }}
+        - name: persistencerootdir
           hostPath:
-            path: /var/lib
-            type: Directory
-        - name: netdatavarlib
-          hostPath:
-            path: /var/lib/netdata
+            path: {{ .rootDir }}
             type: DirectoryOrCreate
+        {{- if .varlib }}
+        - name: persistencevarlibdir
+          hostPath:
+            path: {{ .rootDir }}/var/lib/netdata
+            type: DirectoryOrCreate
+        {{- end }}
+        {{- end }}
         {{- end }}
         {{- if .Values.sd.child.enabled }}
         - name: sd-shared
