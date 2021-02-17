@@ -243,6 +243,7 @@ child:
 
   persistence:
     rootDir: /opt/k8s-netdata
+    namespaceAware: false
     userID: 201
     varlib: true
 

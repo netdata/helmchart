@@ -221,14 +221,15 @@ spec:
             name: netdata-conf-child
         {{- with .Values.child.persistence }}
         {{- if  and .rootDir .varlib }}
+        {{- $rd := ternary (printf "%s/%s" .rootDir $.Release.Namespace) .rootDir .namespaceAware }}
         - name: persistencerootdir
           hostPath:
-            path: {{ .rootDir }}
+            path: {{ $rd }}
             type: DirectoryOrCreate
         {{- if .varlib }}
         - name: persistencevarlibdir
           hostPath:
-            path: {{ .rootDir }}/var/lib/netdata
+            path: {{ $rd }}/var/lib/netdata
             type: DirectoryOrCreate
         {{- end }}
         {{- end }}
