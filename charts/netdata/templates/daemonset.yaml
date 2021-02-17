@@ -59,36 +59,22 @@ spec:
 {{ toYaml .Values.sysctlImage.resources | indent 12 }}
       {{- end }}
         {{- if .Values.child.persistUniqueID }}
-        - name: init-nodeuid
+        - name: init-persist-varlibnetdata
           image: "{{ .Values.wgetImage.repository }}:{{ .Values.wgetImage.tag }}"
           resources:
             requests:
               cpu: 10m
           imagePullPolicy: {{ .Values.wgetImage.pullPolicy }}
           volumeMounts:
-            - name: nodeuid
-              mountPath: "/nodeuid"
-          env:
-            - name: MY_NODE_NAME
-              valueFrom:
-                fieldRef:
-                  fieldPath: spec.nodeName
+            - name: hostvarlib
+              mountPath: "/host/var/lib"
           command:
             - "/bin/sh"
           args:
             - "-c"
             - '
-            TOKEN=$(cat /var/run/secrets/kubernetes.io/serviceaccount/token);
-            URL="https://${KUBERNETES_SERVICE_HOST}:${KUBERNETES_SERVICE_PORT}/api/v1/nodes/${MY_NODE_NAME}";
-            HEADER="Authorization: Bearer ${TOKEN}";
-
-            DATA=$(wget -q -T 5 --no-check-certificate --header "${HEADER}" -O - "${URL}");
-            [ -z "${DATA}" ] && exit 1;
-
-            UID=$(echo "${DATA}" | grep -m 1 uid | grep -o ":.*" | tr -d ": \",");
-            [ -z "${UID}" ] && exit 1;
-
-            echo -n "${UID}" > /nodeuid/netdata.public.unique.id;
+            [ -d "/host/var/lib/netdata" ] || exit 1;
+            chown 201:201 /host/var/lib/netdata || exit 1;
             '
       {{- end }}
       containers:
@@ -165,8 +151,8 @@ spec:
             {{- end }}
             {{- end }}
             {{- if .Values.child.persistUniqueID }}
-            - name: nodeuid
-              mountPath: "/var/lib/netdata/registry/"
+            - name: netdatavarlib
+              mountPath: "/var/lib/netdata/"
             {{- end }}
             {{- if .Values.sd.child.enabled }}
             - name: sd-shared
@@ -227,8 +213,14 @@ spec:
           configMap:
             name: netdata-conf-child
         {{- if .Values.child.persistUniqueID }}
-        - name: nodeuid
-          emptyDir: {}
+        - name: hostvarlib
+          hostPath:
+            path: /var/lib
+            type: Directory
+        - name: netdatavarlib
+          hostPath:
+            path: /var/lib/netdata
+            type: DirectoryOrCreate
         {{- end }}
         {{- if .Values.sd.child.enabled }}
         - name: sd-shared
