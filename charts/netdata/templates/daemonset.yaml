@@ -59,7 +59,7 @@ spec:
 {{ toYaml .Values.sysctlImage.resources | indent 12 }}
       {{- end }}
         {{- with .Values.child.persistence }}
-        {{- if and .rootDir .varlib }}
+        {{- if and .path .varlib }}
         - name: init-persistence
           image: "{{ $.Values.wgetImage.repository }}:{{ $.Values.wgetImage.tag }}"
           resources:
@@ -72,7 +72,7 @@ spec:
            - name: CHOWN_VAR_LIB
              value: "{{ ternary "yes" "no" .varlib }}"
           volumeMounts:
-            - name: persistencerootdir
+            - name: persistencepath
               mountPath: "/host"
           command:
             - "/bin/sh"
@@ -157,7 +157,7 @@ spec:
               subPath: {{ $name }}
             {{- end }}
             {{- end }}
-            {{- if and .Values.child.persistence.rootDir .Values.child.persistence.varlib }}
+            {{- if and .Values.child.persistence.path .Values.child.persistence.varlib }}
             - name: persistencevarlibdir
               mountPath: /var/lib/netdata
             {{- end }}
@@ -220,16 +220,16 @@ spec:
           configMap:
             name: netdata-conf-child
         {{- with .Values.child.persistence }}
-        {{- if  and .rootDir .varlib }}
-        {{- $rd := ternary (printf "%s/ns_%s" .rootDir $.Release.Namespace) .rootDir .namespaceAware }}
-        - name: persistencerootdir
+        {{- if  and .path .varlib }}
+        {{- $p := ternary (printf "%s/ns_%s" .path $.Release.Namespace) .path .namespaceAware }}
+        - name: persistencepath
           hostPath:
-            path: {{ $rd }}
+            path: {{ $p }}
             type: DirectoryOrCreate
         {{- if .varlib }}
         - name: persistencevarlibdir
           hostPath:
-            path: {{ $rd }}/var/lib/netdata
+            path: {{ $p }}/var/lib/netdata
             type: DirectoryOrCreate
         {{- end }}
         {{- end }}

@@ -242,7 +242,7 @@ child:
   podAnnotations: {}
 
   persistence:
-    rootDir: /var/lib/k8s-netdata-child
+    path: /var/lib/k8s-netdata-child
     namespaceAware: false
     userID: 201
     varlib: true
