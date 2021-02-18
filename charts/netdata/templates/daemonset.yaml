@@ -58,21 +58,15 @@ spec:
           resources:
 {{ toYaml .Values.sysctlImage.resources | indent 12 }}
       {{- end }}
-        {{- with .Values.child.persistence }}
-        {{- if and .path .varlib }}
+        {{- if and .Values.child.persistence.enabled .Values.child.persistence.hostPath }}
         - name: init-persistence
-          image: "{{ $.Values.wgetImage.repository }}:{{ $.Values.wgetImage.tag }}"
+          image: "{{ .Values.wgetImage.repository }}:{{ .Values.wgetImage.tag }}"
           resources:
             requests:
               cpu: 10m
-          imagePullPolicy: {{ $.Values.wgetImage.pullPolicy }}
-          env:
-           - name: USER_ID
-             value: "{{ .userID }}"
-           - name: CHOWN_VAR_LIB
-             value: "{{ ternary "yes" "no" .varlib }}"
+          imagePullPolicy: {{ .Values.wgetImage.pullPolicy }}
           volumeMounts:
-            - name: persistencepath
+            - name: persistencehostpath
               mountPath: "/host"
           command:
             - "/bin/sh"
@@ -80,9 +74,8 @@ spec:
             - "-c"
             - '
             [ -d "/host" ] || exit 1;
-            [ "$CHOWN_VAR_LIB" == "yes" ] && (chown "$USER_ID":"$USER_ID" /host/var/lib/netdata || exit 1);
+            chmod 777 /host/var/lib/netdata || exit 1;
             '
-      {{- end }}
       {{- end }}
       containers:
         - name: {{ .Chart.Name }}
@@ -157,7 +150,7 @@ spec:
               subPath: {{ $name }}
             {{- end }}
             {{- end }}
-            {{- if and .Values.child.persistence.path .Values.child.persistence.varlib }}
+            {{- if and .Values.child.persistence.enabled .Values.child.persistence.hostPath }}
             - name: persistencevarlibdir
               mountPath: /var/lib/netdata
             {{- end }}
@@ -220,18 +213,15 @@ spec:
           configMap:
             name: netdata-conf-child
         {{- with .Values.child.persistence }}
-        {{- if  and .path .varlib }}
-        {{- $p := ternary (printf "%s/ns_%s" .path $.Release.Namespace) .path .namespaceAware }}
-        - name: persistencepath
+        {{- if  and .enabled .hostPath }}
+        - name: persistencehostpath
           hostPath:
-            path: {{ $p }}
+            path: {{ .hostPath }}
             type: DirectoryOrCreate
-        {{- if .varlib }}
         - name: persistencevarlibdir
           hostPath:
-            path: {{ $p }}/var/lib/netdata
+            path: {{ .hostPath }}/var/lib/netdata
             type: DirectoryOrCreate
-        {{- end }}
         {{- end }}
         {{- end }}
         {{- if .Values.sd.child.enabled }}
