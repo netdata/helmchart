@@ -66,15 +66,14 @@ spec:
               cpu: 10m
           imagePullPolicy: {{ .Values.wgetImage.pullPolicy }}
           volumeMounts:
-            - name: persistencehostpath
-              mountPath: "/host"
+            - name: persistencevarlibdir
+              mountPath: "/persistencevarlibdir"
           command:
             - "/bin/sh"
           args:
             - "-c"
             - '
-            [ -d "/host" ] || exit 1;
-            chmod 777 /host/var/lib/netdata || exit 1;
+            chmod 777 /persistencevarlibdir;
             '
       {{- end }}
       containers:
@@ -214,10 +213,6 @@ spec:
             name: netdata-conf-child
         {{- with .Values.child.persistence }}
         {{- if  and .enabled .hostPath }}
-        - name: persistencehostpath
-          hostPath:
-            path: {{ .hostPath }}
-            type: DirectoryOrCreate
         - name: persistencevarlibdir
           hostPath:
             path: {{ .hostPath }}/var/lib/netdata
