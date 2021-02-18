@@ -241,7 +241,9 @@ child:
 
   podAnnotations: {}
 
-  persistUniqueID: true
+  persistence:
+    enabled: true
+    hostPath: /var/lib/netdata-k8s-child
 
   configs:
     netdata:
