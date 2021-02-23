@@ -16,7 +16,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Prepare Environment
-        run: pip3 install pyyaml semver
+        run: pip3 install ruamel-yaml semver
       - name: Create Branch
         run: git checkout -b agent-${{ github.event.inputs.agent_version }}
       - name: Update Files
