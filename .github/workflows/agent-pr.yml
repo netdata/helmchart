@@ -1,0 +1,31 @@
+---
+name: Agent Version PR
+
+on:
+  workflow_dispatch:
+    inputs:
+      agent_version:
+        name: Agent Version
+        required: true
+
+jobs:
+  agent-pr:
+    name: Generate Agent Version Bump PR
+    runs_on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Prepare Environment
+        run: pip3 install ruamel-yaml semver
+      - name: Create Branch
+        run: git checkout -b agent-${{ github.event.inputs.agent_version }}
+      - name: Update Files
+        run: .github/scripts/update-agent-version.py ${{ github.event.inputs.agent_version }}
+      - name: Commit Changes
+        run: git commit -a -m 'Update agent version to ${{ github.event.inputs.agent_version }}.'
+      - name: Create PR
+        uses: repo-sync/pull-request@v2
+        with:
+          source_branch: agent-${{ github.event.inputs.agent_version }}
+          pr_title: 'Update agent version to ${{ github.event.inputs.agent_version }}.'
+          github_token: ${{ secrets.GITHUB_TOKEN }}
