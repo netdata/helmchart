@@ -326,3 +326,11 @@ $ helm install \
   --set 'parent.podAnnotations.chaoskube\.io/enabled=true' \
   netdata ./netdata-helmchart/charts/netdata
 ```
+
+## Contributing
+
+If you want to contribute, we are humbled! 
+
+- Take a look at our [Contributing Guidelines](https://learn.netdata.cloud/contribute/handbook).
+- This repository is under thr [Netdata Code Of Conduct](https://learn.netdata.cloud/contribute/code-of-conduct).
+- Chat about your contribution and let us help you in our [forum](https://community.netdata.cloud/c/agent-development/9)!
