@@ -17,6 +17,10 @@ jobs:
         uses: actions/checkout@v2
       - name: Prepare Environment
         run: pip3 install ruamel-yaml semver
+      - name: Configure Git
+        run: |
+          git config --global user.name Netdatabot
+          git config --global user.email bot@netdata.cloud
       - name: Create Branch
         run: git checkout -b agent-${{ github.event.inputs.agent_version }}
       - name: Update Files
