@@ -27,6 +27,8 @@ jobs:
         run: .github/scripts/update-agent-version.py ${{ github.event.inputs.agent_version }}
       - name: Commit Changes
         run: git commit -a -m 'Update agent version to ${{ github.event.inputs.agent_version }}.'
+      - name: Push Branch
+        run: git push -u origin agent-${{ github.event.inputs.agent_version }}
       - name: Create PR
         uses: repo-sync/pull-request@v2
         with:
