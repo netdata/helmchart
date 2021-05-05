@@ -41,6 +41,6 @@ jobs:
         uses: repo-sync/pull-request@v2
         with:
           source_branch: agent-${{ github.event.inputs.agent_version }}
-          pr_title: 'Update agent version to ${{ github.event.inputs.agent_version }}.'
+          pr_title: 'Update agent version to ${{ github.event.inputs.agent_version }}'
           pr_body: 'See https://github.com/netdata/netdata/releases/tag/${{ github.event.inputs.agent_version }} for release notes.'
           github_token: ${{ secrets.GITHUB_TOKEN }}
