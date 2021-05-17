@@ -30,3 +30,25 @@ Create chart name and version as used by the chart label.
 {{- define "netdata.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
+
+{{/*
+Return the target Kubernetes version
+*/}}
+{{- define "netdata.kubeVersion" -}}
+{{- default .Capabilities.KubeVersion.Version .Values.kubeVersion -}}
+{{- end -}}
+
+{{/*
+Return the appropriate apiVersion for ingress.
+*/}}
+{{- define "netdata.ingress.apiVersion" -}}
+{{- if .Values.ingress.apiVersion -}}
+{{- .Values.ingress.apiVersion -}}
+{{- else if semverCompare "<1.14-0" (include "netdata.kubeVersion" .) -}}
+{{- "extensions/v1beta1" -}}
+{{- else if semverCompare "<1.19-0" (include "netdata.kubeVersion" .) -}}
+{{- "networking.k8s.io/v1beta1" -}}
+{{- else -}}
+{{- "networking.k8s.io/v1" -}}
+{{- end -}}
+{{- end -}}
