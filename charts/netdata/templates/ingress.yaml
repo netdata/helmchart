@@ -27,11 +27,11 @@ spec:
       http:
         paths:
           - path: {{ $ingressPath }}
-            {{- if and (ne $apiVersion "extensions/v1beta1") (ne $apiVersion "networking.k8s.io/v1beta1") }}
+            {{- if not (eq $apiVersion "extensions/v1beta1" "networking.k8s.io/v1beta1") }}
             pathType: Prefix
             {{- end }}
             backend:
-              {{- if or (eq $apiVersion "extensions/v1beta1") (eq $apiVersion "networking.k8s.io/v1beta1") }}
+              {{- if eq $apiVersion "extensions/v1beta1" "networking.k8s.io/v1beta1" }}
               serviceName: {{ $fullName }}
               servicePort: http
               {{- else }}
