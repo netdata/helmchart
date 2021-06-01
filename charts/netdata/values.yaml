@@ -20,13 +20,13 @@ sd:
       from:
         file: sdconfig/child.yml
         value: {}
-    resources: {}
-    # limits:
-    #  cpu: 50m
-    #  memory: 60Mi
-    # requests:
-    #  cpu: 50m
-    #  memory: 60Mi
+    resources:
+      limits:
+        cpu: 50m
+        memory: 150Mi
+      requests:
+        cpu: 50m
+        memory: 100Mi
 
 sysctlImage:
   enabled: false
