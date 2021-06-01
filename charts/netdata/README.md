@@ -1,6 +1,6 @@
 # Netdata Helm chart for Kubernetes deployments
 
-[![Artifact HUB](https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/netdata)](https://artifacthub.io/packages/search?repo=netdata) ![Version: 3.6.7](https://img.shields.io/badge/Version-3.6.7-informational) ![AppVersion: v1.31.0](https://img.shields.io/badge/AppVersion-v1.31.0-informational)
+[![Artifact HUB](https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/netdata)](https://artifacthub.io/packages/search?repo=netdata) ![Version: 3.6.11](https://img.shields.io/badge/Version-3.6.11-informational) ![AppVersion: v1.31.0](https://img.shields.io/badge/AppVersion-v1.31.0-informational)
 
 _Based on the work of varyumin (https://github.com/varyumin/netdata)_.
 
@@ -126,7 +126,7 @@ The following table lists the configurable parameters of the netdata chart and t
 | `parent.database.volumesize`             | The storage space for the PVC of the parent database                                                                                                   | `2Gi`                                                                     |
 | `parent.alarms.persistence`              | Whether the parent should use a persistent volume for the alarms log                                                                                   | `true`                                                                    |
 | `parent.alarms.storageclass`             | The storage class for the persistent volume claim of the parent's alarm log, mounted to `/var/lib/netdata`                                             | the default storage class                                                 |
-| `parent.alarms.volumesize`               | The storage space for the PVC of the parent alarm log                                                                                                  | `100Mi`                                                                   |
+| `parent.alarms.volumesize`               | The storage space for the PVC of the parent alarm log                                                                                                  | `1Gi`                                                                   |
 | `parent.env`                             | Set environment parameters for the parent deployment                                                                                                   | `{}`                                                                      |
 | `parent.podLabels`                       | Additional labels to add to the parent pods                                                                                                            | `{}`                                                                      |
 | `parent.podAnnotations`                  | Additional annotations to add to the parent pods                                                                                                       | `{}`                                                                      |
