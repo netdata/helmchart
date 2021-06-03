@@ -125,7 +125,7 @@ parent:
     persistence: true
     ## Set '-' as the storageclass to get a volume from the default storage class.
     storageclass: "-"
-    volumesize: 100Mi
+    volumesize: 1Gi
 
   configs:
     netdata:
