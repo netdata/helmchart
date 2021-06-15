@@ -80,18 +80,15 @@ spec:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ tpl .Values.image.tag . }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          {{- with .Values.child.claiming }}
-          {{- if and .enabled .token .rooms }}
-          command:
-            - "/bin/sh"
-            - "-c"
-            - exec /usr/sbin/run.sh
-              -W set2 cloud global enabled true
-              -W set2 cloud global "cloud base url" "{{ .url }}"
-              -W "claim -token={{ .token }} -rooms={{ .rooms }} -url={{ .url }}"
-          {{- end }}
-          {{- end }}
           env:
+            {{- if .Values.child.claiming.enabled }}
+            - name: NETDATA_CLAIM_URL
+              value: "{{ .Values.child.claiming.url }}"
+            - name: NETDATA_CLAIM_TOKEN
+              value: "{{ .Values.child.claiming.token }}"
+            - name: NETDATA_CLAIM_ROOMS
+              value: "{{ .Values.child.claiming.rooms }}"
+            {{- end }}
             - name: MY_POD_NAME
               valueFrom:
                 fieldRef:
