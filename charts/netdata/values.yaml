@@ -27,6 +27,16 @@ sd:
       requests:
         cpu: 50m
         memory: 100Mi
+    livenessProbe:
+      failureThreshold: 3
+      periodSeconds: 30
+      successThreshold: 1
+      timeoutSeconds: 1
+    readinessProbe:
+      failureThreshold: 3
+      periodSeconds: 30
+      successThreshold: 1
+      timeoutSeconds: 1
 
 sysctlImage:
   enabled: false

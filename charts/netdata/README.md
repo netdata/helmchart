@@ -1,6 +1,6 @@
 # Netdata Helm chart for Kubernetes deployments
 
-[![Artifact HUB](https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/netdata)](https://artifacthub.io/packages/search?repo=netdata) ![Version: 3.6.12](https://img.shields.io/badge/Version-3.6.12-informational) ![AppVersion: v1.31.0](https://img.shields.io/badge/AppVersion-v1.31.0-informational)
+[![Artifact HUB](https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/netdata)](https://artifacthub.io/packages/search?repo=netdata) ![Version: 3.6.13](https://img.shields.io/badge/Version-3.6.13-informational) ![AppVersion: v1.31.0](https://img.shields.io/badge/AppVersion-v1.31.0-informational)
 
 _Based on the work of varyumin (https://github.com/varyumin/netdata)_.
 
@@ -181,6 +181,14 @@ The following table lists the configurable parameters of the netdata chart and t
 | `sd.child.configmap.key`                 | Child service-discovery ConfigMap key                                                                                                                  | `config.yml`                                                              |
 | `sd.child.configmap.from.file`           | File to use for child service-discovery configuration generation                                                                                       | `sdconfig/sd-child.yml`                                                   |
 | `sd.child.configmap.from.value`          | Value to use for child service-discovery configuration generation                                                                                      | `{}`                                                                      |
+| `sd.child.livenessProbe.failureThreshold`   | When a liveness probe fails, Kubernetes will try failureThreshold times before giving up. Giving up the liveness probe means restarting the container  | `3`                                                                       |
+| `sd.child.livenessProbe.periodSeconds`      | How often (in seconds) to perform the liveness probe                                                                                                   | `30`                                                                      |
+| `sd.child.livenessProbe.successThreshold`   | Minimum consecutive successes for the liveness probe to be considered successful after having failed                                                   | `1`                                                                       |
+| `sd.child.livenessProbe.timeoutSeconds`     | Number of seconds after which the liveness probe times out                                                                                             | `1`                                                                       |
+| `sd.child.readinessProbe.failureThreshold`  | When a readiness probe fails, Kubernetes will try failureThreshold times before giving up. Giving up the readiness probe means marking the Pod Unready | `3`                                                                       |
+| `sd.child.readinessProbe.periodSeconds`     | How often (in seconds) to perform the readiness probe                                                                                                  | `30`                                                                      |
+| `sd.child.readinessProbe.successThreshold`  | Minimum consecutive successes for the readiness probe to be considered successful after having failed                                                  | `1`                                                                       |
+| `sd.child.readinessProbe.timeoutSeconds`    | Number of seconds after which the readiness probe times out                                                                                            | `1`                                                                       |
 
 Example to set the parameters from the command line:
 ```console

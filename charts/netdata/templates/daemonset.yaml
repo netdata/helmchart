@@ -184,6 +184,22 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: spec.nodeName
+          livenessProbe:
+            httpGet:
+              path: /api/v1/info
+              port: http
+            failureThreshold: { { .Values.sd.child.livenessProbe.failureThreshold } }
+            periodSeconds: { { .Values.sd.child.livenessProbe.periodSeconds } }
+            successThreshold: { { .Values.sd.child.livenessProbe.successThreshold } }
+            timeoutSeconds: { { .Values.sd.child.livenessProbe.timeoutSeconds } }
+          readinessProbe:
+            httpGet:
+              path: /api/v1/info
+              port: http
+            failureThreshold: { { .Values.sd.child.readinessProbe.failureThreshold } }
+            periodSeconds: { { .Values.sd.child.readinessProbe.periodSeconds } }
+            successThreshold: { { .Values.sd.child.readinessProbe.successThreshold } }
+            timeoutSeconds: { { .Values.sd.child.readinessProbe.timeoutSeconds } }
         {{- end }}
     {{- with .Values.child.nodeSelector }}
       nodeSelector:
