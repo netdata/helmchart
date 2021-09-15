@@ -133,7 +133,7 @@ parent:
       path: /etc/netdata/netdata.conf
       data: |
         [global]
-          memory mode = save
+          memory mode = dbengine
 
         [plugins]
           cgroups = no
@@ -155,7 +155,7 @@ parent:
         [11111111-2222-3333-4444-555555555555]
           enabled = yes
           history = 3600
-          default memory mode = save
+          default memory mode = dbengine
           health enabled by default = auto
           allow from = *
     health:
@@ -251,7 +251,7 @@ child:
       path: /etc/netdata/netdata.conf
       data: |
         [global]
-          memory mode = none
+          memory mode = ram
         [health]
           enabled = no
     stream:

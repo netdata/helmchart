@@ -1,6 +1,6 @@
 # Netdata Helm chart for Kubernetes deployments
 
-[![Artifact HUB](https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/netdata)](https://artifacthub.io/packages/search?repo=netdata) ![Version: 3.6.13](https://img.shields.io/badge/Version-3.6.13-informational) ![AppVersion: v1.31.0](https://img.shields.io/badge/AppVersion-v1.31.0-informational)
+[![Artifact HUB](https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/netdata)](https://artifacthub.io/packages/search?repo=netdata) ![Version: 3.6.14](https://img.shields.io/badge/Version-3.6.14-informational) ![AppVersion: v1.31.0](https://img.shields.io/badge/AppVersion-v1.31.0-informational)
 
 _Based on the work of varyumin (https://github.com/varyumin/netdata)_.
 
@@ -214,7 +214,7 @@ $ helm install ./netdata --name my-release -f values.yaml
 
 | Parameter                  | Description                                                                           | Default                                                                                                                       |
 |----------------------------|---------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------|
-| `parent.configs.netdata`   | Contents of the parent's `netdata.conf`                                               | `memory mode = save`                                                                                                          |
+| `parent.configs.netdata`   | Contents of the parent's `netdata.conf`                                               | `memory mode = dbengine`                                                                                                          |
 | `parent.configs.stream`    | Contents of the parent's `stream.conf`                                                | Store child data, accept all connections, and issue alarms for child data.                                                    |
 | `parent.configs.health`    | Contents of `health_alarm_notify.conf`                                                | Email disabled, a sample of the required settings for Slack notifications                                                     |
 | `parent.configs.exporting` | Contents of `exporting.conf`                                                          | Disabled                                                                                                                      |
