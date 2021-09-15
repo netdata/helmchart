@@ -1,6 +1,6 @@
 apiVersion: v2
 name: netdata
-version: 3.6.13
+version: 3.6.14
 description: Real-time performance monitoring, done right!
 type: application
 keywords:
