@@ -38,18 +38,18 @@ spec:
       priorityClassName: "{{ .Values.parent.priorityClassName }}"
       {{- end }}
       initContainers:
-      {{- if .Values.sysctlImage.enabled }}
+      {{- if .Values.sysctlInitContainer.enabled }}
         - name: init-sysctl
-          image: "{{ .Values.sysctlImage.repository }}:{{ .Values.sysctlImage.tag }}"
-          imagePullPolicy: {{ .Values.sysctlImage.pullPolicy }}
+          image: "{{ .Values.initContainerImage.repository }}:{{ .Values.initContainerImage.tag }}"
+          imagePullPolicy: {{ .Values.initContainerImage.pullPolicy }}
           command:
-{{ toYaml .Values.sysctlImage.command | indent 12 }}
+{{ toYaml .Values.sysctlInitContainer.command | indent 12 }}
           securityContext:
             runAsNonRoot: false
             privileged: true
             runAsUser: 0
           resources:
-{{ toYaml .Values.sysctlImage.resources | indent 12 }}
+{{ toYaml .Values.sysctlInitContainer.resources | indent 12 }}
       {{- end }}
       containers:
         - name: {{ .Chart.Name }}

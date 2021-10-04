@@ -45,26 +45,26 @@ spec:
       priorityClassName: "{{ .Values.child.priorityClassName }}"
       {{- end }}
       initContainers:
-      {{- if .Values.sysctlImage.enabled }}
+      {{- if .Values.sysctlInitContainer.enabled }}
         - name: init-sysctl
-          image: "{{ .Values.sysctlImage.repository }}:{{ .Values.sysctlImage.tag }}"
-          imagePullPolicy: {{ .Values.sysctlImage.pullPolicy }}
+          image: "{{ .Values.initContainerImage.repository }}:{{ .Values.initContainerImage.tag }}"
+          imagePullPolicy: {{ .Values.initContainerImage.pullPolicy }}
           command:
-{{ toYaml .Values.sysctlImage.command | indent 12 }}
+{{ toYaml .Values.sysctlInitContainer.command | indent 12 }}
           securityContext:
             runAsNonRoot: false
             privileged: true
             runAsUser: 0
           resources:
-{{ toYaml .Values.sysctlImage.resources | indent 12 }}
+{{ toYaml .Values.sysctlInitContainer.resources | indent 12 }}
       {{- end }}
         {{- if and .Values.child.persistence.enabled .Values.child.persistence.hostPath }}
         - name: init-persistence
-          image: "{{ .Values.wgetImage.repository }}:{{ .Values.wgetImage.tag }}"
+          image: "{{ .Values.initContainerImage.repository }}:{{ .Values.initContainerImage.tag }}"
           resources:
             requests:
               cpu: 10m
-          imagePullPolicy: {{ .Values.wgetImage.pullPolicy }}
+          imagePullPolicy: {{ .Values.initContainerImage.pullPolicy }}
           volumeMounts:
             - name: persistencevarlibdir
               mountPath: "/persistencevarlibdir"
