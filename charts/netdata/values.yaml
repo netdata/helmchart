@@ -28,7 +28,7 @@ sd:
         cpu: 50m
         memory: 100Mi
 
-initContainerImage:
+initContainersImage:
   repository: alpine
   tag: latest
   pullPolicy: Always

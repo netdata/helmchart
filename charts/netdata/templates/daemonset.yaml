@@ -47,8 +47,8 @@ spec:
       initContainers:
       {{- if .Values.sysctlInitContainer.enabled }}
         - name: init-sysctl
-          image: "{{ .Values.initContainerImage.repository }}:{{ .Values.initContainerImage.tag }}"
-          imagePullPolicy: {{ .Values.initContainerImage.pullPolicy }}
+          image: "{{ .Values.initContainersImage.repository }}:{{ .Values.initContainersImage.tag }}"
+          imagePullPolicy: {{ .Values.initContainersImage.pullPolicy }}
           command:
 {{ toYaml .Values.sysctlInitContainer.command | indent 12 }}
           securityContext:
@@ -60,11 +60,11 @@ spec:
       {{- end }}
         {{- if and .Values.child.persistence.enabled .Values.child.persistence.hostPath }}
         - name: init-persistence
-          image: "{{ .Values.initContainerImage.repository }}:{{ .Values.initContainerImage.tag }}"
+          image: "{{ .Values.initContainersImage.repository }}:{{ .Values.initContainersImage.tag }}"
           resources:
             requests:
               cpu: 10m
-          imagePullPolicy: {{ .Values.initContainerImage.pullPolicy }}
+          imagePullPolicy: {{ .Values.initContainersImage.pullPolicy }}
           volumeMounts:
             - name: persistencevarlibdir
               mountPath: "/persistencevarlibdir"
