@@ -115,6 +115,8 @@ parent:
 
   podAnnotations: {}
 
+  dnsPolicy: Default
+
   database:
     persistence: true
     ## Set '-' as the storageclass to get a volume from the default storage class.
@@ -240,6 +242,10 @@ child:
     enabled: true
 
   podAnnotations: {}
+
+  hostNetwork: true
+
+  dnsPolicy: ClusterFirstWithHostNet
 
   persistence:
     enabled: true

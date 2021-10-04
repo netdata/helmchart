@@ -40,7 +40,7 @@ spec:
       restartPolicy: Always
       hostPID: true
       hostIPC: true
-      hostNetwork: true
+      hostNetwork: {{ .Values.child.hostNetwork }}
       {{- if .Values.child.priorityClassName }}
       priorityClassName: "{{ .Values.child.priorityClassName }}"
       {{- end }}
@@ -220,5 +220,5 @@ spec:
         - name: sd-shared
           emptyDir: {}
         {{- end }}
-      dnsPolicy: ClusterFirstWithHostNet
+      dnsPolicy: {{ .Values.child.dnsPolicy }}
 {{- end }}
