@@ -8,9 +8,10 @@ image:
   pullPolicy: Always
 
 sd:
-  repository: netdata/agent-sd
-  tag: v0.2.2
-  pullPolicy: Always
+  image:
+    repository: netdata/agent-sd
+    tag: v0.2.2
+    pullPolicy: Always
   child:
     enabled: true
     configmap:
