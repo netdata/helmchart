@@ -28,18 +28,15 @@ sd:
         cpu: 50m
         memory: 100Mi
 
-sysctlImage:
-  enabled: false
+initContainersImage:
   repository: alpine
   tag: latest
   pullPolicy: Always
+
+sysctlInitContainer:
+  enabled: false
   command: []
   resources: {}
-
-wgetImage:
-  repository: netdata/wget
-  tag: latest
-  pullPolicy: Always
 
 service:
   type: ClusterIP
