@@ -243,7 +243,7 @@ There are two different persistent volumes on `parent` node by design (not count
 1. database (`/var/cache/netdata`) - all metrics data is stored here. Performance of this volume affects query timings.
 2. alarms (`/var/lib/netdata`) - alarm log, if not persistent pod recreation will result in parent appearing as a new node in `netdata.cloud` (due to `./registry/` and `./cloud.d/` being removed).
 
-In case of `childrens` it is a bit simpler. Most of the mounts we do share with the host, since by design it is a deamonset. By default hostPath: `/var/lib/netdata-k8s-child` is mounted on child in: `/var/lib/netdata`. Same rules apply here as in case of parrent's `alarms` volume.
+In case of `child` instance it is a bit simpler. By default hostPath: `/var/lib/netdata-k8s-child` is mounted on child in: `/var/lib/netdata`. You can disable it but this option is pretty much required in a real life scenario, as without it each pod deletion will result in new replication node for a parent.
 
 ### Service discovery and supported services
 
