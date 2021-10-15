@@ -237,6 +237,14 @@ must be indented with two more spaces relative to the preceding line:
         config line 2 #No problem indenting more here
 ```
 
+### Persistent volumes
+
+There are two different persistent volumes on `parent` node by design (not counting any Configmap/Secret mounts). Both can be used but they don't have to be. Keep in mind that whenever persistent volumes for `parent` are not used, all the data for specific PV is lost in case of pod removal.
+1. database (`/var/cache/netdata`) - all metrics data is stored here. Performance of this volume affects query timings.
+2. alarms (`/var/lib/netdata`) - alarm log, if not persistent pod recreation will result in parent appearing as a new node in `netdata.cloud` (due to `./registry/` and `./cloud.d/` being removed).
+
+In case of `childrens` it is a bit simpler. Most of the mounts we do share with the host, since by design it is a deamonset. By default hostPath: `/var/lib/netdata-k8s-child` is mounted on child in: `/var/lib/netdata`. Same rules apply here as in case of parrent's `alarms` volume.
+
 ### Service discovery and supported services
 
 Netdata's [service discovery](https://github.com/netdata/agent-service-discovery/), which is installed as part of the
