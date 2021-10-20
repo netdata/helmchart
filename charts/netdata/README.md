@@ -191,7 +191,7 @@ $ helm install ./netdata --name my-release \
 
 Another example, to set a different ingress controller.
 
-By default `kubernetes.io/ingress.class` set to use `nginx` as an ingress controller but you can set `Traefik` as your
+By default `kubernetes.io/ingress.class` set to use `nginx` as an ingress controller, but you can set `Traefik` as your
 ingress controller by setting `ingress.annotations`.
 
 ```
@@ -227,11 +227,11 @@ or uncomment the line in `values.yml`.
 | `child.configs.kubelet`    | Contents of the child's `go.d/k8s_kubelet.conf` that drives the kubelet collector     | Update metrics every sec, do not retry to detect the endpoint, look for the kubelet metrics at http://127.0.0.1:10255/metrics |
 | `child.configs.kubeproxy`  | Contents of the child's `go.d/k8s_kubeproxy.conf` that drives the kubeproxy collector | Update metrics every sec, do not retry to detect the endpoint, look for the coredns metrics at http://127.0.0.1:10249/metrics |
 
-To deploy additional netdata user configuration files, you will need to add similar entries to either the parent.configs
-or the child. configs arrays. Regardless of whether you add config files that reside directly under `/etc/netdata` or in
-a subdirectory such as `/etc/netdata/go.d`, you can use the already provided configurations as reference. For reference,
-the `parent.configs` the array includes an `example` alarm that would get triggered if the python.d `example` module was
-enabled.
+To deploy additional netdata user configuration files, you will need to add similar entries to either
+the `parent.configs` or the `child.configs` arrays. Regardless of whether you add config files that reside directly
+under `/etc/netdata` or in a subdirectory such as `/etc/netdata/go.d`, you can use the already provided configurations
+as reference. For reference, the `parent.configs` the array includes an `example` alarm that would get triggered if the
+python.d `example` module was enabled.
 
 Note that with the default configuration of this chart, the parent does the health checks and triggers alarms, but does
 not collect much data. As a result, the only other configuration files that might make sense to add to the parent are
@@ -249,14 +249,14 @@ must be indented with two more spaces relative to the preceding line:
 ### Persistent volumes
 
 There are two different persistent volumes on `parent` node by design (not counting any Configmap/Secret mounts). Both
-can be used but they don't have to be. Keep in mind that whenever persistent volumes for `parent` are not used, all the
+can be used, but they don't have to be. Keep in mind that whenever persistent volumes for `parent` are not used, all the
 data for specific PV is lost in case of pod removal.
 
 1. database (`/var/cache/netdata`) - all metrics data is stored here. Performance of this volume affects query timings.
 2. alarms (`/var/lib/netdata`) - alarm log, if not persistent pod recreation will result in parent appearing as a new
    node in `netdata.cloud` (due to `./registry/` and `./cloud.d/` being removed).
 
-In case of `child` instance it is a bit simpler. By default hostPath: `/var/lib/netdata-k8s-child` is mounted on child
+In case of `child` instance it is a bit simpler. By default, hostPath: `/var/lib/netdata-k8s-child` is mounted on child
 in: `/var/lib/netdata`. You can disable it but this option is pretty much required in a real life scenario, as without
 it each pod deletion will result in new replication node for a parent.
 
@@ -264,7 +264,7 @@ it each pod deletion will result in new replication node for a parent.
 
 Netdata's [service discovery](https://github.com/netdata/agent-service-discovery/), which is installed as part of the
 Helm chart installation, finds what services are running on a cluster's pods, converts that into configuration files,
-and exports them so they can be monitored.
+and exports them, so they can be monitored.
 
 #### Applications
 
