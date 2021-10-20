@@ -18,11 +18,11 @@ Please validate that the settings are suitable for your cluster before using the
 
 ## Prerequisites
 
--   A working cluster running Kubernetes v1.9 or newer.
--   The [kubectl](https://kubernetes.io/docs/reference/kubectl/overview/) command line tool, within [one minor version
-    difference](https://kubernetes.io/docs/tasks/tools/install-kubectl/#before-you-begin) of your cluster, on an
-    administrative system.
--   The [Helm package manager](https://helm.sh/) v3.0.0 or newer on the same administrative system.
+- A working cluster running Kubernetes v1.9 or newer.
+- The [kubectl](https://kubernetes.io/docs/reference/kubectl/overview/) command line tool,
+  within [one minor version difference](https://kubernetes.io/docs/tasks/tools/install-kubectl/#before-you-begin) of
+  your cluster, on an administrative system.
+- The [Helm package manager](https://helm.sh/) v3.0.0 or newer on the same administrative system.
 
 ## Installing the Helm chart
 
@@ -73,8 +73,7 @@ To uninstall/delete the `my-release` deployment:
  helm delete netdata
 ```
 
-The command removes all the Kubernetes components associated with the chart and
-deletes the release.
+The command removes all the Kubernetes components associated with the chart and deletes the release.
 
 ## Configuration
 
@@ -183,6 +182,7 @@ The following table lists the configurable parameters of the netdata chart and t
 | `sd.child.configmap.from.value`          | Value to use for child service-discovery configuration generation                                                                                      | `{}`                                                                                    |
 
 Example to set the parameters from the command line:
+
 ```console
 $ helm install ./netdata --name my-release \
     --set notifications.slackurl=MySlackAPIURL \
@@ -191,13 +191,16 @@ $ helm install ./netdata --name my-release \
 
 Another example, to set a different ingress controller.
 
-By default `kubernetes.io/ingress.class` set to use `nginx` as an ingress controller but you can set `Traefik` as your ingress controller by setting `ingress.annotations`.
+By default `kubernetes.io/ingress.class` set to use `nginx` as an ingress controller but you can set `Traefik` as your
+ingress controller by setting `ingress.annotations`.
+
 ```
 $ helm install ./netdata --name my-release \
     --set ingress.annotations=kubernetes.io/ingress.class: traefik
 ```
 
-Alternatively to passing each variable in the command line, a YAML file that specifies the values for the parameters can be provided while installing the chart. For example,
+Alternatively to passing each variable in the command line, a YAML file that specifies the values for the parameters can
+be provided while installing the chart. For example,
 
 ```console
 $ helm install ./netdata --name my-release -f values.yaml
@@ -206,9 +209,9 @@ $ helm install ./netdata --name my-release -f values.yaml
 > **Tip**: You can use the default [values.yaml](values.yaml)
 
 > **Note:**: To opt out of anonymous statistics, set the `DO_NOT_TRACK`
-  environment variable to non-zero or non-empty value in
-  `parent.env` / `child.env` configuration (e.g: `DO_NOT_TRACK: 1`)
-  or uncomment the line in `values.yml`.
+environment variable to non-zero or non-empty value in
+`parent.env` / `child.env` configuration (e.g: `DO_NOT_TRACK: 1`)
+or uncomment the line in `values.yml`.
 
 ### Configuration files
 
@@ -224,9 +227,15 @@ $ helm install ./netdata --name my-release -f values.yaml
 | `child.configs.kubelet`    | Contents of the child's `go.d/k8s_kubelet.conf` that drives the kubelet collector     | Update metrics every sec, do not retry to detect the endpoint, look for the kubelet metrics at http://127.0.0.1:10255/metrics |
 | `child.configs.kubeproxy`  | Contents of the child's `go.d/k8s_kubeproxy.conf` that drives the kubeproxy collector | Update metrics every sec, do not retry to detect the endpoint, look for the coredns metrics at http://127.0.0.1:10249/metrics |
 
-To deploy additional netdata user configuration files, you will need to add similar entries to either the parent.configs or the child. configs arrays. Regardless of whether you add config files that reside directly under `/etc/netdata` or in a subdirectory such as `/etc/netdata/go.d`, you can use the already provided configurations as reference. For reference, the `parent.configs` the array includes an `example` alarm that would get triggered if the python.d `example` module was enabled.
+To deploy additional netdata user configuration files, you will need to add similar entries to either the parent.configs
+or the child. configs arrays. Regardless of whether you add config files that reside directly under `/etc/netdata` or in
+a subdirectory such as `/etc/netdata/go.d`, you can use the already provided configurations as reference. For reference,
+the `parent.configs` the array includes an `example` alarm that would get triggered if the python.d `example` module was
+enabled.
 
-Note that with the default configuration of this chart, the parent does the health checks and triggers alarms, but does not collect much data. As a result, the only other configuration files that might make sense to add to the parent are the alarm and alarm template definitions, under `/etc/netdata/health.d`.
+Note that with the default configuration of this chart, the parent does the health checks and triggers alarms, but does
+not collect much data. As a result, the only other configuration files that might make sense to add to the parent are
+the alarm and alarm template definitions, under `/etc/netdata/health.d`.
 
 > **Tip**: Do pay attention to the indentation of the config file contents, as it matters for the parsing of the `yaml` file. Note that the first line under `var: |`
 must be indented with two more spaces relative to the preceding line:
@@ -239,11 +248,17 @@ must be indented with two more spaces relative to the preceding line:
 
 ### Persistent volumes
 
-There are two different persistent volumes on `parent` node by design (not counting any Configmap/Secret mounts). Both can be used but they don't have to be. Keep in mind that whenever persistent volumes for `parent` are not used, all the data for specific PV is lost in case of pod removal.
-1. database (`/var/cache/netdata`) - all metrics data is stored here. Performance of this volume affects query timings.
-2. alarms (`/var/lib/netdata`) - alarm log, if not persistent pod recreation will result in parent appearing as a new node in `netdata.cloud` (due to `./registry/` and `./cloud.d/` being removed).
+There are two different persistent volumes on `parent` node by design (not counting any Configmap/Secret mounts). Both
+can be used but they don't have to be. Keep in mind that whenever persistent volumes for `parent` are not used, all the
+data for specific PV is lost in case of pod removal.
 
-In case of `child` instance it is a bit simpler. By default hostPath: `/var/lib/netdata-k8s-child` is mounted on child in: `/var/lib/netdata`. You can disable it but this option is pretty much required in a real life scenario, as without it each pod deletion will result in new replication node for a parent.
+1. database (`/var/cache/netdata`) - all metrics data is stored here. Performance of this volume affects query timings.
+2. alarms (`/var/lib/netdata`) - alarm log, if not persistent pod recreation will result in parent appearing as a new
+   node in `netdata.cloud` (due to `./registry/` and `./cloud.d/` being removed).
+
+In case of `child` instance it is a bit simpler. By default hostPath: `/var/lib/netdata-k8s-child` is mounted on child
+in: `/var/lib/netdata`. You can disable it but this option is pretty much required in a real life scenario, as without
+it each pod deletion will result in new replication node for a parent.
 
 ### Service discovery and supported services
 
@@ -255,46 +270,48 @@ and exports them so they can be monitored.
 
 Service discovery currently supports the following applications via their associated collector:
 
--   [ActiveMQ](https://learn.netdata.cloud/docs/agent/collectors/go.d.plugin/modules/activemq)
--   [Apache](https://learn.netdata.cloud/docs/agent/collectors/go.d.plugin/modules/apache)
--   [Bind](https://learn.netdata.cloud/docs/agent/collectors/go.d.plugin/modules/bind)
--   [CockroachDB](https://learn.netdata.cloud/docs/agent/collectors/go.d.plugin/modules/cockroachdb)
--   [Consul](https://learn.netdata.cloud/docs/agent/collectors/go.d.plugin/modules/consul)
--   [CoreDNS](https://learn.netdata.cloud/docs/agent/collectors/go.d.plugin/modules/coredns)
--   [Elasticsearch](https://learn.netdata.cloud/docs/agent/collectors/go.d.plugin/modules/elasticsearch)
--   [Fluentd](https://learn.netdata.cloud/docs/agent/collectors/go.d.plugin/modules/fluentd)
--   [FreeRADIUS](https://learn.netdata.cloud/docs/agent/collectors/go.d.plugin/modules/freeradius)
--   [HDFS](https://learn.netdata.cloud/docs/agent/collectors/go.d.plugin/modules/hdfs)
--   [Lighttpd](https://learn.netdata.cloud/docs/agent/collectors/go.d.plugin/modules/lighttpd)
--   [Lighttpd2](https://learn.netdata.cloud/docs/agent/collectors/go.d.plugin/modules/lighttpd2)
--   [Logstash](https://learn.netdata.cloud/docs/agent/collectors/go.d.plugin/modules/logstash)
--   [MySQL](https://learn.netdata.cloud/docs/agent/collectors/go.d.plugin/modules/mysql)
--   [NGINX](https://learn.netdata.cloud/docs/agent/collectors/go.d.plugin/modules/nginx)
--   [OpenVPN](https://learn.netdata.cloud/docs/agent/collectors/go.d.plugin/modules/openvpn)
--   [PHP-FPM](https://learn.netdata.cloud/docs/agent/collectors/go.d.plugin/modules/phpfpm)
--   [RabbitMQ](https://learn.netdata.cloud/docs/agent/collectors/go.d.plugin/modules/rabbitmq)
--   [Solr](https://learn.netdata.cloud/docs/agent/collectors/go.d.plugin/modules/solr)
--   [Tengine](https://learn.netdata.cloud/docs/agent/collectors/go.d.plugin/modules/tengine)
--   [Unbound](https://learn.netdata.cloud/docs/agent/collectors/go.d.plugin/modules/unbound)
--   [VerneMQ](https://learn.netdata.cloud/docs/agent/collectors/go.d.plugin/modules/vernemq)
--   [ZooKeeper](https://learn.netdata.cloud/docs/agent/collectors/go.d.plugin/modules/zookeeper)
+- [ActiveMQ](https://learn.netdata.cloud/docs/agent/collectors/go.d.plugin/modules/activemq)
+- [Apache](https://learn.netdata.cloud/docs/agent/collectors/go.d.plugin/modules/apache)
+- [Bind](https://learn.netdata.cloud/docs/agent/collectors/go.d.plugin/modules/bind)
+- [CockroachDB](https://learn.netdata.cloud/docs/agent/collectors/go.d.plugin/modules/cockroachdb)
+- [Consul](https://learn.netdata.cloud/docs/agent/collectors/go.d.plugin/modules/consul)
+- [CoreDNS](https://learn.netdata.cloud/docs/agent/collectors/go.d.plugin/modules/coredns)
+- [Elasticsearch](https://learn.netdata.cloud/docs/agent/collectors/go.d.plugin/modules/elasticsearch)
+- [Fluentd](https://learn.netdata.cloud/docs/agent/collectors/go.d.plugin/modules/fluentd)
+- [FreeRADIUS](https://learn.netdata.cloud/docs/agent/collectors/go.d.plugin/modules/freeradius)
+- [HDFS](https://learn.netdata.cloud/docs/agent/collectors/go.d.plugin/modules/hdfs)
+- [Lighttpd](https://learn.netdata.cloud/docs/agent/collectors/go.d.plugin/modules/lighttpd)
+- [Lighttpd2](https://learn.netdata.cloud/docs/agent/collectors/go.d.plugin/modules/lighttpd2)
+- [Logstash](https://learn.netdata.cloud/docs/agent/collectors/go.d.plugin/modules/logstash)
+- [MySQL](https://learn.netdata.cloud/docs/agent/collectors/go.d.plugin/modules/mysql)
+- [NGINX](https://learn.netdata.cloud/docs/agent/collectors/go.d.plugin/modules/nginx)
+- [OpenVPN](https://learn.netdata.cloud/docs/agent/collectors/go.d.plugin/modules/openvpn)
+- [PHP-FPM](https://learn.netdata.cloud/docs/agent/collectors/go.d.plugin/modules/phpfpm)
+- [RabbitMQ](https://learn.netdata.cloud/docs/agent/collectors/go.d.plugin/modules/rabbitmq)
+- [Solr](https://learn.netdata.cloud/docs/agent/collectors/go.d.plugin/modules/solr)
+- [Tengine](https://learn.netdata.cloud/docs/agent/collectors/go.d.plugin/modules/tengine)
+- [Unbound](https://learn.netdata.cloud/docs/agent/collectors/go.d.plugin/modules/unbound)
+- [VerneMQ](https://learn.netdata.cloud/docs/agent/collectors/go.d.plugin/modules/vernemq)
+- [ZooKeeper](https://learn.netdata.cloud/docs/agent/collectors/go.d.plugin/modules/zookeeper)
 
 #### Prometheus endpoints
 
-Service discovery supports Prometheus endpoints via the [Prometheus](https://learn.netdata.cloud/docs/agent/collectors/go.d.plugin/modules/prometheus) collector.
+Service discovery supports Prometheus endpoints via
+the [Prometheus](https://learn.netdata.cloud/docs/agent/collectors/go.d.plugin/modules/prometheus) collector.
 
 Annotations on pods allow a fine control of the scraping process:
 
--   `prometheus.io/scrape`: The default configuration will scrape all pods and, if set to false, this annotation excludes the pod from the scraping process.
--   `prometheus.io/path`: If the metrics path is not _/metrics_, define it with this annotation.
--   `prometheus.io/port`: Scrape the pod on the indicated port instead of the pod’s declared ports.
+- `prometheus.io/scrape`: The default configuration will scrape all pods and, if set to false, this annotation excludes
+  the pod from the scraping process.
+- `prometheus.io/path`: If the metrics path is not _/metrics_, define it with this annotation.
+- `prometheus.io/port`: Scrape the pod on the indicated port instead of the pod’s declared ports.
 
 #### Configure service discovery
 
 If your cluster runs services on non-default ports or uses non-default names, you may need to configure service
-discovery to start collecting metrics from your services. You have to edit the [default
-ConfigMap](https://github.com/netdata/helmchart/blob/master/sdconfig/child.yml) that is shipped with the Helmchart and
-deploy that to your cluster.
+discovery to start collecting metrics from your services. You have to edit
+the [default ConfigMap](https://github.com/netdata/helmchart/blob/master/sdconfig/child.yml) that is shipped with the
+Helmchart and deploy that to your cluster.
 
 First, copy `netdata-helmchart/sdconfig/child.yml` to a new location outside the `netdata-helmchart` directory. The
 destination can be anywhere you like, but the following examples assume it resides next to the `netdata-helmchart`
@@ -304,8 +321,9 @@ directory.
 cp netdata-helmchart/sdconfig/child.yml .
 ```
 
-Edit the new `child.yml` file according to your needs. See the [Helm chart
-configuration](https://github.com/netdata/helmchart#configuration) and the file itself for details. You can then run
+Edit the new `child.yml` file according to your needs. See
+the [Helm chart configuration](https://github.com/netdata/helmchart#configuration) and the file itself for details. You
+can then run
 `helm install`/`helm upgrade` with the `--set-file` argument to use your configured `child.yml` file instead of the
 default, changing the path if you copied it elsewhere.
 
@@ -319,13 +337,19 @@ from your non-default service.
 
 ### Custom pod labels and annotations
 
-Occasionally, you will want to add specific [labels](https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/) and [annotations](https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/) to the parent and/or child pods.
-You might want to do this to tell other applications on the cluster how to treat your pods, or simply to categorize applications on your cluster.
-You can label and annotate the parent and child pods by using the `podLabels` and `podAnnotations` dictionaries under the `parent` and `child` objects, respectively.
+Occasionally, you will want to add
+specific [labels](https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/)
+and [annotations](https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/) to the parent and/or
+child pods. You might want to do this to tell other applications on the cluster how to treat your pods, or simply to
+categorize applications on your cluster. You can label and annotate the parent and child pods by using the `podLabels`
+and `podAnnotations` dictionaries under the `parent` and `child` objects, respectively.
 
-For example, suppose you're installing Netdata on all your database nodes, and you'd like the child pods to be labeled with `workload: database` so that you're able to recognize this.
+For example, suppose you're installing Netdata on all your database nodes, and you'd like the child pods to be labeled
+with `workload: database` so that you're able to recognize this.
 
-At the same time, say you've configured [chaoskube](https://github.com/helm/charts/tree/master/stable/chaoskube) to kill all pods annotated with `chaoskube.io/enabled: true`, and you'd like chaoskube to be enabled for the parent pod but not the childs.
+At the same time, say you've configured [chaoskube](https://github.com/helm/charts/tree/master/stable/chaoskube) to kill
+all pods annotated with `chaoskube.io/enabled: true`, and you'd like chaoskube to be enabled for the parent pod but not
+the childs.
 
 You would do this by installing as:
 
@@ -343,4 +367,5 @@ If you want to contribute, we are humbled!
 
 - Take a look at our [Contributing Guidelines](https://learn.netdata.cloud/contribute/handbook).
 - This repository is under the [Netdata Code Of Conduct](https://learn.netdata.cloud/contribute/code-of-conduct).
-- Chat about your contribution and let us help you in our [forum](https://community.netdata.cloud/c/agent-development/9)!
+- Chat about your contribution and let us help you in
+  our [forum](https://community.netdata.cloud/c/agent-development/9)!
