@@ -163,8 +163,8 @@ spec:
 {{ toYaml .Values.child.resources | indent 12 }}
         {{- if .Values.sd.child.enabled }}
         - name: sd
-          image: "{{ .Values.sd.repository }}:{{ .Values.sd.tag }}"
-          imagePullPolicy: {{ .Values.sd.pullPolicy }}
+          image: "{{ .Values.sd.image.repository }}:{{ .Values.sd.image.tag }}"
+          imagePullPolicy: {{ .Values.sd.image.pullPolicy }}
           volumeMounts:
             - name: sd-shared
               mountPath: "/export/"

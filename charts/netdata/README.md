@@ -1,6 +1,6 @@
 # Netdata Helm chart for Kubernetes deployments
 
-[![Artifact HUB](https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/netdata)](https://artifacthub.io/packages/search?repo=netdata) ![Version: 3.7.0](https://img.shields.io/badge/Version-3.7.0-informational) ![AppVersion: v1.31.0](https://img.shields.io/badge/AppVersion-v1.31.0-informational)
+[![Artifact HUB](https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/netdata)](https://artifacthub.io/packages/search?repo=netdata) ![Version: 3.7.1](https://img.shields.io/badge/Version-3.7.1-informational) ![AppVersion: v1.31.0](https://img.shields.io/badge/AppVersion-v1.31.0-informational)
 
 _Based on the work of varyumin (https://github.com/varyumin/netdata)_.
 
@@ -173,7 +173,7 @@ The following table lists the configurable parameters of the netdata chart and t
 | `sysctlInitContainer.command`            | sysctl init container command to execute                                                                                                               | []                                                                                      |
 | `sysctlInitContainer.resources`          | sysctl Init container CPU/Memory resource requests/limits                                                                                              | {}                                                                                      |
 | `sd.image.repository`                    | Service-discovery image repo                                                                                                                           | `netdata/agent-sd`                                                                      |
-| `sd.image.tag`                           | Service-discovery image tag                                                                                                                            | Latest stable release (e.g. `v0.1.0`)                                                   |
+| `sd.image.tag`                           | Service-discovery image tag                                                                                                                            | Latest stable release (e.g. `v0.2.2`)                                                   |
 | `sd.image.pullPolicy`                    | Service-discovery image pull policy                                                                                                                    | `Always`                                                                                |
 | `sd.child.enabled`                       | Add service-discovery sidecar container to the netdata child pod definition                                                                            | `true`                                                                                  |
 | `sd.child.resources`                     | Child service-discovery container CPU/Memory resource requests/limits                                                                                  | `{resources: {limits: {cpu: 50m, memory: 150Mi}, requests: {cpu: 50m, memory: 100Mi}}}` |
