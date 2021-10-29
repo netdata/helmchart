@@ -9,8 +9,8 @@ metadata:
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
 spec:
   allowPrivilegeEscalation: true
-  allowedCapabilities:
-  - '*'
+  defaultAddCapabilities:
+    - SYS_PTRACE
   fsGroup:
     rule: RunAsAny
   hostIPC: true
@@ -19,7 +19,6 @@ spec:
   hostPorts:
   - max: 65535
     min: 0
-  privileged: true
   runAsUser:
     rule: RunAsAny
   seLinux:
