@@ -5,6 +5,8 @@ on:
   push:
     branches:
       - master
+    paths:
+      - charts/**
 
 jobs:
   release:
@@ -15,12 +17,29 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Prepare Environment
+        run: pip3 install ruamel-yaml semver
+
       - name: Configure Git
         run: |
-          git config user.name "$GITHUB_ACTOR"
-          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+          git config --global user.name Netdatabot
+          git config --global user.email bot@netdata.cloud
+
+      - name: Update Files
+        run: .github/scripts/update_versions.py set_chart_version
+
+      - name: Get the new version
+        id: new_version_var
+        run: echo ::set-output name=new_version::$(.github/scripts/update_versions.py get_chart_version)
 
       - name: Run chart-releaser
         uses: helm/chart-releaser-action@v1.2.1
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+
+      - name: Commit new version
+        run: |
+          git config --global user.name Netdatabot
+          git config --global user.email bot@netdata.cloud
+          git commit -am "[skip ci] New Chart version to ${{ steps.new_version_var.outputs.new_version }}"
+          git push

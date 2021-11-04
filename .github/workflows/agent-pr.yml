@@ -26,7 +26,7 @@ jobs:
           git checkout -b agent-${{ github.event.inputs.agent_version }}
           git push -u origin agent-${{ github.event.inputs.agent_version }}
       - name: Update Files
-        run: .github/scripts/update-agent-version.py ${{ github.event.inputs.agent_version }}
+        run: .github/scripts/update_versions.py set_app_version --version ${{ github.event.inputs.agent_version }}
       - name: Commit Changes
         uses: swinton/commit@v2.x
         env:
@@ -34,7 +34,6 @@ jobs:
         with:
           files: |
             charts/netdata/Chart.yaml
-            charts/netdata/README.md
           commit-message: 'Update agent version to ${{ github.event.inputs.agent_version }}.'
           ref: refs/heads/agent-${{ github.event.inputs.agent_version }}
       - name: Create PR
