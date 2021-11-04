@@ -39,7 +39,5 @@ jobs:
 
       - name: Commit new version
         run: |
-          git config --global user.name Netdatabot
-          git config --global user.email bot@netdata.cloud
           git commit -am "[skip ci] New Chart version to ${{ steps.new_version_var.outputs.new_version }}"
           git push
