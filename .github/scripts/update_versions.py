@@ -89,7 +89,7 @@ class FileHandler(object):
     def write_readme(old_version, new_version):
         with open(PREFIX.joinpath('README.md'), 'r+', encoding='UTF-8') as readme:
             data = readme.read()
-            data = data.replace(str(old_version), str(new_version), 1)
+            data = data.replace(str(old_version), str(new_version), 2)
             readme.seek(0)
             readme.write(data)
             readme.truncate()
