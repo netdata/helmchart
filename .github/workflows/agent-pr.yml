@@ -34,6 +34,7 @@ jobs:
         with:
           files: |
             charts/netdata/Chart.yaml
+            charts/netdata/README.md
           commit-message: 'Update agent version to ${{ github.event.inputs.agent_version }}.'
           ref: refs/heads/agent-${{ github.event.inputs.agent_version }}
       - name: Create PR

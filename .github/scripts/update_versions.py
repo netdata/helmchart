@@ -18,7 +18,7 @@ def _parse_command_line():
     """Defines arguments for the program and parses the given command line"""
     parser = ArgumentParser(
         formatter_class=RawDescriptionHelpFormatter,
-        description=('''\
+        description=("""\
              Specify  arguments as listed below
              Examples:
              --------------------------------
@@ -26,7 +26,7 @@ def _parse_command_line():
                 python update_version.py set_chart_version
                 python update_version.py get_app_version
                 python update_version.py set_app_version --version v1.31.0
-    '''))
+    """))
 
     parser.add_argument('action',
                         choices=['get_chart_version', 'set_chart_version',
@@ -41,7 +41,7 @@ def _parse_command_line():
 
 
 class Versioning:
-    '''Getting current Chart and App versions and bumping to new ones.'''
+    """ Getting current Chart and App versions and bumping to new ones """
     def __init__(self, chart_data, action, version=None):
         self.action = action
         self.version = version
@@ -55,8 +55,7 @@ class Versioning:
 
     def set_chart_version(self):
         old_chart_data = self.chart_data['version']
-        new_chart_version = semver.VersionInfo.parse(old_chart_data) \
-                                                     .next_version(part='patch')
+        new_chart_version = semver.VersionInfo.parse(old_chart_data).next_version(part='patch')
 
         FileHandler.write_readme(old_chart_data, new_chart_version)
         self.chart_data['version'] = str(new_chart_version)
@@ -67,12 +66,14 @@ class Versioning:
 
     def set_app_version(self):
         new_app_version = self.version
+        FileHandler.write_readme(self.chart_data['appVersion'],
+                                 new_app_version)
         self.chart_data['appVersion'] = new_app_version
         FileHandler.write_chart(self.chart_data)
 
 
 class FileHandler(object):
-    ''' Handling the Chart and app versions in Chart.yaml and README.md files'''
+    """ Handling the Chart and app versions in Chart.yaml and README.md files """
     @staticmethod
     def load_chart_file():
         with open(PREFIX.joinpath('Chart.yaml'), 'r', encoding='UTF-8') as chart:
@@ -91,6 +92,7 @@ class FileHandler(object):
             data = data.replace(str(old_version), str(new_version))
             readme.seek(0)
             readme.write(data)
+            readme.truncate()
 
 
 def main():
@@ -100,6 +102,7 @@ def main():
         print("You must specify an app version for the 'set_app_version' command")
         sys.exit(1)
     Versioning(chart_data, args.action, args.version).run()
+
 
 if __name__ == "__main__":
     main()
