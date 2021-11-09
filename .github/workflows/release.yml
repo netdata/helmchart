@@ -7,6 +7,8 @@ on:
       - master
     paths:
       - charts/**
+env:
+  GITHUB_TOKEN: ${{ secrets.NETDATABOT_GITHUB_TOKEN }}
 
 jobs:
   release:
@@ -16,6 +18,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
+          token: ${{ env.GITHUB_TOKEN }}
 
       - name: Prepare Environment
         run: pip3 install ruamel-yaml semver
