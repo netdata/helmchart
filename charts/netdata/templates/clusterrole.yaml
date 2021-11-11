@@ -11,7 +11,7 @@ metadata:
 rules:
   - apiGroups: [""]
     resources:
-      - "pods"        # used by sd and cgroup-name.sh
+      - "pods"        # used by sd, netdata (cgroup-name.sh, get-kubernetes-labels.sh)
       - "services"    # used by sd
       - "configmaps"  # used by sd
       - "secrets"     # used by sd
@@ -21,7 +21,7 @@ rules:
       - "watch"
   - apiGroups: [""]
     resources:
-      - "namespaces"  # used by cgroup-name.sh
+      - "namespaces"  # used by netdata (cgroup-name.sh, get-kubernetes-labels.sh)
     verbs:
       - "get"
   {{- end -}}
