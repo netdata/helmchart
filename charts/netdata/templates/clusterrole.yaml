@@ -11,40 +11,17 @@ metadata:
 rules:
   - apiGroups: [""]
     resources:
-      - "nodes"
-      - "pods"
-      - "services"
-      - "endpoints"
-      - "configmaps"
-      - "secrets"
-      - "events"
-      - "componentstatuses"
-      - "nodes/proxy"
+      - "pods"        # used by sd, netdata (cgroup-name.sh, get-kubernetes-labels.sh)
+      - "services"    # used by sd
+      - "configmaps"  # used by sd
+      - "secrets"     # used by sd
     verbs:
       - "get"
       - "list"
       - "watch"
   - apiGroups: [""]
     resources:
-      - "namespaces"
-      - "resourcequotas"
-    verbs:
-      - "get"
-      - "list"
-  - apiGroups: [""]
-    resources:
-      - "nodes/metrics"
-      - "nodes/spec"
-    verbs:
-      - "get"
-  - apiGroups: ["extensions"]
-    resources:
-      - "ingresses"
-    verbs:
-      - "get"
-      - "list"
-      - "watch"
-  - nonResourceURLs: ["/version", "/healthz", "/metrics"]
+      - "namespaces"  # used by netdata (cgroup-name.sh, get-kubernetes-labels.sh)
     verbs:
       - "get"
   {{- end -}}
