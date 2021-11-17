@@ -9,8 +9,9 @@ metadata:
     chart: {{ .Chart.Name }}-{{ .Chart.Version }}
 spec:
   allowPrivilegeEscalation: true
-  defaultAddCapabilities:
+  allowedCapabilities:
     - SYS_PTRACE
+    - SYS_ADMIN
   fsGroup:
     rule: RunAsAny
   hostIPC: true
