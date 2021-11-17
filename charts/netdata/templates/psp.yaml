@@ -20,6 +20,7 @@ spec:
   hostPorts:
   - max: 65535
     min: 0
+  privileged: true
   runAsUser:
     rule: RunAsAny
   seLinux:
