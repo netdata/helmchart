@@ -58,12 +58,17 @@ ingress:
     kubernetes.io/ingress.class: nginx
     kubernetes.io/tls-acme: "true"
   path: /
+  pathType: Prefix
   hosts:
     - netdata.k8s.local
-#  tls:
-#    - secretName: netdata-tls
-#      hosts:
-#        - netdata.k8s.local
+  ## whole spec is going to be included into ingress spec.
+  ## if you intend to use ingressClassName declaration, remove ingress.class from annotations
+  # spec:
+  #   ingressClassName: nginx
+  # tls:
+  #   - secretName: netdata-tls
+  #     hosts:
+  #       - netdata.k8s.local
 
 rbac:
   create: true

@@ -1,6 +1,7 @@
 {{- if .Values.ingress.enabled -}}
 {{- $fullName := include "netdata.name" . -}}
 {{- $ingressPath := .Values.ingress.path -}}
+{{- $ingressPathType := .Values.ingress.pathType -}}
 {{- $apiVersion := (include "netdata.ingress.apiVersion" .) -}}
 
 apiVersion: {{ $apiVersion }}
@@ -17,6 +18,9 @@ metadata:
 {{ toYaml . | indent 4 }}
 {{- end }}
 spec:
+{{- with .Values.ingress.spec }}
+{{ toYaml . | indent 2 }}
+{{- end }}
 {{- if .Values.ingress.tls }}
   tls:
 {{ toYaml .Values.ingress.tls | indent 4 }}
@@ -28,7 +32,7 @@ spec:
         paths:
           - path: {{ $ingressPath }}
             {{- if not (eq $apiVersion "extensions/v1beta1" "networking.k8s.io/v1beta1") }}
-            pathType: Prefix
+            pathType: {{ $ingressPathType }}
             {{- end }}
             backend:
               {{- if eq $apiVersion "extensions/v1beta1" "networking.k8s.io/v1beta1" }}
