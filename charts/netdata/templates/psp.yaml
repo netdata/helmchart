@@ -10,7 +10,8 @@ metadata:
 spec:
   allowPrivilegeEscalation: true
   allowedCapabilities:
-  - '*'
+    - SYS_PTRACE
+    - SYS_ADMIN
   fsGroup:
     rule: RunAsAny
   hostIPC: true
