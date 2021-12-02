@@ -139,6 +139,8 @@ spec:
               mountPath: /var/run/docker.sock
             - name: sys
               mountPath: /host/sys
+            - name: os-release
+              mountPath: /host/etc/os-release
             {{- range $name, $config := .Values.child.configs }}
             {{- if $config.enabled }}
             - name: config
@@ -205,6 +207,9 @@ spec:
         - name: sys
           hostPath:
             path: /sys
+        - name: os-release
+          hostPath:
+            path: /etc/os-release
         - name: config
           configMap:
             name: netdata-conf-child
