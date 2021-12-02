@@ -99,6 +99,8 @@ spec:
             successThreshold: {{ .Values.parent.readinessProbe.successThreshold }}
             timeoutSeconds: {{ .Values.parent.readinessProbe.timeoutSeconds }}
           volumeMounts:
+            - name: os-release
+              mountPath: /host/etc/os-release
             {{- range $name, $config := .Values.parent.configs }}
             {{- if $config.enabled }}
             - name: config
@@ -130,6 +132,9 @@ spec:
     {{- end }}
       terminationGracePeriodSeconds: {{ .Values.parent.terminationGracePeriodSeconds }}
       volumes:
+        - name: os-release
+          hostPath:
+            path: /etc/os-release
         - name: config
           configMap:
             name: netdata-conf-parent
