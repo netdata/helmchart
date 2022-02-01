@@ -84,8 +84,10 @@ spec:
             {{- if .Values.child.claiming.enabled }}
             - name: NETDATA_CLAIM_URL
               value: "{{ .Values.child.claiming.url }}"
+            {{- if .Values.child.claiming.token }}
             - name: NETDATA_CLAIM_TOKEN
               value: "{{ .Values.child.claiming.token }}"
+            {{- end }}
             - name: NETDATA_CLAIM_ROOMS
               value: "{{ .Values.child.claiming.rooms }}"
             {{- end }}
@@ -111,6 +113,10 @@ spec:
             - name: {{ $key }}
               value: {{ $value | quote }}
             {{- end }}
+          {{- with .Values.child.envFrom }}
+          envFrom:
+{{ toYaml . | indent 12 }}
+          {{- end }}
           ports:
             - name: http
               containerPort: {{ tpl (.Values.child.port | toString) . }}

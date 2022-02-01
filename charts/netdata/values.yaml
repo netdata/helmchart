@@ -114,6 +114,13 @@ parent:
     ## To disable anonymous statistics:
     # DO_NOT_TRACK: 1
 
+  envFrom: []
+    ## E.g. to read Netdata Cloud claim token from an existing secret "netdata" set this to:
+    # - secretRef:
+    #     name: netdata
+    # And create it with: kubectl create secret generic netdata --from-literal="NETDATA_CLAIM_TOKEN=<token>"
+    # Also ensure that claim.token is empty
+
   podLabels: {}
 
   podAnnotations: {}
@@ -308,6 +315,13 @@ child:
   env: {}
     ## To disable anonymous statistics:
     # DO_NOT_TRACK: 1
+
+  envFrom: []
+    ## E.g. to read Netdata Cloud claim token from an existing secret "netdata" set this to:
+    # - secretRef:
+    #     name: netdata
+    # And create it with: kubectl create secret generic netdata --from-literal="NETDATA_CLAIM_TOKEN=<token>"
+    # Also ensure that claim.token is empty
 
   claiming:
     enabled: false
