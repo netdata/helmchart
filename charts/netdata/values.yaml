@@ -118,8 +118,8 @@ parent:
     ## E.g. to read Netdata Cloud claim token from an existing secret "netdata" set this to:
     # - secretRef:
     #     name: netdata
-    # And create it with: kubectl create secret generic netdata --from-literal="NETDATA_CLAIM_TOKEN=<token>"
-    # Also ensure that claim.token is empty
+    ## And create it with: kubectl create secret generic netdata --from-literal="NETDATA_CLAIM_TOKEN=<token>"
+    ## Also ensure that claim.token is empty
 
   podLabels: {}
 
@@ -320,8 +320,8 @@ child:
     ## E.g. to read Netdata Cloud claim token from an existing secret "netdata" set this to:
     # - secretRef:
     #     name: netdata
-    # And create it with: kubectl create secret generic netdata --from-literal="NETDATA_CLAIM_TOKEN=<token>"
-    # Also ensure that claim.token is empty
+    ## And create it with: kubectl create secret generic netdata --from-literal="NETDATA_CLAIM_TOKEN=<token>"
+    ## Also ensure that claim.token is empty
 
   claiming:
     enabled: false
