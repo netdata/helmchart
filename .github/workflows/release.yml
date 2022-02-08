@@ -12,6 +12,7 @@ env:
 
 jobs:
   release:
+    if: github.repository_owner == 'netdata'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
