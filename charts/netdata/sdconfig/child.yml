@@ -102,6 +102,7 @@ build:
           - module: prometheus
             name: prometheus-{{.TUID}}
             url: http://{{.Address}}{{$path}}
+            app: '{{.ContName}}'
             update_every: 10
             max_time_series: 1000
   - name: "Applications"
