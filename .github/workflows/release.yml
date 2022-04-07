@@ -37,7 +37,7 @@ jobs:
         run: echo ::set-output name=new_version::$(.github/scripts/update_versions.py get_chart_version)
 
       - name: Run chart-releaser
-        uses: helm/chart-releaser-action@v1.3.0
+        uses: helm/chart-releaser-action@v1.4.0
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
 
