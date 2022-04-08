@@ -106,7 +106,7 @@ build:
             url: http://{{.Address}}{{$path}}
             app: '{{.ContName}}'
             update_every: 10
-            max_time_series: 1000
+            max_time_series: 3000
   - name: "Applications"
     selector: '!unknown applications'
     tags: file
