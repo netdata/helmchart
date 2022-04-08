@@ -29,6 +29,10 @@ jobs:
           git config --global user.name Netdatabot
           git config --global user.email bot@netdata.cloud
 
+      - name: Get current version
+        id: get_current_var
+        run: echo ::set-output name=current_version::$(.github/scripts/update_versions.py get_chart_version)
+
       - name: Update Files
         run: .github/scripts/update_versions.py set_chart_version
 
@@ -45,3 +49,13 @@ jobs:
         run: |
           git commit -am "[skip ci] New Chart version to ${{ steps.new_version_var.outputs.new_version }}"
           git push
+
+      - name: Update Netdata Infra
+        uses: benc-uk/workflow-dispatch@v1
+        with:
+          token: ${{ secrets.NETDATABOT_GITHUB_TOKEN }}
+          repo: ${{ secrets.NETDATABOT_INFRA_REPO }}
+          workflow: Netdata Helm Chart Version Bump PR
+          ref: master
+          inputs: '{"version": "${{ steps.new_version_var.outputs.new_version }}", "previous_version": "${{ steps.get_current_var.outputs.current_version }}"}'
+        continue-on-error: true
