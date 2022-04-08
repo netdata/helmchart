@@ -54,7 +54,7 @@ jobs:
         uses: benc-uk/workflow-dispatch@v1
         with:
           token: ${{ secrets.NETDATABOT_GITHUB_TOKEN }}
-          repo: ${{ secrets.NETDATABOT_INFRA_REPO }}
+          repo: ${{ secrets.NETDATA_INFRA_REPO }}
           workflow: Netdata Helm Chart Version Bump PR
           ref: master
           inputs: '{"version": "${{ steps.new_version_var.outputs.new_version }}", "previous_version": "${{ steps.get_current_var.outputs.current_version }}"}'
