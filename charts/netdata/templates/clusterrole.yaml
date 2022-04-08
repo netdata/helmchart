@@ -15,6 +15,7 @@ rules:
       - "services"    # used by sd
       - "configmaps"  # used by sd
       - "secrets"     # used by sd
+      - "nodes"       # used by go.d.plugin (k8s_state)
     verbs:
       - "get"
       - "list"
