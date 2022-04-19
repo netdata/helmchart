@@ -228,11 +228,13 @@ child:
     periodSeconds: 30
     successThreshold: 1
     timeoutSeconds: 1
+    # host: 127.0.0.1
   readinessProbe:
     failureThreshold: 3
     periodSeconds: 30
     successThreshold: 1
     timeoutSeconds: 1
+    # host: 127.0.0.1
 
   terminationGracePeriodSeconds: 30
 

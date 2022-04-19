@@ -124,6 +124,9 @@ spec:
           livenessProbe:
             httpGet:
               path: /api/v1/info
+              {{- with .Values.child.livenessProbe.host }}
+              host: {{ . }}
+              {{- end }}
               port: http
             failureThreshold: {{ .Values.child.livenessProbe.failureThreshold }}
             periodSeconds: {{ .Values.child.livenessProbe.periodSeconds }}
@@ -132,6 +135,9 @@ spec:
           readinessProbe:
             httpGet:
               path: /api/v1/info
+              {{- with .Values.child.readinessProbe.host }}
+              host: {{ . }}
+              {{- end }}
               port: http
             failureThreshold: {{ .Values.child.readinessProbe.failureThreshold }}
             periodSeconds: {{ .Values.child.readinessProbe.periodSeconds }}
