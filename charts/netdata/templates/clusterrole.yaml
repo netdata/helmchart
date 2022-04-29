@@ -11,11 +11,12 @@ metadata:
 rules:
   - apiGroups: [""]
     resources:
-      - "pods"        # used by sd, netdata (cgroup-name.sh, get-kubernetes-labels.sh)
-      - "services"    # used by sd
-      - "configmaps"  # used by sd
-      - "secrets"     # used by sd
-      - "nodes"       # used by go.d.plugin (k8s_state)
+      - "pods"           # used by sd, netdata (cgroup-name.sh, get-kubernetes-labels.sh)
+      - "services"       # used by sd
+      - "configmaps"     # used by sd
+      - "secrets"        # used by sd
+      - "nodes"          # used by go.d.plugin (k8s_state)
+      - "nodes/metrics"  # used by go.d.plugin (k8s_kubelet) when querying kubelet's HTTPS endpoint
     verbs:
       - "get"
       - "list"
