@@ -25,4 +25,4 @@ maintainers:
   - name: Oleksii Kravchenko
     email: kamikaze.ua@gmail.com
 icon: https://netdata.github.io/helmchart/logo.png
-appVersion: v1.33.1
+appVersion: v1.34.1
