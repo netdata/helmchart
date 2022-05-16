@@ -2,6 +2,8 @@ replicaCount: 1
 deploymentStrategy:
   type: Recreate
 
+imagePullSecrets: []
+
 image:
   repository: netdata/netdata
   tag: "{{ .Chart.AppVersion }}"

@@ -44,6 +44,10 @@ spec:
       {{- if .Values.child.priorityClassName }}
       priorityClassName: "{{ .Values.child.priorityClassName }}"
       {{- end }}
+      {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+{{ toYaml .Values.imagePullSecrets | indent 8 }}
+      {{- end }}
       initContainers:
       {{- if .Values.sysctlInitContainer.enabled }}
         - name: init-sysctl
@@ -229,7 +233,7 @@ spec:
         {{- end }}
         {{- if .Values.sd.child.enabled }}
         - name: sd-shared
-          emptyDir: {}
+          emptyDir: { }
         {{- end }}
       dnsPolicy: {{ .Values.child.dnsPolicy }}
 {{- end }}
