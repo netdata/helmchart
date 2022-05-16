@@ -37,6 +37,10 @@ spec:
       {{- if .Values.parent.priorityClassName }}
       priorityClassName: "{{ .Values.parent.priorityClassName }}"
       {{- end }}
+      {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+{{ toYaml .Values.imagePullSecrets | indent 8 }}
+      {{- end }}
       initContainers:
       {{- if .Values.sysctlInitContainer.enabled }}
         - name: init-sysctl
