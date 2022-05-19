@@ -202,6 +202,8 @@ build:
           - module: rabbitmq
             name: rabbitmq-{{.TUID}}
             url: http://{{.Address}}
+            username: "{{ get .Env "NETDATA_SD_AUTH_USER" }}"
+            password: "{{ get .Env "NETDATA_SD_AUTH_PASS" }}"
       - selector: solr
         template: |
           - module: solr
