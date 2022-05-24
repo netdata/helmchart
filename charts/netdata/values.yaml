@@ -22,7 +22,7 @@ sd:
       # if 'from' is {} the ConfigMap is not generated
       from:
         file: sdconfig/child.yml
-        value: {}
+        value: null
     resources:
       limits:
         cpu: 50m
