@@ -18,7 +18,9 @@ spec:
     requests:
       storage: {{ .Values.parent.database.volumesize }}
 {{- end }}
+
 ---
+
 {{- if .Values.parent.alarms.persistence }}
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -39,8 +41,10 @@ spec:
     requests:
       storage: {{ .Values.parent.alarms.volumesize }}
 {{- end }}
+
 ---
-{{- if .Values.k8sState.varLib.persistence }}
+
+{{- if and .Values.k8sState.enabled .Values.k8sState.varLib.persistence }}
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -60,4 +64,5 @@ spec:
     requests:
       storage: {{ .Values.parent.alarms.volumesize }}
 {{- end }}
+
 ---
