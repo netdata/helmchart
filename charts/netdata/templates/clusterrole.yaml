@@ -11,19 +11,19 @@ metadata:
 rules:
   - apiGroups: [""]
     resources:
-      - "pods"           # used by sd, netdata (cgroup-name.sh, get-kubernetes-labels.sh)
+      - "pods"           # used by sd, go.d/k8s_state, netdata (cgroup-name.sh, get-kubernetes-labels.sh)
       - "services"       # used by sd
       - "configmaps"     # used by sd
       - "secrets"        # used by sd
-      - "nodes"          # used by go.d.plugin (k8s_state)
-      - "nodes/metrics"  # used by go.d.plugin (k8s_kubelet) when querying kubelet's HTTPS endpoint
+      - "nodes"          # used by go.d/k8s_state
+      - "nodes/metrics"  # used by go.d/k8s_state when querying Kubelet HTTPS endpoint
     verbs:
       - "get"
       - "list"
       - "watch"
   - apiGroups: [""]
     resources:
-      - "namespaces"  # used by netdata (cgroup-name.sh, get-kubernetes-labels.sh)
+      - "namespaces"  # used by go.d/k8s_state, netdata (cgroup-name.sh, get-kubernetes-labels.sh)
     verbs:
       - "get"
   {{- end -}}

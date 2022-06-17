@@ -330,3 +330,131 @@ child:
     token: ""
     rooms: ""
     url: "https://app.netdata.cloud"
+
+k8sState:
+  enabled: false
+  port: "{{ .Values.parent.port }}"
+
+  resources: {}
+    # limits:
+    #  cpu: 4
+    #  memory: 4096Mi
+    # requests:
+    #  cpu: 4
+    #  memory: 4096Mi
+
+  livenessProbe:
+    failureThreshold: 3
+    periodSeconds: 30
+    successThreshold: 1
+    timeoutSeconds: 1
+  readinessProbe:
+    failureThreshold: 3
+    periodSeconds: 30
+    successThreshold: 1
+    timeoutSeconds: 1
+
+  terminationGracePeriodSeconds: 30
+
+  nodeSelector: {}
+
+  tolerations:
+    - operator: Exists
+      effect: NoSchedule
+
+  affinity: {}
+
+  priorityClassName: ""
+
+  podLabels: {}
+
+  podAnnotationAppArmor:
+    enabled: true
+
+  podAnnotations: {}
+
+  dnsPolicy: ClusterFirstWithHostNet
+
+  varLib:
+    persistence: true
+    ## Set '-' as the storageclass to get a volume from the default storage class.
+    storageclass: "-"
+    volumesize: 1Gi
+
+  configs:
+    netdata:
+      enabled: true
+      path: /etc/netdata/netdata.conf
+      data: |
+        [global]
+          memory mode = ram
+        [health]
+          enabled = no
+        [ml]
+          enabled = no
+        [plugins]
+          timex = no
+          checks = no
+          idlejitter = no
+          tc = no
+          diskspace = no
+          proc = no
+          cgroups = no
+          enable running new plugins = no
+          slabinfo = no
+          perf = no
+          go.d = yes
+          ioping = no
+          ebpf = no
+          charts.d = no
+          apps = no
+          python.d = no
+          fping = no
+    stream:
+      enabled: true
+      path: /etc/netdata/stream.conf
+      data: |
+        [stream]
+          enabled = yes
+          destination = netdata:{{ .Values.service.port }}
+          api key = 11111111-2222-3333-4444-555555555555
+          timeout seconds = 60
+          buffer size bytes = 1048576
+          reconnect delay seconds = 5
+          initial clock resync iterations = 60
+    exporting:
+      enabled: false
+      path: /etc/netdata/exporting.conf
+      data: ""
+    go.d:
+      enabled: true
+      path: /etc/netdata/go.d.conf
+      data: |
+        default_run: no
+        modules:
+          k8s_state: yes
+    go.d-k8s_state:
+      enabled: true
+      path: /etc/netdata/go.d/k8s_state.conf
+      data: |
+        jobs:
+          - name: k8s_state
+            update_every: 1
+
+  env: {}
+    ## To disable anonymous statistics:
+    # DO_NOT_TRACK: 1
+
+  envFrom: []
+    ## E.g. to read Netdata Cloud claim token from an existing secret "netdata" set this to:
+    # - secretRef:
+    #     name: netdata
+    ## And create it with: kubectl create secret generic netdata --from-literal="NETDATA_CLAIM_TOKEN=<token>"
+    ## Also ensure that claim.token is empty
+
+  claiming:
+    enabled: false
+    token: ""
+    rooms: ""
+    url: "https://app.netdata.cloud"
+

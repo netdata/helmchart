@@ -17,8 +17,8 @@ spec:
   resources:
     requests:
       storage: {{ .Values.parent.database.volumesize }}
----
 {{- end }}
+---
 {{- if .Values.parent.alarms.persistence }}
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -39,3 +39,25 @@ spec:
     requests:
       storage: {{ .Values.parent.alarms.volumesize }}
 {{- end }}
+---
+{{- if .Values.k8sState.varLib.persistence }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ template "netdata.name" . }}-k8s-state-varlib
+  labels:
+    app: {{ template "netdata.name" . }}
+    chart: {{ template "netdata.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    role: k8sState
+spec:
+  accessModes: [ "ReadWriteOnce" ]
+  {{- if (ne "-" .Values.k8sState.varLib.storageclass) }}
+  storageClassName: "{{ .Values.k8sState.varLib.storageclass }}"
+  {{- end }}
+  resources:
+    requests:
+      storage: {{ .Values.parent.alarms.volumesize }}
+{{- end }}
+---
