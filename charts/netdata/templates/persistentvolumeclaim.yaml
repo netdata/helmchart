@@ -62,7 +62,7 @@ spec:
   {{- end }}
   resources:
     requests:
-      storage: {{ .Values.parent.alarms.volumesize }}
+      storage: {{ .Values.k8sState.varLib.volumesize }}
 {{- end }}
 
 ---

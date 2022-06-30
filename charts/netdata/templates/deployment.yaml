@@ -198,6 +198,8 @@ spec:
 {{ toYaml . | trim | indent 8 }}
 {{- end }}
     spec:
+      securityContext:
+        fsGroup: 201
       serviceAccountName: {{ .Values.serviceAccount.name }}
       restartPolicy: Always
       {{- if .Values.k8sState.priorityClassName }}
@@ -276,6 +278,10 @@ spec:
               subPath: {{ $name }}
             {{- end }}
             {{- end }}
+            {{- if .Values.k8sState.varLib.persistence }}
+            - name: varlib
+              mountPath: /var/lib/netdata
+            {{- end }}
           resources:
 {{ toYaml .Values.k8sState.resources | indent 12 }}
     {{- with .Values.k8sState.nodeSelector }}
@@ -298,9 +304,11 @@ spec:
         - name: config
           configMap:
             name: netdata-conf-k8s-state
+        {{- if .Values.k8sState.varLib.persistence }}
         - name: varlib
           persistentVolumeClaim:
             claimName: {{ template "netdata.name" . }}-k8s-state-varlib
+        {{- end }}
       dnsPolicy: {{ .Values.k8sState.dnsPolicy }}
 {{- end }}
 
