@@ -272,6 +272,8 @@ child:
           memory mode = ram
         [health]
           enabled = no
+        [ml]
+          enabled = no
     stream:
       enabled: true
       path: /etc/netdata/stream.conf
