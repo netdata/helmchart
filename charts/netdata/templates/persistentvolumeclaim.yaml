@@ -42,7 +42,7 @@ spec:
       storage: {{ .Values.parent.alarms.volumesize }}
 {{- end }}
 
-{{- if and .Values.k8sState.enabled .Values.k8sState.varLib.persistence }}
+{{- if and .Values.k8sState.enabled .Values.k8sState.persistence.enabled }}
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -56,10 +56,10 @@ metadata:
     role: k8sState
 spec:
   accessModes: [ "ReadWriteOnce" ]
-  {{- if (ne "-" .Values.k8sState.varLib.storageclass) }}
-  storageClassName: "{{ .Values.k8sState.varLib.storageclass }}"
+  {{- if (ne "-" .Values.k8sState.persistence.storageclass) }}
+  storageClassName: "{{ .Values.k8sState.persistence.storageclass }}"
   {{- end }}
   resources:
     requests:
-      storage: {{ .Values.k8sState.varLib.volumesize }}
+      storage: {{ .Values.k8sState.persistence.volumesize }}
 {{- end }}

@@ -277,7 +277,7 @@ spec:
               subPath: {{ $name }}
             {{- end }}
             {{- end }}
-            {{- if .Values.k8sState.varLib.persistence }}
+            {{- if .Values.k8sState.persistence.enabled }}
             - name: varlib
               mountPath: /var/lib/netdata
             {{- end }}
@@ -303,7 +303,7 @@ spec:
         - name: config
           configMap:
             name: netdata-conf-k8s-state
-        {{- if .Values.k8sState.varLib.persistence }}
+        {{- if .Values.k8sState.persistence.enabled }}
         - name: varlib
           persistentVolumeClaim:
             claimName: {{ template "netdata.name" . }}-k8s-state-varlib

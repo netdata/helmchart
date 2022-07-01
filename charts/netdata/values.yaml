@@ -375,8 +375,8 @@ k8sState:
 
   dnsPolicy: ClusterFirstWithHostNet
 
-  varLib:
-    persistence: true
+  persistence:
+    enabled: true
     ## Set '-' as the storageclass to get a volume from the default storage class.
     storageclass: "-"
     volumesize: 1Gi
