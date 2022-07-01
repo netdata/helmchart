@@ -1,3 +1,4 @@
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -159,3 +160,153 @@ spec:
             claimName: {{ template "netdata.name" . }}-parent-alarms
         {{- end }}
       dnsPolicy: {{ .Values.parent.dnsPolicy }}
+
+{{- if .Values.k8sState.enabled }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "netdata.name" . }}-k8s-state
+  labels:
+    app: {{ template "netdata.name" . }}
+    chart: {{ template "netdata.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    role: k8sState
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "netdata.name" . }}
+      release: {{ .Release.Name }}
+      role: k8sState
+  template:
+    metadata:
+      annotations:
+      {{- if .Values.k8sState.podAnnotationAppArmor.enabled }}
+        container.apparmor.security.beta.kubernetes.io/{{ .Chart.Name }}: unconfined
+      {{- end }}
+        checksum/config: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+{{- with .Values.k8sState.podAnnotations }}
+{{ toYaml . | trim | indent 8 }}
+{{- end }}
+      labels:
+        app: {{ template "netdata.name" . }}
+        release: {{ .Release.Name }}
+        role: k8sState
+{{- with .Values.k8sState.podLabels }}
+{{ toYaml . | trim | indent 8 }}
+{{- end }}
+    spec:
+      securityContext:
+        fsGroup: 201
+      serviceAccountName: {{ .Values.serviceAccount.name }}
+      restartPolicy: Always
+      {{- if .Values.k8sState.priorityClassName }}
+      priorityClassName: "{{ .Values.k8sState.priorityClassName }}"
+      {{- end }}
+      {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+{{ toYaml .Values.imagePullSecrets | indent 8 }}
+      {{- end }}
+      initContainers:
+      {{- if .Values.sysctlInitContainer.enabled }}
+        - name: init-sysctl
+          image: "{{ .Values.initContainersImage.repository }}:{{ .Values.initContainersImage.tag }}"
+          imagePullPolicy: {{ .Values.initContainersImage.pullPolicy }}
+          command:
+{{ toYaml .Values.sysctlInitContainer.command | indent 12 }}
+          securityContext:
+            runAsNonRoot: false
+            privileged: true
+            runAsUser: 0
+          resources:
+{{ toYaml .Values.sysctlInitContainer.resources | indent 12 }}
+      {{- end }}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ tpl .Values.image.tag . }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            {{- if .Values.k8sState.claiming.enabled }}
+            - name: NETDATA_CLAIM_URL
+              value: "{{ .Values.k8sState.claiming.url }}"
+            {{- if .Values.k8sState.claiming.token }}
+            - name: NETDATA_CLAIM_TOKEN
+              value: "{{ .Values.k8sState.claiming.token }}"
+            {{- end }}
+            - name: NETDATA_CLAIM_ROOMS
+              value: "{{ .Values.k8sState.claiming.rooms }}"
+            {{- end }}
+            - name: NETDATA_LISTENER_PORT
+              value: '{{ tpl (.Values.k8sState.port | toString) . }}'
+            {{- range $key, $value := .Values.k8sState.env }}
+            - name: {{ $key }}
+              value: {{ $value | quote }}
+            {{- end }}
+          {{- with .Values.k8sState.envFrom }}
+          envFrom:
+{{ toYaml . | indent 12 }}
+          {{- end }}
+          ports:
+            - name: http
+              containerPort: {{ tpl (.Values.k8sState.port | toString) . }}
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /api/v1/info
+              port: http
+            failureThreshold: {{ .Values.k8sState.livenessProbe.failureThreshold }}
+            periodSeconds: {{ .Values.k8sState.livenessProbe.periodSeconds }}
+            successThreshold: {{ .Values.k8sState.livenessProbe.successThreshold }}
+            timeoutSeconds: {{ .Values.k8sState.livenessProbe.timeoutSeconds }}
+          readinessProbe:
+            httpGet:
+              path: /api/v1/info
+              port: http
+            failureThreshold: {{ .Values.k8sState.readinessProbe.failureThreshold }}
+            periodSeconds: {{ .Values.k8sState.readinessProbe.periodSeconds }}
+            successThreshold: {{ .Values.k8sState.readinessProbe.successThreshold }}
+            timeoutSeconds: {{ .Values.k8sState.readinessProbe.timeoutSeconds }}
+          volumeMounts:
+            - name: os-release
+              mountPath: /host/etc/os-release
+            {{- range $name, $config := .Values.k8sState.configs }}
+            {{- if $config.enabled }}
+            - name: config
+              mountPath: {{ $config.path }}
+              subPath: {{ $name }}
+            {{- end }}
+            {{- end }}
+            {{- if .Values.k8sState.persistence.enabled }}
+            - name: varlib
+              mountPath: /var/lib/netdata
+            {{- end }}
+          resources:
+{{ toYaml .Values.k8sState.resources | indent 12 }}
+    {{- with .Values.k8sState.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.k8sState.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.k8sState.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+      terminationGracePeriodSeconds: {{ .Values.k8sState.terminationGracePeriodSeconds }}
+      volumes:
+        - name: os-release
+          hostPath:
+            path: /etc/os-release
+        - name: config
+          configMap:
+            name: netdata-conf-k8s-state
+        {{- if .Values.k8sState.persistence.enabled }}
+        - name: varlib
+          persistentVolumeClaim:
+            claimName: {{ template "netdata.name" . }}-k8s-state-varlib
+        {{- end }}
+      dnsPolicy: {{ .Values.k8sState.dnsPolicy }}
+{{- end }}
