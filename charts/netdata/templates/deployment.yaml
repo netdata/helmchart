@@ -161,7 +161,7 @@ spec:
         {{- end }}
       dnsPolicy: {{ .Values.parent.dnsPolicy }}
 
-{{- if .Values.k8sState.enabled -}}
+{{- if .Values.k8sState.enabled }}
 ---
 apiVersion: apps/v1
 kind: Deployment
