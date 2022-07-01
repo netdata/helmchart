@@ -161,9 +161,8 @@ spec:
         {{- end }}
       dnsPolicy: {{ .Values.parent.dnsPolicy }}
 
----
-
 {{- if .Values.k8sState.enabled -}}
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -311,5 +310,3 @@ spec:
         {{- end }}
       dnsPolicy: {{ .Values.k8sState.dnsPolicy }}
 {{- end }}
-
----

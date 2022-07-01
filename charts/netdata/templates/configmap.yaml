@@ -15,9 +15,9 @@ data:
   {{- end }}
   {{- end }}
 
----
 
 {{- if .Values.child.enabled }}
+---
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -35,9 +35,9 @@ data:
   {{- end }}
 {{- end }}
 
----
 
 {{- if .Values.k8sState.enabled }}
+---
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -55,9 +55,9 @@ data:
   {{- end }}
 {{- end }}
 
----
 
 {{- if and .Values.child.enabled .Values.sd.child.enabled .Values.sd.child.configmap.from }}
+---
 apiVersion: v1
 kind: ConfigMap
 metadata:
