@@ -208,6 +208,10 @@ parent:
     rooms: ""
     url: "https://app.netdata.cloud"
 
+  extraVolumeMounts: []
+
+  extraVolumes: []
+
 child:
   enabled: true
   port: "{{ .Values.parent.port }}"
@@ -332,6 +336,19 @@ child:
     token: ""
     rooms: ""
     url: "https://app.netdata.cloud"
+
+  extraVolumeMounts: []
+    ## Additional volume mounts for netdata child
+    ## E.g to mount all disks under / to be monitored via the diskspace plugin
+    # - name: root
+    #   mountPath: /host
+    #   readOnly: true
+  extraVolumes: []
+    ## Additional volumes for netdata child
+    ## E.g to mount all disks under / to be monitored via the diskspace plugin
+    # - name: root
+    #   hostPath:
+    #     path: /
 
 k8sState:
   enabled: false
@@ -459,3 +476,8 @@ k8sState:
     token: ""
     rooms: ""
     url: "https://app.netdata.cloud"
+
+  extraVolumeMounts: []
+
+  extraVolumes: []
+
