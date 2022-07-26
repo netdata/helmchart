@@ -151,6 +151,16 @@ spec:
               mountPath: /host/sys
             - name: os-release
               mountPath: /host/etc/os-release
+            {{- if .Values.child.extraHostVolumeMounts }}
+            {{- range $_, $mount := .Values.child.extraHostVolumeMounts }}
+            - name: {{ $mount.name }}
+              mountPath: {{ $mount.mountPath }}
+              readOnly: {{ $mount.readOnly }}
+            {{- if $mount.mountPropagation }}
+              mountPropagation: {{ $mount.mountPropagation }}
+            {{- end }}
+            {{- end }}
+            {{- end }}
             {{- range $name, $config := .Values.child.configs }}
             {{- if $config.enabled }}
             - name: config
@@ -220,6 +230,13 @@ spec:
         - name: os-release
           hostPath:
             path: /etc/os-release
+        {{- if .Values.child.extraHostVolumeMounts }}
+        {{- range $_, $mount := .Values.child.extraHostVolumeMounts }}
+        - name: {{ $mount.name }}
+          hostPath:
+            path: {{ $mount.hostPath }}
+        {{- end }}
+        {{- end }}
         - name: config
           configMap:
             name: netdata-conf-child
