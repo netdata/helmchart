@@ -262,7 +262,7 @@ child:
   persistence:
     enabled: true
     hostPath: /var/lib/netdata-k8s-child
-  
+
   extraHostVolumeMounts: []
   #  - name: <mountName>
   #    hostPath: <hostPath>
