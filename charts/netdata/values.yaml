@@ -343,6 +343,7 @@ child:
     # - name: root
     #   mountPath: /host
     #   readOnly: true
+    #   mountPropagation: HostToContainer
   extraVolumes: []
     ## Additional volumes for netdata child
     ## E.g to mount all disks under / to be monitored via the diskspace plugin
