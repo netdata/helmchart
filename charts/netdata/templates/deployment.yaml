@@ -127,6 +127,9 @@ spec:
             - name: alarms
               mountPath: /var/lib/netdata
             {{- end }}
+            {{- if .Values.parent.extraVolumeMounts -}}
+{{ toYaml .Values.parent.extraVolumeMounts | nindent 12 }}
+            {{- end }}
           resources:
 {{ toYaml .Values.parent.resources | indent 12 }}
     {{- with .Values.parent.nodeSelector }}
@@ -158,6 +161,9 @@ spec:
         - name: alarms
           persistentVolumeClaim:
             claimName: {{ template "netdata.name" . }}-parent-alarms
+        {{- end }}
+        {{- if .Values.parent.extraVolumes }}
+{{ toYaml .Values.parent.extraVolumes | indent 8}}
         {{- end }}
       dnsPolicy: {{ .Values.parent.dnsPolicy }}
 
@@ -281,6 +287,9 @@ spec:
             - name: varlib
               mountPath: /var/lib/netdata
             {{- end }}
+            {{- if .Values.k8sState.extraVolumeMounts -}}
+{{ toYaml .Values.k8sState.extraVolumeMounts | nindent 12 }}
+            {{- end }}
           resources:
 {{ toYaml .Values.k8sState.resources | indent 12 }}
     {{- with .Values.k8sState.nodeSelector }}
@@ -307,6 +316,9 @@ spec:
         - name: varlib
           persistentVolumeClaim:
             claimName: {{ template "netdata.name" . }}-k8s-state-varlib
+        {{- end }}
+        {{- if .Values.k8sState.extraVolumes }}
+{{ toYaml .Values.k8sState.extraVolumes | indent 8}}
         {{- end }}
       dnsPolicy: {{ .Values.k8sState.dnsPolicy }}
 {{- end }}

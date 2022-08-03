@@ -166,6 +166,9 @@ spec:
             - name: sd-shared
               mountPath: "/etc/netdata/go.d/sd/"
             {{- end }}
+            {{- if .Values.child.extraVolumeMounts -}}
+{{ toYaml .Values.child.extraVolumeMounts | nindent 12 }}
+            {{- end }}
           securityContext:
             capabilities:
               add:
@@ -234,6 +237,9 @@ spec:
         {{- if .Values.sd.child.enabled }}
         - name: sd-shared
           emptyDir: { }
+        {{- end }}
+        {{- if .Values.child.extraVolumes }}
+{{ toYaml .Values.child.extraVolumes | indent 8}}
         {{- end }}
       dnsPolicy: {{ .Values.child.dnsPolicy }}
 {{- end }}
