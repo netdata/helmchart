@@ -180,6 +180,8 @@ metadata:
     heritage: {{ .Release.Service }}
     role: k8sState
 spec:
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app: {{ template "netdata.name" . }}
