@@ -352,7 +352,7 @@ child:
     #     path: /
 
 k8sState:
-  enabled: false
+  enabled: yes
   port: "{{ .Values.parent.port }}"
 
   resources: {}
