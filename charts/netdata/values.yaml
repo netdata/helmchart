@@ -80,6 +80,9 @@ serviceAccount:
   create: true
   name: netdata
 
+notifications:
+  slackurl: ""
+  slackrecipient: ""
 
 parent:
   port: 19999
