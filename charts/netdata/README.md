@@ -228,7 +228,7 @@ Example to set the parameters from the command line:
 ```console
 $ helm install ./netdata --name my-release \
     --set notifications.slackurl=MySlackAPIURL \
-    --set notifications.slackrecipiet="@MyUser MyChannel"
+    --set notifications.slackrecipient="@MyUser MyChannel"
 ```
 
 Another example, to set a different ingress controller.
