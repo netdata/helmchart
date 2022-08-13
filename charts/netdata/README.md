@@ -141,7 +141,7 @@ The following table lists the configurable parameters of the netdata chart and t
 | `parent.claiming.room`                     | Comma separated list of claim rooms IDs                                                                                                                | `""`                                                                                    |
 | `parent.extraVolumeMounts`                 | Additional volumeMounts to add to the parent pods                                                                                                      | `[]`                                                                                    |
 | `parent.extraVolumes`                      | Additional volumes to add to the parent pods                                                                                                           | `[]`                                                                                    |
-| `k8sState.enabled`                         | Install this Deployment to gather data fr K8s cluster                                                                                                  | `yes`                                                                                 |
+| `k8sState.enabled`                         | Install this Deployment to gather data fr K8s cluster                                                                                                  | `yes`                                                                                   |
 | `k8sState.port`                            | Listen port                                                                                                                                            | `service.port` (Same as parent's listen port)                                           |
 | `k8sState.resources`                       | Compute resources required by this Deployment                                                                                                          | `{}`                                                                                    |
 | `k8sState.livenessProbe.failureThreshold`  | When a liveness probe fails, Kubernetes will try failureThreshold times before giving up. Giving up the liveness probe means restarting the container  | `3`                                                                                     |
@@ -205,8 +205,6 @@ The following table lists the configurable parameters of the netdata chart and t
 | `child.claiming.room`                      | Comma separated list of claim rooms IDs                                                                                                                | `""`                                                                                    |
 | `child.extraVolumeMounts`                  | Additional volumeMounts to add to the child pods                                                                                                       | `[]`                                                                                    |
 | `child.extraVolumes`                       | Additional volumes to add to the child pods                                                                                                            | `[]`                                                                                    |
-| `notifications.slackurl`                   | URL for slack notifications                                                                                                                            | `""`                                                                                    |
-| `notifications.slackrecipient`             | Slack recipient list                                                                                                                                   | `""`                                                                                    |
 | `initContainersImage.repository`           | Init containers' image repository                                                                                                                      | `alpine`                                                                                |
 | `initContainersImage.tag`                  | Init containers' image tag                                                                                                                             | `latest`                                                                                |
 | `initContainersImage.pullPolicy`           | Init containers' image pull policy                                                                                                                     | `Always`                                                                                |
@@ -227,8 +225,7 @@ Example to set the parameters from the command line:
 
 ```console
 $ helm install ./netdata --name my-release \
-    --set notifications.slackurl=MySlackAPIURL \
-    --set notifications.slackrecipiet="@MyUser MyChannel"
+    --set image.tag=latest
 ```
 
 Another example, to set a different ingress controller.

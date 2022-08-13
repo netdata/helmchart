@@ -177,15 +177,15 @@ parent:
       path: /etc/netdata/health_alarm_notify.conf
       data: |
         SEND_EMAIL="NO"
-        SEND_SLACK="YES"
-        SLACK_WEBHOOK_URL=""
-        DEFAULT_RECIPIENT_SLACK=""
-        role_recipients_slack[sysadmin]="${DEFAULT_RECIPIENT_SLACK}"
-        role_recipients_slack[domainadmin]="${DEFAULT_RECIPIENT_SLACK}"
-        role_recipients_slack[dba]="${DEFAULT_RECIPIENT_SLACK}"
-        role_recipients_slack[webmaster]="${DEFAULT_RECIPIENT_SLACK}"
-        role_recipients_slack[proxyadmin]="${DEFAULT_RECIPIENT_SLACK}"
-        role_recipients_slack[sitemgr]="${DEFAULT_RECIPIENT_SLACK}"
+        # SEND_SLACK="YES"
+        # SLACK_WEBHOOK_URL="MySlackAPIURL"
+        # DEFAULT_RECIPIENT_SLACK="@MyUser MyChannel"
+        # role_recipients_slack[sysadmin]="${DEFAULT_RECIPIENT_SLACK}"
+        # role_recipients_slack[domainadmin]="${DEFAULT_RECIPIENT_SLACK}"
+        # role_recipients_slack[dba]="${DEFAULT_RECIPIENT_SLACK}"
+        # role_recipients_slack[webmaster]="${DEFAULT_RECIPIENT_SLACK}"
+        # role_recipients_slack[proxyadmin]="${DEFAULT_RECIPIENT_SLACK}"
+        # role_recipients_slack[sitemgr]="${DEFAULT_RECIPIENT_SLACK}"
     exporting:
       enabled: false
       path: /etc/netdata/exporting.conf
