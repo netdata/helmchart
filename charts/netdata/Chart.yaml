@@ -14,15 +14,11 @@ sources:
 maintainers:
   - name: Ilya Mashchenko
     email: ilya@netdata.cloud
-  - name: Konstantinos Natsakis
-    email: knatsakis@netdata.cloud
-  - name: Mansour Behabadi
-    email: mansour@netdata.cloud
-  - name: Vladimir Ryumin
-    email: vryumin@gmail.com
-  - name: Karuppiah Natarajan
-    email: karuppiah7890@gmail.com
-  - name: Oleksii Kravchenko
-    email: kamikaze.ua@gmail.com
+  - name: Mateusz Bularz
+    email: mat@netdata.cloud
+  - name: Bill Kalaitzis
+    email: bill@netdata.cloud
+  - name: Witold Duranek
+    email: witold@netdata.cloud
 icon: https://netdata.github.io/helmchart/logo.png
 appVersion: v1.36.0
