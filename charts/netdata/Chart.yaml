@@ -12,13 +12,7 @@ sources:
   - https://github.com/netdata/helmchart
   - https://github.com/netdata/netdata
 maintainers:
-  - name: Ilya Mashchenko
-    email: ilya@netdata.cloud
-  - name: Mateusz Bularz
-    email: mat@netdata.cloud
-  - name: Bill Kalaitzis
-    email: bill@netdata.cloud
-  - name: Witold Duranek
-    email: witold@netdata.cloud
+  - name: Netdata Cloud SRE team
+    email: cloud-sre@netdata.cloud
 icon: https://netdata.github.io/helmchart/logo.png
 appVersion: v1.36.0
