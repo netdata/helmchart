@@ -151,8 +151,9 @@ spec:
               mountPath: /host/sys
             - name: os-release
               mountPath: /host/etc/os-release
-            {{- range $name, $config := .Values.child.configs }}
-            {{- if $config.enabled }}
+            {{- range $name, $config := .Values.parent.configs }}
+            {{- if and (eq $name "stream") (not $.Values.parent.enabled) }}
+            {{- else if $config.enabled }}
             - name: config
               mountPath: {{ $config.path }}
               subPath: {{ $name }}

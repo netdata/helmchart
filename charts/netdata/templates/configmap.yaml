@@ -1,3 +1,4 @@
+{{- if .Values.parent.enabled }}
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -14,7 +15,7 @@ data:
   {{ $name }}: {{ tpl $config.data $ | toYaml | indent 4 | trim }}
   {{- end }}
   {{- end }}
-
+{{- end }}
 
 {{- if .Values.child.enabled }}
 ---

@@ -82,6 +82,7 @@ serviceAccount:
 
 
 parent:
+  enabled: no
   port: 19999
   resources: {}
     # limits:

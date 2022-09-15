@@ -1,3 +1,5 @@
+{{- if .Values.parent.enabled }}
+---
 apiVersion: v1
 kind: Service
 metadata:
@@ -41,3 +43,4 @@ spec:
     app: {{ template "netdata.name" . }}
     release: {{ .Release.Name }}
     role: parent
+{{- end }}
