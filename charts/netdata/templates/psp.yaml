@@ -1,3 +1,4 @@
+{{- if semverCompare "<1.25-0" (include "netdata.kubeVersion" .) -}}
 {{- if .Values.rbac.pspEnabled -}}
 apiVersion: policy/v1beta1
 kind: PodSecurityPolicy
@@ -29,4 +30,5 @@ spec:
     rule: RunAsAny
   volumes:
   - '*'
+{{- end -}}
 {{- end -}}
