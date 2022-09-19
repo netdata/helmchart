@@ -1,3 +1,4 @@
+{{- if .Values.parent.enabled }}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -166,6 +167,7 @@ spec:
 {{ toYaml .Values.parent.extraVolumes | indent 8}}
         {{- end }}
       dnsPolicy: {{ .Values.parent.dnsPolicy }}
+{{- end }}
 
 {{- if .Values.k8sState.enabled }}
 ---
@@ -279,7 +281,8 @@ spec:
             - name: os-release
               mountPath: /host/etc/os-release
             {{- range $name, $config := .Values.k8sState.configs }}
-            {{- if $config.enabled }}
+            {{- if and (eq $name "stream") (not $.Values.parent.enabled) }}
+            {{- else if $config.enabled }}
             - name: config
               mountPath: {{ $config.path }}
               subPath: {{ $name }}

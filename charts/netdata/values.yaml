@@ -82,6 +82,7 @@ serviceAccount:
 
 
 parent:
+  enabled: true
   port: 19999
   resources: {}
     # limits:
@@ -352,7 +353,7 @@ child:
     #     path: /
 
 k8sState:
-  enabled: yes
+  enabled: true
   port: "{{ .Values.parent.port }}"
 
   resources: {}

@@ -1,4 +1,4 @@
-{{- if .Values.parent.database.persistence }}
+{{- if and .Values.parent.enabled .Values.parent.database.persistence }}
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -20,7 +20,7 @@ spec:
       storage: {{ .Values.parent.database.volumesize }}
 {{- end }}
 
-{{- if .Values.parent.alarms.persistence }}
+{{- if and .Values.parent.enabled .Values.parent.alarms.persistence }}
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
