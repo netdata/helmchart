@@ -9,8 +9,12 @@ _Based on the work of varyumin (https://github.com/varyumin/netdata)_.
 This chart bootstraps a [Netdata](https://github.com/netdata/netdata) deployment on a [Kubernetes](http://kubernetes.io)
 cluster using the [Helm](https://helm.sh) package manager.
 
-The chart installs a Netdata child pod on each node of a cluster, using a `Daemonset` if not disabled, and a Netdata
-parent pod on one node, using a `Deployment`. The child pods function as headless collectors that collect and forward
+By default, the chart installs:
+ - A Netdata child pod on each node of a cluster, using a `Daemonset`
+ - A Netdata k8s state monitoring pod on one node, using a `Deployment`. This virtual node is called `netdata-k8s-state`.
+ - A Netdata parent pod on one node, using a `Deployment`. This virtual node is called `netdata-parent`.
+
+The child pods and the state pod function as headless collectors that collect and forward
 all the metrics to the parent pod. The parent pod uses persistent volumes to store metrics and alarms, handle alarm
 notifications, and provide the Netdata UI to view metrics using an ingress controller.
 
