@@ -284,7 +284,7 @@ child:
       path: /etc/netdata/stream.conf
       data: |
         [stream]
-          enabled = yes
+          enabled = {{ ternary "yes" "no" .Values.parent.enabled }}
           destination = netdata:{{ .Values.service.port }}
           api key = 11111111-2222-3333-4444-555555555555
           timeout seconds = 60
@@ -436,7 +436,7 @@ k8sState:
       path: /etc/netdata/stream.conf
       data: |
         [stream]
-          enabled = yes
+          enabled = {{ ternary "yes" "no" .Values.parent.enabled }}
           destination = netdata:{{ .Values.service.port }}
           api key = 11111111-2222-3333-4444-555555555555
           timeout seconds = 60
