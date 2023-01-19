@@ -207,7 +207,7 @@ parent:
     enabled: false
     token: ""
     rooms: ""
-    url: "https://app.netdata.cloud"
+    url: "https://api.netdata.cloud"
 
   extraVolumeMounts: []
 
@@ -336,7 +336,7 @@ child:
     enabled: false
     token: ""
     rooms: ""
-    url: "https://app.netdata.cloud"
+    url: "https://api.netdata.cloud"
 
   extraVolumeMounts: []
     ## Additional volume mounts for netdata child
@@ -477,7 +477,7 @@ k8sState:
     enabled: false
     token: ""
     rooms: ""
-    url: "https://app.netdata.cloud"
+    url: "https://api.netdata.cloud"
 
   extraVolumeMounts: []
 
