@@ -38,7 +38,7 @@ jobs:
           commit-message: 'Update agent version to ${{ github.event.inputs.agent_version }}.'
           ref: refs/heads/agent-${{ github.event.inputs.agent_version }}
       - name: Create PR
-        uses: repo-sync/pull-request@v2.6.2
+        uses: repo-sync/pull-request@v2.12.1
         with:
           source_branch: agent-${{ github.event.inputs.agent_version }}
           pr_title: 'Update agent version to ${{ github.event.inputs.agent_version }}'
