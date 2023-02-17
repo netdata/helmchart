@@ -1,3 +1,11 @@
+<!--
+title: "Netdata Helm chart for Kubernetes deployments"
+custom_edit_url: https://github.com/netdata/helmchart/edit/master/charts/netdata/README.md"
+sidebar_label: "Helm chart for Kubernetes"
+learn_status: "Published"
+learn_rel_path: "Configuration"
+-->
+
 # Netdata Helm chart for Kubernetes deployments
 
 [![Artifact HUB](https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/netdata)](https://artifacthub.io/packages/search?repo=netdata) ![Version: 3.7.41](https://img.shields.io/badge/Version-3.7.41-informational) ![AppVersion: v1.38.1](https://img.shields.io/badge/AppVersion-v1.38.1-informational)
