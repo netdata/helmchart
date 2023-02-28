@@ -52,3 +52,14 @@ Return the appropriate apiVersion for ingress.
 {{- "networking.k8s.io/v1" -}}
 {{- end -}}
 {{- end -}}
+
+{{/*
+Return a value indicating whether the restarte is enabled.
+*/}}
+{{- define "netdata.restarter.enabled" -}}
+{{- if and .Values.restarter.enabled (or .Values.parent.enabled .Values.child.enabled .Values.k8sState.enabled) }}
+{{- "true" -}}
+{{- else -}}
+{{- "" -}}
+{{- end -}}
+{{- end -}}
