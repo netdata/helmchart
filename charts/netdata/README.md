@@ -261,7 +261,7 @@ be provided while installing the chart. For example,
 $ helm install ./netdata --name my-release -f values.yaml
 ```
 
-> **Tip**: You can use the default [values.yaml](values.yaml)
+> **Tip**: You can use the default values.yaml
 
 > **Note:**: To opt out of anonymous statistics, set the `DO_NOT_TRACK`
 environment variable to non-zero or non-empty value in
