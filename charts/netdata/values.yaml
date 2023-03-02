@@ -81,7 +81,7 @@ serviceAccount:
   name: netdata
 
 restarter:
-  enabled: true
+  enabled: false
   schedule: "00 06 * * *"
   image:
     repository: bitnami/kubectl
