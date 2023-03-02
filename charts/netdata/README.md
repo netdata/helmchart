@@ -121,6 +121,17 @@ The following table lists the configurable parameters of the netdata chart and t
 | `serviceAccount.name`                      | The name of the service account to use. If not set and create is true, a name is generated using the fullname template.                                | `netdata`                                                                               |
 | `clusterrole.name`                         | Name of the cluster role linked with the service account                                                                                               | `netdata`                                                                               |
 | `APIKEY`                                   | The key shared between the parent and the child netdata for streaming                                                                                  | `11111111-2222-3333-4444-555555555555`                                                  |
+| `restarter.enabled`                        | Install CronJob to update Netdata Pods                                                                                                                 | `false`                                                                                 |
+| `restarter.schedule`                       | The schedule in Cron format                                                                                                                            | `00 06 * * *`                                                                           |
+| `restarter.image.repository`               | Container image repo                                                                                                                                   | `bitnami/kubectl`                                                                       |
+| `restarter.image.tag`                      | Container image tag                                                                                                                                    | `1.25`                                                                                  |
+| `restarter.image.pullPolicy`               | Container image pull policy                                                                                                                            | `Always`                                                                                |
+| `restarter.image.restartPolicy`            | Container restart policy                                                                                                                               | `Never`                                                                                 |
+| `restarter.image.resources`                | Container resources                                                                                                                                    | `{}`                                                                                    |
+| `restarter.concurrencyPolicy`              | Specifies how to treat concurrent executions of a job                                                                                                  | `Forbid`                                                                                |
+| `restarter.startingDeadlineSeconds`        | Optional deadline in seconds for starting the job if it misses scheduled time for any reason                                                           | `60`                                                                                    |
+| `restarter.successfulJobsHistoryLimit`     | The number of successful finished jobs to retain                                                                                                       | `3`                                                                                     |
+| `restarter.failedJobsHistoryLimit`         | The number of failed finished jobs to retain                                                                                                           | `3`                                                                                     |
 | `parent.enabled`                           | Install parent Deployment to receive metrics from children nodes                                                                                       | `true`                                                                                  |
 | `parent.port`                              | Parent's listen port                                                                                                                                   | `19999`                                                                                 |
 | `parent.resources`                         | Resources for the parent deployment                                                                                                                    | `{}`                                                                                    |
@@ -264,9 +275,9 @@ $ helm install ./netdata --name my-release -f values.yaml
 > **Tip**: You can use the default [values.yaml](values.yaml)
 
 > **Note:**: To opt out of anonymous statistics, set the `DO_NOT_TRACK`
-environment variable to non-zero or non-empty value in
+> environment variable to non-zero or non-empty value in
 `parent.env` / `child.env` configuration (e.g: `DO_NOT_TRACK: 1`)
-or uncomment the line in `values.yml`.
+> or uncomment the line in `values.yml`.
 
 ### Configuration files
 
@@ -298,7 +309,7 @@ not collect much data. As a result, the only other configuration files that migh
 the alarm and alarm template definitions, under `/etc/netdata/health.d`.
 
 > **Tip**: Do pay attention to the indentation of the config file contents, as it matters for the parsing of the `yaml` file. Note that the first line under `var: |`
-must be indented with two more spaces relative to the preceding line:
+> must be indented with two more spaces relative to the preceding line:
 
 ```
   data: |-
