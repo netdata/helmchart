@@ -9,26 +9,6 @@ image:
   tag: "{{ .Chart.AppVersion }}"
   pullPolicy: Always
 
-restarter:
-  enabled: true
-  schedule: "00 06 * * *"
-  image:
-    repository: bitnami/kubectl
-    tag: 1.25
-    pullPolicy: Always
-  restartPolicy: Never
-  resources: {}
-    # limits:
-    #  cpu: 500m
-    #  memory: 64Mi
-    # requests:
-    #  cpu: 250m
-    #  memory: 32Mi
-  concurrencyPolicy: Forbid
-  startingDeadlineSeconds: 60
-  successfulJobsHistoryLimit: 3
-  failedJobsHistoryLimit: 3
-
 sd:
   image:
     repository: netdata/agent-sd
@@ -100,6 +80,25 @@ serviceAccount:
   create: true
   name: netdata
 
+restarter:
+  enabled: true
+  schedule: "00 06 * * *"
+  image:
+    repository: bitnami/kubectl
+    tag: 1.25
+    pullPolicy: Always
+  restartPolicy: Never
+  resources: {}
+    # limits:
+    #  cpu: 500m
+    #  memory: 64Mi
+    # requests:
+    #  cpu: 250m
+  #  memory: 32Mi
+  concurrencyPolicy: Forbid
+  startingDeadlineSeconds: 60
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
 
 parent:
   enabled: true
