@@ -273,8 +273,8 @@ child:
       enabled: true
       path: /etc/netdata/netdata.conf
       data: |
-        [global]
-          memory mode = ram
+        [db]
+          mode = ram
         [health]
           enabled = no
         [ml]
@@ -407,8 +407,8 @@ k8sState:
       enabled: true
       path: /etc/netdata/netdata.conf
       data: |
-        [global]
-          memory mode = ram
+        [db]
+          mode = ram
         [health]
           enabled = no
         [ml]
