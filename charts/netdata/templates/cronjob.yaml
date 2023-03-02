@@ -24,6 +24,10 @@ spec:
         spec:
           serviceAccountName: {{ .Values.serviceAccount.name }}-restarter
           restartPolicy: {{ .Values.restarter.restartPolicy }}
+          {{- if .Values.imagePullSecrets }}
+          imagePullSecrets:
+{{ toYaml .Values.imagePullSecrets | indent 12 }}
+          {{- end }}
           containers:
             - name: netdata-restarter
               image: {{ .Values.restarter.image.repository }}:{{ .Values.restarter.image.tag }}
