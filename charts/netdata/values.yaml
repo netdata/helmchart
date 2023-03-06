@@ -148,6 +148,7 @@ parent:
       path: /etc/netdata/netdata.conf
       data: |
         [global]
+          hostname = netdata-parent
           memory mode = dbengine
 
         [plugins]
