@@ -22,6 +22,9 @@ By default, the chart installs:
  - A Netdata k8s state monitoring pod on one node, using a `Deployment`. This virtual node is called `netdata-k8s-state`.
  - A Netdata parent pod on one node, using a `Deployment`. This virtual node is called `netdata-parent`.
 
+Disabled by default:
+- A Netdata restarter `CronJob`. Its main purpose is to automatically update Netdata when using nightly releases.
+
 The child pods and the state pod function as headless collectors that collect and forward
 all the metrics to the parent pod. The parent pod uses persistent volumes to store metrics and alarms, handle alarm
 notifications, and provide the Netdata UI to view metrics using an ingress controller.
