@@ -408,6 +408,8 @@ k8sState:
       enabled: true
       path: /etc/netdata/netdata.conf
       data: |
+        [global]
+          hostname = netdata-k8s-state
         [db]
           mode = ram
         [health]
