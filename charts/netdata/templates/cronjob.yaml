@@ -1,0 +1,41 @@
+{{- if include "netdata.restarter.enabled" . }}
+---
+{{- $cmdList := list }}
+{{- $cmd := printf "kubectl rollout restart deployment %s-parent" (include "netdata.name" .) }}
+{{- $cmdList = append $cmdList (ternary $cmd "" .Values.parent.enabled) }}
+{{- $cmd = printf "kubectl rollout restart daemonset %s-child" (include "netdata.name" .) }}
+{{- $cmdList = append $cmdList (ternary $cmd "" .Values.child.enabled) }}
+{{- $cmd = printf "kubectl rollout restart deployment %s-k8s-state" (include "netdata.name" .) }}
+{{- $cmdList = append $cmdList (ternary $cmd "" .Values.k8sState.enabled) }}
+{{- $cmdList = compact $cmdList }}
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ template "netdata.name" . }}-restarter
+spec:
+  schedule: "{{ .Values.restarter.schedule }}"
+  concurrencyPolicy: {{ .Values.restarter.concurrencyPolicy }}
+  startingDeadlineSeconds: {{ .Values.restarter.startingDeadlineSeconds }}
+  successfulJobsHistoryLimit: {{ .Values.restarter.successfulJobsHistoryLimit }}
+  failedJobsHistoryLimit: {{ .Values.restarter.failedJobsHistoryLimit }}
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          serviceAccountName: {{ .Values.serviceAccount.name }}-restarter
+          restartPolicy: {{ .Values.restarter.restartPolicy }}
+          {{- if .Values.imagePullSecrets }}
+          imagePullSecrets:
+{{ toYaml .Values.imagePullSecrets | indent 12 }}
+          {{- end }}
+          containers:
+            - name: netdata-restarter
+              image: {{ .Values.restarter.image.repository }}:{{ .Values.restarter.image.tag }}
+              imagePullPolicy: {{ .Values.restarter.image.pullPolicy }}
+              resources:
+{{ toYaml .Values.restarter.resources | indent 16 }}
+              command:
+                - "/bin/bash"
+                - "-c"
+                - {{ $cmdList | join " && " }}
+{{- end }}

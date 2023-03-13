@@ -1,0 +1,25 @@
+{{- if and .Values.serviceAccount.create (include "netdata.restarter.enabled" .) }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: {{ template "netdata.fullname" . }}-restarter
+  labels:
+    app: {{ template "netdata.name" . }}
+    chart: {{ template "netdata.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+rules:
+  - apiGroups:
+      - "apps"
+    resources:
+      - "deployments"
+      - "daemonsets"
+    resourceNames:
+      - {{ template "netdata.name" . }}-parent
+      - {{ template "netdata.name" . }}-child
+      - {{ template "netdata.name" . }}-k8s-state
+    verbs:
+      - "get"
+      - "patch"
+{{- end -}}
