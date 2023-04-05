@@ -1,14 +1,8 @@
-<!--
-title: "Netdata Helm chart for Kubernetes deployments"
-custom_edit_url: https://github.com/netdata/helmchart/edit/master/charts/netdata/README.md"
-sidebar_label: "Helm chart for Kubernetes"
-learn_status: "Published"
-learn_rel_path: "Configuration"
--->
-
 # Netdata Helm chart for Kubernetes deployments
 
-[![Artifact HUB](https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/netdata)](https://artifacthub.io/packages/search?repo=netdata) ![Version: 3.7.48](https://img.shields.io/badge/Version-3.7.48-informational) ![AppVersion: v1.38.1](https://img.shields.io/badge/AppVersion-v1.38.1-informational)
+[![Artifact HUB](https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/netdata)](https://artifacthub.io/packages/search?repo=netdata)  
+![Version: 3.7.48](https://img.shields.io/badge/Version-3.7.48-informational)  
+![AppVersion: v1.38.1](https://img.shields.io/badge/AppVersion-v1.38.1-informational)
 
 _Based on the work of varyumin (https://github.com/varyumin/netdata)_.
 
@@ -52,7 +46,7 @@ helm repo add netdata https://netdata.github.io/helmchart/
 helm install netdata netdata/netdata
 ```
 
-**See our [install Netdata on Kubernetes](https://learn.netdata.cloud/docs/agent/packaging/installer/methods/kubernetes)
+**See our [install Netdata on Kubernetes](https://github.com/netdata/netdata/blob/master/packaging/installer/methods/kubernetes.md)
 documentation for detailed installation and configuration instructions.** The remainder of this document assumes you
 installed the Helm chart by cloning this repository, and thus uses slightly different `helm install`/`helm upgrade`
 commands.
@@ -77,7 +71,7 @@ section lists the parameters that can be configured during installation.
 > **Tip**: List all releases using `helm list`.
 
 Once the Netdata deployment is up and running, read our guide, [_Monitor a Kubernetes (k8s) cluster with
-Netdata_](https://learn.netdata.cloud/guides/monitor/kubernetes-k8s-netdata), for a breakdown of all the collectors,
+Netdata_](https://github.com/netdata/netdata/blob/master/docs/guides/monitor/kubernetes-k8s-netdata.md), for a breakdown of all the collectors,
 metrics, and charts available for health monitoring and performance troubleshooting.
 
 ## Uninstalling the Chart
@@ -344,34 +338,34 @@ and exports them, so they can be monitored.
 
 Service discovery currently supports the following applications via their associated collector:
 
-- [ActiveMQ](https://learn.netdata.cloud/docs/agent/collectors/go.d.plugin/modules/activemq)
-- [Apache](https://learn.netdata.cloud/docs/agent/collectors/go.d.plugin/modules/apache)
-- [Bind](https://learn.netdata.cloud/docs/agent/collectors/go.d.plugin/modules/bind)
-- [CockroachDB](https://learn.netdata.cloud/docs/agent/collectors/go.d.plugin/modules/cockroachdb)
-- [Consul](https://learn.netdata.cloud/docs/agent/collectors/go.d.plugin/modules/consul)
-- [CoreDNS](https://learn.netdata.cloud/docs/agent/collectors/go.d.plugin/modules/coredns)
-- [Elasticsearch](https://learn.netdata.cloud/docs/agent/collectors/go.d.plugin/modules/elasticsearch)
-- [Fluentd](https://learn.netdata.cloud/docs/agent/collectors/go.d.plugin/modules/fluentd)
-- [FreeRADIUS](https://learn.netdata.cloud/docs/agent/collectors/go.d.plugin/modules/freeradius)
-- [HDFS](https://learn.netdata.cloud/docs/agent/collectors/go.d.plugin/modules/hdfs)
-- [Lighttpd](https://learn.netdata.cloud/docs/agent/collectors/go.d.plugin/modules/lighttpd)
-- [Lighttpd2](https://learn.netdata.cloud/docs/agent/collectors/go.d.plugin/modules/lighttpd2)
-- [Logstash](https://learn.netdata.cloud/docs/agent/collectors/go.d.plugin/modules/logstash)
-- [MySQL](https://learn.netdata.cloud/docs/agent/collectors/go.d.plugin/modules/mysql)
-- [NGINX](https://learn.netdata.cloud/docs/agent/collectors/go.d.plugin/modules/nginx)
-- [OpenVPN](https://learn.netdata.cloud/docs/agent/collectors/go.d.plugin/modules/openvpn)
-- [PHP-FPM](https://learn.netdata.cloud/docs/agent/collectors/go.d.plugin/modules/phpfpm)
-- [RabbitMQ](https://learn.netdata.cloud/docs/agent/collectors/go.d.plugin/modules/rabbitmq)
-- [Solr](https://learn.netdata.cloud/docs/agent/collectors/go.d.plugin/modules/solr)
-- [Tengine](https://learn.netdata.cloud/docs/agent/collectors/go.d.plugin/modules/tengine)
-- [Unbound](https://learn.netdata.cloud/docs/agent/collectors/go.d.plugin/modules/unbound)
-- [VerneMQ](https://learn.netdata.cloud/docs/agent/collectors/go.d.plugin/modules/vernemq)
-- [ZooKeeper](https://learn.netdata.cloud/docs/agent/collectors/go.d.plugin/modules/zookeeper)
+- [ActiveMQ](https://github.com/netdata/go.d.plugin/blob/master/modules/activemq/README.md)
+- [Apache](https://github.com/netdata/go.d.plugin/blob/master/modules/apache/README.md)
+- [Bind](https://github.com/netdata/go.d.plugin/blob/master/modules/bind/README.md)
+- [CockroachDB](https://github.com/netdata/go.d.plugin/blob/master/modules/cockroachdb/README.md)
+- [Consul](https://github.com/netdata/go.d.plugin/blob/master/modules/consul/README.md)
+- [CoreDNS](https://github.com/netdata/go.d.plugin/blob/master/modules/coredns/README.md)
+- [Elasticsearch](https://github.com/netdata/go.d.plugin/blob/master/modules/elasticsearch/README.md)
+- [Fluentd](https://github.com/netdata/go.d.plugin/blob/master/modules/fluentd/README.md)
+- [FreeRADIUS](https://github.com/netdata/go.d.plugin/blob/master/modules/freeradius/README.md)
+- [HDFS](https://github.com/netdata/go.d.plugin/blob/master/modules/hdfs/README.md)
+- [Lighttpd](https://github.com/netdata/go.d.plugin/blob/master/modules/lighttpd/README.md)
+- [Lighttpd2](https://github.com/netdata/go.d.plugin/blob/master/modules/lighttpd2/README.md)
+- [Logstash](https://github.com/netdata/go.d.plugin/blob/master/modules/logstash/README.md)
+- [MySQL](https://github.com/netdata/go.d.plugin/blob/master/modules/mysql/README.md)
+- [NGINX](https://github.com/netdata/go.d.plugin/blob/master/modules/nginx/README.md)
+- [OpenVPN](https://github.com/netdata/go.d.plugin/blob/master/modules/openvpn/README.md)
+- [PHP-FPM](https://github.com/netdata/go.d.plugin/blob/master/modules/phpfpm/README.md)
+- [RabbitMQ](https://github.com/netdata/go.d.plugin/blob/master/modules/rabbitmq/README.md)
+- [Solr](https://github.com/netdata/go.d.plugin/blob/master/modules/solr/README.md)
+- [Tengine](https://github.com/netdata/go.d.plugin/blob/master/modules/tengine/README.md)
+- [Unbound](https://github.com/netdata/go.d.plugin/blob/master/modules/unbound/README.md)
+- [VerneMQ](https://github.com/netdata/go.d.plugin/blob/master/modules/vernemq/README.md)
+- [ZooKeeper](https://github.com/netdata/go.d.plugin/blob/master/modules/zookeeper/README.md)
 
 #### Prometheus endpoints
 
 Service discovery supports Prometheus endpoints via
-the [Prometheus](https://learn.netdata.cloud/docs/agent/collectors/go.d.plugin/modules/prometheus) collector.
+the [Prometheus](https://github.com/netdata/go.d.plugin/blob/master/modules/prometheus/README.md) collector.
 
 Annotations on pods allow a fine control of the scraping process:
 
@@ -439,7 +433,7 @@ $ helm install \
 
 If you want to contribute, we are humbled!
 
-- Take a look at our [Contributing Guidelines](https://learn.netdata.cloud/contribute/handbook).
-- This repository is under the [Netdata Code Of Conduct](https://learn.netdata.cloud/contribute/code-of-conduct).
+- Take a look at our [Contributing Guidelines](https://github.com/netdata/.github/blob/main/CONTRIBUTING.md).
+- This repository is under the [Netdata Code Of Conduct](https://github.com/netdata/.github/blob/main/CODE_OF_CONDUCT.md).
 - Chat about your contribution and let us help you in
   our [forum](https://community.netdata.cloud/c/agent-development/9)!
