@@ -1,8 +1,10 @@
 # Netdata Helm chart for Kubernetes deployments
 
-[![Artifact HUB](https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/netdata)](https://artifacthub.io/packages/search?repo=netdata)  
-![Version: 3.7.48](https://img.shields.io/badge/Version-3.7.48-informational)  
-![AppVersion: v1.38.1](https://img.shields.io/badge/AppVersion-v1.38.1-informational)
+<a href="https://artifacthub.io/packages/search?repo=netdata" target="_blank" rel="noopener noreferrer"><img loading="lazy" src="https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/netdata" alt="Artifact HUB" class="img_node_modules-@docusaurus-theme-classic-lib-theme-MDXComponents-Img-styles-module"></img></a>
+
+<img src="https://img.shields.io/badge/Version-3.7.48-informational" alt="Version: 3.7.48"></img>
+
+<img loading="lazy" src="https://img.shields.io/badge/AppVersion-v1.38.1-informational" alt="AppVersion: v1.38.1" class="img_node_modules-@docusaurus-theme-classic-lib-theme-MDXComponents-Img-styles-module"></img>
 
 _Based on the work of varyumin (https://github.com/varyumin/netdata)_.
 
