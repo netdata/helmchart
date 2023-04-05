@@ -16,7 +16,8 @@ rules:
       - "configmaps"     # used by sd
       - "secrets"        # used by sd
       - "nodes"          # used by go.d/k8s_state
-      - "nodes/metrics"  # used by go.d/k8s_state when querying Kubelet HTTPS endpoint
+      - "nodes/metrics"  # used by go.d/k8s_kubelet when querying Kubelet HTTPS endpoint
+      - "nodes/proxy"    # used by netdata (cgroup-name.sh) when querying Kubelet /pods endpoint
     verbs:
       - "get"
       - "list"
