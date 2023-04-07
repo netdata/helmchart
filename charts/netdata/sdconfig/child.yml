@@ -63,6 +63,14 @@ tag:
         expr: '{{ and (eq .Port "8888") (glob .Image "**/vernemq*") }}'
       - tags: zookeeper
         expr: '{{ and (eq .Port "2181") (glob .Image "zookeeper*" "**/zookeeper*") }}'
+      - tags: consul_envoy
+        expr: |
+          {{ $imageOK := glob .Image "*/consul-dataplane*" -}}
+          {{ $scrapeOK := eq (get .Annotations "prometheus.io/scrape") "true" -}}
+          {{ $promPort := get .Annotations "prometheus.io/port" -}}
+          {{ $portOK1 := and (eq .Port $promPort) (not (empty .Port)) -}}
+          {{ $portOK2 := and (empty .Port) (not (empty $promPort)) -}}
+          {{ and $imageOK $scrapeOK (or $portOK1 $portOK2) }}
   - name: "Prometheus Generic Applications"
     selector: unknown
     tags: -unknown prometheus_generic
@@ -146,6 +154,14 @@ build:
           - module: elasticsearch
             name: elasticsearch-{{.TUID}}
             url: http://{{.Address}}
+      - selector: consul_envoy
+        template: |
+          {{ $path := default "/metrics" (get .Annotations "prometheus.io/path") -}}
+          {{ $promPort := get .Annotations "prometheus.io/port" -}}
+          {{ $port := ternary .Port $promPort (not (empty .Port)) -}}
+          - module: envoy
+            name: {{.TUID}}
+            url: http://{{ .PodIP }}:{{ $port }}{{ $path }}
       - selector: fluentd
         template: |
           - module: fluentd
