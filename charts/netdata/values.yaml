@@ -289,6 +289,10 @@ child:
     enabled: true
     hostPath: /var/lib/netdata-k8s-child
 
+  podsMetadata:
+    useKubelet: false
+    kubeletUrl: "https://localhost:10250"
+
   configs:
     netdata:
       enabled: true
