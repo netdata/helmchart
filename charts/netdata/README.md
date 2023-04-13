@@ -14,9 +14,9 @@ This chart bootstraps a [Netdata](https://github.com/netdata/netdata) deployment
 cluster using the [Helm](https://helm.sh) package manager.
 
 By default, the chart installs:
- - A Netdata child pod on each node of a cluster, using a `Daemonset`
- - A Netdata k8s state monitoring pod on one node, using a `Deployment`. This virtual node is called `netdata-k8s-state`.
- - A Netdata parent pod on one node, using a `Deployment`. This virtual node is called `netdata-parent`.
+- A Netdata child pod on each node of a cluster, using a `Daemonset`
+- A Netdata k8s state monitoring pod on one node, using a `Deployment`. This virtual node is called `netdata-k8s-state`.
+- A Netdata parent pod on one node, using a `Deployment`. This virtual node is called `netdata-parent`.
 
 Disabled by default:
 - A Netdata restarter `CronJob`. Its main purpose is to automatically update Netdata when using nightly releases.
@@ -222,6 +222,8 @@ The following table lists the configurable parameters of the netdata chart and t
 | `child.podAnnotationAppArmor.enabled`      | Whether or not to include the AppArmor security annotation                                                                                             | `true`                                                                                  |
 | `child.persistence.hostPath`               | Host node directory for storing child instance data                                                                                                    | `/var/lib/netdata-k8s-child`                                                            |
 | `child.persistence.enabled`                | Whether or not to persist `/var/lib/netdata` in the `child.persistence.hostPath`.                                                                      | `true`                                                                                  |
+| `child.podsMetadata.useKubelet`            | Send requests to the Kubelet /pods endpoint instead of Kubernetes API server to get pod metadata                                                       | `false`                                                                                 |
+| `child.podsMetadata.kubeletUrl`            | Kubelet URL                                                                                                                                            | `https://localhost:10250`                                                               |
 | `child.configs`                            | Manage custom child's configs                                                                                                                          | See [Configuration files](#configuration-files).                                        |
 | `child.claiming.enabled`                   | Enable child claiming for netdata cloud                                                                                                                | `false`                                                                                 |
 | `child.claiming.token`                     | Claim token                                                                                                                                            | `""`                                                                                    |

@@ -117,6 +117,12 @@ spec:
             - name: {{ $key }}
               value: {{ $value | quote }}
             {{- end }}
+            {{- if .Values.child.podsMetadata.useKubelet }}
+            - name: USE_KUBELET_FOR_PODS_METADATA
+              value: "1"
+            - name: KUBELET_URL
+              value: "{{ .Values.child.podsMetadata.kubeletUrl }}"
+            {{- end }}
           {{- with .Values.child.envFrom }}
           envFrom:
 {{ toYaml . | indent 12 }}
