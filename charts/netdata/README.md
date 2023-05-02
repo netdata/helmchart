@@ -353,7 +353,6 @@ Service discovery currently supports the following applications via their associ
 - [FreeRADIUS](https://github.com/netdata/go.d.plugin/blob/master/modules/freeradius/README.md)
 - [HDFS](https://github.com/netdata/go.d.plugin/blob/master/modules/hdfs/README.md)
 - [Lighttpd](https://github.com/netdata/go.d.plugin/blob/master/modules/lighttpd/README.md)
-- [Lighttpd2](https://github.com/netdata/go.d.plugin/blob/master/modules/lighttpd2/README.md)
 - [Logstash](https://github.com/netdata/go.d.plugin/blob/master/modules/logstash/README.md)
 - [MySQL](https://github.com/netdata/go.d.plugin/blob/master/modules/mysql/README.md)
 - [NGINX](https://github.com/netdata/go.d.plugin/blob/master/modules/nginx/README.md)
