@@ -39,8 +39,6 @@ tag:
         expr: '{{ and (eq .Port "50070") (glob .Image "**/hdfs*") }}'
       - tags: lighttpd
         expr: '{{ and (eq .Port "80" "8080") (glob .Image "**/lighttpd*") }}'
-      - tags: lighttpd2
-        expr: '{{ and (eq .Port "80" "8080") (glob .Image "**/lighttpd2*") }}'
       - tags: logstash
         expr: '{{ and (eq .Port "9600") (glob .Image "logstash*" "**/logstash*") }}'
       - tags: mysql
@@ -183,11 +181,6 @@ build:
           - module: lighttpd
             name: lighttpd-{{.TUID}}
             url: http://{{.Address}}/server-status?auto
-      - selector: lighttpd2
-        template: |
-          - module: lighttpd2
-            name: lighttpd2-{{.TUID}}
-            url: http://{{.Address}}/server-status?format=plain
       - selector: logstash
         template: |
           - module: logstash
