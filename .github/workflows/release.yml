@@ -31,14 +31,14 @@ jobs:
 
       - name: Get current version
         id: get_current_var
-        run: echo ::set-output name=current_version::$(.github/scripts/update_versions.py get_chart_version)
+        run: echo "current_version=$(.github/scripts/update_versions.py get_chart_version)" >> $GITHUB_OUTPUT
 
       - name: Update Files
         run: .github/scripts/update_versions.py set_chart_version
 
       - name: Get the new version
         id: new_version_var
-        run: echo ::set-output name=new_version::$(.github/scripts/update_versions.py get_chart_version)
+        run: echo "new_version=$(.github/scripts/update_versions.py get_chart_version)" >> $GITHUB_OUTPUT
 
       - name: Run chart-releaser
         uses: helm/chart-releaser-action@v1.5.0
