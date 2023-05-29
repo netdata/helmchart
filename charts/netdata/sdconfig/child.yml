@@ -112,8 +112,7 @@ build:
             url: http://{{.Address}}{{$path}}
             app: '{{.ContName}}'
             update_every: 10
-            max_time_series: 20000
-            max_time_series_per_metric: 1000
+            max_time_series: 4000
   - name: "Applications"
     selector: '!unknown applications'
     tags: file
