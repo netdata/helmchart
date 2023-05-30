@@ -114,8 +114,20 @@ spec:
             - name: os-release
               mountPath: /host/etc/os-release
             {{- range $name, $config := .Values.parent.configs }}
-            {{- if $config.enabled }}
-            - name: config
+            {{- if and $config.enabled (eq $config.storedType "configmap") }}
+            - name: configmap
+              mountPath: {{ $config.path }}
+              subPath: {{ $name }}
+            {{- else if and $config.enabled (eq $config.storedType "secret") }}
+            - name: configsecret
+              mountPath: {{ $config.path }}
+              subPath: {{ $name }}
+            {{- else if and $config.enabled (ne $config.storedType "secret") }}
+            - name: configmap
+              mountPath: {{ $config.path }}
+              subPath: {{ $name }}
+            {{- else if and $config.enabled (not $config.storedType) }}
+            - name: configmap
               mountPath: {{ $config.path }}
               subPath: {{ $name }}
             {{- end }}
@@ -150,9 +162,14 @@ spec:
         - name: os-release
           hostPath:
             path: /etc/os-release
-        - name: config
+        - name: configmap
           configMap:
             name: netdata-conf-parent
+            optional: true
+        - name: configsecret
+          secret:
+            secretName: netdata-conf-parent
+            optional: true
         {{- if .Values.parent.database.persistence }}
         - name: database
           persistentVolumeClaim:
@@ -281,8 +298,20 @@ spec:
             - name: os-release
               mountPath: /host/etc/os-release
             {{- range $name, $config := .Values.k8sState.configs }}
-            {{- if $config.enabled }}
-            - name: config
+            {{- if and $config.enabled (eq $config.storedType "configmap") }}
+            - name: configmap
+              mountPath: {{ $config.path }}
+              subPath: {{ $name }}
+            {{- else if and $config.enabled (eq $config.storedType "secret") }}
+            - name: configsecret
+              mountPath: {{ $config.path }}
+              subPath: {{ $name }}
+            {{- else if and $config.enabled (ne $config.storedType "secret") }}
+            - name: configmap
+              mountPath: {{ $config.path }}
+              subPath: {{ $name }}
+            {{- else if and $config.enabled (not $config.storedType) }}
+            - name: configmap
               mountPath: {{ $config.path }}
               subPath: {{ $name }}
             {{- end }}
@@ -311,11 +340,15 @@ spec:
       terminationGracePeriodSeconds: {{ .Values.k8sState.terminationGracePeriodSeconds }}
       volumes:
         - name: os-release
-          hostPath:
-            path: /etc/os-release
-        - name: config
+          mountPath: /host/etc/os-release
+        - name: configmap
           configMap:
             name: netdata-conf-k8s-state
+            optional: true
+        - name: configsecret
+          secret:
+            secretName: netdata-conf-k8s-state
+            optional: true
         {{- if .Values.k8sState.persistence.enabled }}
         - name: varlib
           persistentVolumeClaim:

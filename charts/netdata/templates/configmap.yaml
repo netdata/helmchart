@@ -1,4 +1,5 @@
-{{- if .Values.parent.enabled }}
+{{- $configmapParent := include "netdata.parent.configs.configmap" . }}
+{{- if and .Values.parent.enabled $configmapParent }}
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -10,14 +11,11 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 data:
-  {{- range $name, $config := .Values.parent.configs }}
-  {{- if $config.enabled }}
-  {{ $name }}: {{ tpl $config.data $ | toYaml | indent 4 | trim }}
-  {{- end }}
-  {{- end }}
+  {{ $configmapParent | indent 2 }}
 {{- end }}
 
-{{- if .Values.child.enabled }}
+{{- $configmapChild := include "netdata.child.configs.configmap" . }}
+{{- if and .Values.child.enabled $configmapChild}}
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -29,15 +27,11 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 data:
-  {{- range $name, $config := .Values.child.configs }}
-  {{- if $config.enabled }}
-  {{ $name }}: {{ tpl $config.data $ | toYaml | indent 4 | trim }}
-  {{- end }}
-  {{- end }}
+  {{ $configmapChild | indent 2 }}
 {{- end }}
 
-
-{{- if .Values.k8sState.enabled }}
+{{- $configmapk8sState := include "netdata.k8sState.configs.configmap" . }}
+{{- if and .Values.k8sState.enabled $configmapk8sState }}}
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -49,11 +43,7 @@ metadata:
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 data:
-  {{- range $name, $config := .Values.k8sState.configs }}
-  {{- if $config.enabled }}
-  {{ $name }}: {{ tpl $config.data $ | toYaml | indent 4 | trim }}
-  {{- end }}
-  {{- end }}
+  {{ $configmapk8sState | indent 2 }}
 {{- end }}
 
 
