@@ -93,8 +93,6 @@ Return the configmap data for the child configuration. Configmap is the default 
 {{- $found = true -}}
 {{- else if and $config.enabled (ne $config.storedType "secret") -}}
 {{- $found = true -}}
-{{- else if and $config.enabled (not $config.storedType) -}}
-{{- $found = true -}}
 {{- end -}}
 {{- if $found }}
 {{ $name }}: {{ tpl $config.data $ | toYaml | indent 4 | trim }}
@@ -111,8 +109,6 @@ Return the configmap data for the k8s state configuration. Configmap is the defa
 {{- if and $config.enabled (eq $config.storedType "configmap") -}}
 {{- $found = true -}}
 {{- else if and $config.enabled (ne $config.storedType "secret") -}}
-{{- $found = true -}}
-{{- else if and $config.enabled (not $config.storedType) -}}
 {{- $found = true -}}
 {{- end -}}
 {{- if $found }}

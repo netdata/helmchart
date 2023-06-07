@@ -158,20 +158,8 @@ spec:
             - name: os-release
               mountPath: /host/etc/os-release
             {{- range $name, $config := .Values.child.configs }}
-            {{- if and $config.enabled (eq $config.storedType "configmap") }}
-            - name: configmap
-              mountPath: {{ $config.path }}
-              subPath: {{ $name }}
-            {{- else if and $config.enabled (eq $config.storedType "secret") }}
-            - name: configsecret
-              mountPath: {{ $config.path }}
-              subPath: {{ $name }}
-            {{- else if and $config.enabled (ne $config.storedType "secret") }}
-            - name: configmap
-              mountPath: {{ $config.path }}
-              subPath: {{ $name }}
-            {{- else if and $config.enabled (not $config.storedType) }}
-            - name: configmap
+            {{- if $config.enabled }}
+            - name: {{ ternary "configmap" "configsecret" (ne $config.storedType "secret") }}
               mountPath: {{ $config.path }}
               subPath: {{ $name }}
             {{- end }}
@@ -241,9 +229,6 @@ spec:
         - name: os-release
           hostPath:
             path: /etc/os-release
-        - name: config
-          configMap:
-            name: netdata-conf-child
         - name: configmap
           configMap:
             name: netdata-conf-child

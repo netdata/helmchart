@@ -31,7 +31,7 @@ data:
 {{- end }}
 
 {{- $configmapk8sState := include "netdata.k8sState.configs.configmap" . }}
-{{- if and .Values.k8sState.enabled $configmapk8sState }}}
+{{- if and .Values.k8sState.enabled $configmapk8sState }}
 ---
 apiVersion: v1
 kind: ConfigMap
