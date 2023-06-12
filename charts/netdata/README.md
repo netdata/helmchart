@@ -303,7 +303,9 @@ To deploy additional netdata user configuration files, you will need to add simi
 the `parent.configs` or the `child.configs` arrays. Regardless of whether you add config files that reside directly
 under `/etc/netdata` or in a subdirectory such as `/etc/netdata/go.d`, you can use the already provided configurations
 as reference. For reference, the `parent.configs` the array includes an `example` alarm that would get triggered if the
-python.d `example` module was enabled.
+python.d `example` module was enabled. Whenever you pass the sensitive data to your configuration like the database
+credential you can take an option to put it into the Kubernetes Secret by specifying `storedType: secret` in the
+selected configuration. Default all the configuration will be placed in the Kubernetes configmap.
 
 Note that with the default configuration of this chart, the parent does the health checks and triggers alarms, but does
 not collect much data. As a result, the only other configuration files that might make sense to add to the parent are

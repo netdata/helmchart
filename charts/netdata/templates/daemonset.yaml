@@ -159,7 +159,7 @@ spec:
               mountPath: /host/etc/os-release
             {{- range $name, $config := .Values.child.configs }}
             {{- if $config.enabled }}
-            - name: config
+            - name: {{ ternary "configmap" "configsecret" (ne $config.storedType "secret") }}
               mountPath: {{ $config.path }}
               subPath: {{ $name }}
             {{- end }}
@@ -229,9 +229,14 @@ spec:
         - name: os-release
           hostPath:
             path: /etc/os-release
-        - name: config
+        - name: configmap
           configMap:
             name: netdata-conf-child
+            optional: true
+        - name: configsecret
+          secret:
+            secretName: netdata-conf-child
+            optional: true
         {{- with .Values.child.persistence }}
         {{- if  and .enabled .hostPath }}
         - name: persistencevarlibdir

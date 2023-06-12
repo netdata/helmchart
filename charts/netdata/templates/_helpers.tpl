@@ -63,3 +63,89 @@ Return a value indicating whether the restarter is enabled.
 {{- "" -}}
 {{- end -}}
 {{- end -}}
+
+{{/*
+Return the configmap data for the parent configuration. Configmap is the default choice for storing configuration.
+*/}}
+{{- define "netdata.parent.configs.configmap" -}}
+{{- range $name, $config := .Values.parent.configs -}}
+{{- $found := false -}}
+{{- if and $config.enabled (eq $config.storedType "configmap") -}}
+{{- $found = true -}}
+{{- else if and $config.enabled (ne $config.storedType "secret") -}}
+{{- $found = true -}}
+{{- else if and $config.enabled (not $config.storedType) -}}
+{{- $found = true -}}
+{{- end -}}
+{{- if $found }}
+{{ $name }}: {{ tpl $config.data $ | toYaml | indent 4 | trim }}
+{{- end -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Return the configmap data for the child configuration. Configmap is the default choice for storing configuration.
+*/}}
+{{- define "netdata.child.configs.configmap" -}}
+{{- range $name, $config := .Values.child.configs -}}
+{{- $found := false -}}
+{{- if and $config.enabled (eq $config.storedType "configmap") -}}
+{{- $found = true -}}
+{{- else if and $config.enabled (ne $config.storedType "secret") -}}
+{{- $found = true -}}
+{{- end -}}
+{{- if $found }}
+{{ $name }}: {{ tpl $config.data $ | toYaml | indent 4 | trim }}
+{{- end -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Return the configmap data for the k8s state configuration. Configmap is the default choice for storing configuration.
+*/}}
+{{- define "netdata.k8sState.configs.configmap" -}}
+{{- range $name, $config := .Values.k8sState.configs -}}
+{{- $found := false -}}
+{{- if and $config.enabled (eq $config.storedType "configmap") -}}
+{{- $found = true -}}
+{{- else if and $config.enabled (ne $config.storedType "secret") -}}
+{{- $found = true -}}
+{{- end -}}
+{{- if $found }}
+{{ $name }}: {{ tpl $config.data $ | toYaml | indent 4 | trim }}
+{{- end -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Return the secret data for the parent configuration, when you setup storedType as a secret.
+*/}}
+{{- define "netdata.parent.configs.secret" -}}
+{{- range $name, $config := .Values.parent.configs -}}
+{{- if and $config.enabled (eq $config.storedType "secret") }}
+{{ $name }}: {{ tpl $config.data $ | b64enc }}
+{{- end -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Return the secret data for the child configuration, when you setup storedType as a secret.
+*/}}
+{{- define "netdata.child.configs.secret" -}}
+{{- range $name, $config := .Values.child.configs -}}
+{{- if and $config.enabled (eq $config.storedType "secret") }}
+{{ $name }}: {{ tpl $config.data $ | b64enc }}
+{{- end -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Return the secret data for the k8s state configuration, when you setup storedType as a secret.
+*/}}
+{{- define "netdata.k8sState.configs.secret" -}}
+{{- range $name, $config := .Values.k8sState.configs -}}
+{{- if and $config.enabled (eq $config.storedType "secret") }}
+{{ $name }}: {{ tpl $config.data $ | b64enc }}
+{{- end -}}
+{{- end -}}
+{{- end -}}
