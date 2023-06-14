@@ -316,7 +316,8 @@ spec:
       terminationGracePeriodSeconds: {{ .Values.k8sState.terminationGracePeriodSeconds }}
       volumes:
         - name: os-release
-          mountPath: /host/etc/os-release
+          hostPath:
+            path: /etc/os-release
         - name: configmap
           configMap:
             name: netdata-conf-k8s-state
