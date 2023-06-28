@@ -33,7 +33,7 @@ Please validate that the settings are suitable for your cluster before using the
 - The [kubectl](https://kubernetes.io/docs/reference/kubectl/overview/) command line tool,
   within [one minor version difference](https://kubernetes.io/docs/tasks/tools/install-kubectl/#before-you-begin) of
   your cluster, on an administrative system.
-- The [Helm package manager](https://helm.sh/) v3.0.0 or newer on the same administrative system.
+- The [Helm package manager](https://helm.sh/) v3.8.0 or newer on the same administrative system.
 
 ## Installing the Helm chart
 
