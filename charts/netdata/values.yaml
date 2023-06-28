@@ -112,11 +112,13 @@ parent:
     #  memory: 4096Mi
 
   livenessProbe:
+    initialDelaySeconds: 0
     failureThreshold: 3
     periodSeconds: 30
     successThreshold: 1
     timeoutSeconds: 1
   readinessProbe:
+    initialDelaySeconds: 0
     failureThreshold: 3
     periodSeconds: 30
     successThreshold: 1
@@ -252,11 +254,13 @@ child:
     #  memory: 4096Mi
 
   livenessProbe:
+    initialDelaySeconds: 0
     failureThreshold: 3
     periodSeconds: 30
     successThreshold: 1
     timeoutSeconds: 1
   readinessProbe:
+    initialDelaySeconds: 0
     failureThreshold: 3
     periodSeconds: 30
     successThreshold: 1
@@ -390,11 +394,13 @@ k8sState:
     #  memory: 4096Mi
 
   livenessProbe:
+    initialDelaySeconds: 0
     failureThreshold: 3
     periodSeconds: 30
     successThreshold: 1
     timeoutSeconds: 1
   readinessProbe:
+    initialDelaySeconds: 0
     failureThreshold: 3
     periodSeconds: 30
     successThreshold: 1
