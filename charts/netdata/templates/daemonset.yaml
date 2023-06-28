@@ -159,7 +159,7 @@ spec:
               mountPath: /host/etc/os-release
             {{- range $name, $config := .Values.child.configs }}
             {{- if $config.enabled }}
-            - name: {{ ternary "configmap" "configsecret" (ne $config.storedType "secret") }}
+            - name: {{ ternary "configmap" "configsecret" (ne (default "" $config.storedType) "secret") }}
               mountPath: {{ $config.path }}
               subPath: {{ $name }}
             {{- end }}

@@ -115,7 +115,7 @@ spec:
               mountPath: /host/etc/os-release
             {{- range $name, $config := .Values.parent.configs }}
             {{- if $config.enabled }}
-            - name: {{ ternary "configmap" "configsecret" (ne $config.storedType "secret") }}
+            - name: {{ ternary "configmap" "configsecret" (ne (default "" $config.storedType) "secret") }}
               mountPath: {{ $config.path }}
               subPath: {{ $name }}
             {{- end }}
@@ -287,7 +287,7 @@ spec:
               mountPath: /host/etc/os-release
             {{- range $name, $config := .Values.k8sState.configs }}
             {{- if $config.enabled }}
-            - name: {{ ternary "configmap" "configsecret" (ne $config.storedType "secret") }}
+            - name: {{ ternary "configmap" "configsecret" (ne (default "" $config.storedType) "secret") }}
               mountPath: {{ $config.path }}
               subPath: {{ $name }}
             {{- end }}
