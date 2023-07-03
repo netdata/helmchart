@@ -98,6 +98,7 @@ spec:
             httpGet:
               path: /api/v1/info
               port: http
+            initialDelaySeconds: {{ .Values.parent.livenessProbe.initialDelaySeconds }}
             failureThreshold: {{ .Values.parent.livenessProbe.failureThreshold }}
             periodSeconds: {{ .Values.parent.livenessProbe.periodSeconds }}
             successThreshold: {{ .Values.parent.livenessProbe.successThreshold }}
@@ -106,6 +107,7 @@ spec:
             httpGet:
               path: /api/v1/info
               port: http
+            initialDelaySeconds: {{ .Values.parent.readinessProbe.initialDelaySeconds }}
             failureThreshold: {{ .Values.parent.readinessProbe.failureThreshold }}
             periodSeconds: {{ .Values.parent.readinessProbe.periodSeconds }}
             successThreshold: {{ .Values.parent.readinessProbe.successThreshold }}
@@ -270,6 +272,7 @@ spec:
             httpGet:
               path: /api/v1/info
               port: http
+            initialDelaySeconds: {{ .Values.k8sState.livenessProbe.initialDelaySeconds }}
             failureThreshold: {{ .Values.k8sState.livenessProbe.failureThreshold }}
             periodSeconds: {{ .Values.k8sState.livenessProbe.periodSeconds }}
             successThreshold: {{ .Values.k8sState.livenessProbe.successThreshold }}
@@ -278,6 +281,7 @@ spec:
             httpGet:
               path: /api/v1/info
               port: http
+            initialDelaySeconds: {{ .Values.k8sState.readinessProbe.initialDelaySeconds }}
             failureThreshold: {{ .Values.k8sState.readinessProbe.failureThreshold }}
             periodSeconds: {{ .Values.k8sState.readinessProbe.periodSeconds }}
             successThreshold: {{ .Values.k8sState.readinessProbe.successThreshold }}

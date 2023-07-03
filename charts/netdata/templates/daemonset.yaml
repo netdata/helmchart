@@ -135,6 +135,7 @@ spec:
             httpGet:
               path: /api/v1/info
               port: http
+            initialDelaySeconds: {{ .Values.child.livenessProbe.initialDelaySeconds }}
             failureThreshold: {{ .Values.child.livenessProbe.failureThreshold }}
             periodSeconds: {{ .Values.child.livenessProbe.periodSeconds }}
             successThreshold: {{ .Values.child.livenessProbe.successThreshold }}
@@ -143,6 +144,7 @@ spec:
             httpGet:
               path: /api/v1/info
               port: http
+            initialDelaySeconds: {{ .Values.child.readinessProbe.initialDelaySeconds }}
             failureThreshold: {{ .Values.child.readinessProbe.failureThreshold }}
             periodSeconds: {{ .Values.child.readinessProbe.periodSeconds }}
             successThreshold: {{ .Values.child.readinessProbe.successThreshold }}
