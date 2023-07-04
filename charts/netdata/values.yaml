@@ -239,7 +239,9 @@ parent:
 child:
   enabled: true
   port: "{{ .Values.parent.port }}"
-
+  volumes:
+    run:
+      path: "/run/containerd/containerd.sock"
   updateStrategy: {}
     # type: RollingUpdate
     # rollingUpdate:

@@ -154,7 +154,7 @@ spec:
               readOnly: true
               mountPath: /host/proc
             - name: run
-              mountPath: /var/run/docker.sock
+              mountPath: {{ .Values.child.volumes.run.path }}
             - name: sys
               mountPath: /host/sys
             - name: os-release
@@ -224,7 +224,7 @@ spec:
             path: /proc
         - name: run
           hostPath:
-            path: /var/run/docker.sock
+            path: {{ .Values.child.volumes.run.path }}
         - name: sys
           hostPath:
             path: /sys
