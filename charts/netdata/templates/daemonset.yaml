@@ -153,8 +153,6 @@ spec:
             - name: proc
               readOnly: true
               mountPath: /host/proc
-            - name: run
-              mountPath: {{ .Values.child.volumes.run.path }}
             - name: sys
               mountPath: /host/sys
             - name: os-release
@@ -222,9 +220,6 @@ spec:
         - name: proc
           hostPath:
             path: /proc
-        - name: run
-          hostPath:
-            path: {{ .Values.child.volumes.run.path }}
         - name: sys
           hostPath:
             path: /sys
