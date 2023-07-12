@@ -153,8 +153,6 @@ spec:
             - name: proc
               readOnly: true
               mountPath: /host/proc
-            - name: run
-              mountPath: /var/run/docker.sock
             - name: sys
               mountPath: /host/sys
             - name: os-release
@@ -222,9 +220,6 @@ spec:
         - name: proc
           hostPath:
             path: /proc
-        - name: run
-          hostPath:
-            path: /var/run/docker.sock
         - name: sys
           hostPath:
             path: /sys
