@@ -236,8 +236,8 @@ The following table lists the configurable parameters of the netdata chart and t
 | `child.claiming.room`                         | Comma separated list of claim rooms IDs                                                                                                                | `""`                                                                                    |
 | `child.extraVolumeMounts`                     | Additional volumeMounts to add to the child pods                                                                                                       | `[]`                                                                                    |
 | `child.extraVolumes`                          | Additional volumes to add to the child pods                                                                                                            | `[]`                                                                                    |
-| `notifications.slackurl`                      | URL for slack notifications                                                                                                                            | `""`                                                                                    |
-| `notifications.slackrecipient`                | Slack recipient list                                                                                                                                   | `""`                                                                                    |
+| `notifications.slack.webhook_url`             | Slack webhook URL                                                                                                                                      | `""`                                                                                    |
+| `notifications.slack.recipient`               | Slack recipient list                                                                                                                                   | `""`                                                                                    |
 | `initContainersImage.repository`              | Init containers' image repository                                                                                                                      | `alpine`                                                                                |
 | `initContainersImage.tag`                     | Init containers' image tag                                                                                                                             | `latest`                                                                                |
 | `initContainersImage.pullPolicy`              | Init containers' image pull policy                                                                                                                     | `Always`                                                                                |
@@ -258,8 +258,8 @@ Example to set the parameters from the command line:
 
 ```console
 $ helm install ./netdata --name my-release \
-    --set notifications.slackurl=MySlackAPIURL \
-    --set notifications.slackrecipiet="@MyUser MyChannel"
+    --set notifications.slack.webhook_url=MySlackAPIURL \
+    --set notifications.slack.recipient="@MyUser MyChannel"
 ```
 
 Another example, to set a different ingress controller.
