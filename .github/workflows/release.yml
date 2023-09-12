@@ -5,8 +5,7 @@ on:
   push:
     branches:
       - master
-    paths:
-      - charts/**
+      - fix/use_fixed_chart_releaser_version
 env:
   GITHUB_TOKEN: ${{ secrets.NETDATABOT_GITHUB_TOKEN }}
 
@@ -18,6 +17,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
+          ref: fix/use_fixed_chart_releaser_version
           fetch-depth: 0
           token: ${{ env.GITHUB_TOKEN }}
 
