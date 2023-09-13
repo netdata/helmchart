@@ -46,11 +46,21 @@ jobs:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
 
       - name: Commit new version
+        id: commit_version
+        continue-on-error: true
         run: |
           git commit -am "[skip ci] New Chart version to ${{ steps.new_version_var.outputs.new_version }}"
           git push
 
+      - name: Delete release tag in case of version update commit failure
+        id: delete-tag
+        if: steps.commit_version.outcome == 'failure'
+        run: |
+          git push origin --delete "netdata-${{ steps.new_version_var.outputs.new_version }}"
+          git ls-remote --tags
+
       - name: Update Netdata Infra
+        if: steps.delete-tag.outcome == 'skipped'
         uses: benc-uk/workflow-dispatch@v1
         with:
           token: ${{ secrets.NETDATABOT_GITHUB_TOKEN }}
