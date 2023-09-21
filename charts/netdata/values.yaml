@@ -408,9 +408,7 @@ k8sState:
 
   nodeSelector: {}
 
-  tolerations:
-    - operator: Exists
-      effect: NoSchedule
+  tolerations: []
 
   affinity: {}
 
