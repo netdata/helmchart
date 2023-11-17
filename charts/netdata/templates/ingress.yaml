@@ -8,6 +8,7 @@ apiVersion: {{ $apiVersion }}
 kind: Ingress
 metadata:
   name: {{ $fullName }}
+  namespace: {{ .Release.Namespace }}
   labels:
     app: {{ template "netdata.name" . }}
     chart: {{ template "netdata.chart" . }}

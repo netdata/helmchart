@@ -4,6 +4,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
   name: {{ template "netdata.fullname" . }}-restarter
+  namespace: {{ .Release.Namespace }}
   labels:
     app: {{ template "netdata.name" . }}
     chart: {{ template "netdata.chart" . }}

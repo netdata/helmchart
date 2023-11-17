@@ -4,6 +4,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "netdata.name" . }}-parent
+  namespace: {{ .Release.Namespace }}
   labels:
     app: {{ template "netdata.name" . }}
     chart: {{ template "netdata.chart" . }}
@@ -182,6 +183,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ template "netdata.name" . }}-k8s-state
+  namespace: {{ .Release.Namespace }}
   labels:
     app: {{ template "netdata.name" . }}
     chart: {{ template "netdata.chart" . }}
