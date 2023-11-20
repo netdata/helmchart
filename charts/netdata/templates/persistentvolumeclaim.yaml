@@ -4,6 +4,7 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: {{ template "netdata.name" . }}-parent-database
+  namespace: {{ .Release.Namespace }}
   labels:
     app: {{ template "netdata.name" . }}
     chart: {{ template "netdata.chart" . }}
@@ -26,6 +27,7 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: {{ template "netdata.name" . }}-parent-alarms
+  namespace: {{ .Release.Namespace }}
   labels:
     app: {{ template "netdata.name" . }}
     chart: {{ template "netdata.chart" . }}
@@ -48,6 +50,7 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: {{ template "netdata.name" . }}-k8s-state-varlib
+  namespace: {{ .Release.Namespace }}
   labels:
     app: {{ template "netdata.name" . }}
     chart: {{ template "netdata.chart" . }}

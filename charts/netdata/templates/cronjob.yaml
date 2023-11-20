@@ -12,6 +12,7 @@ apiVersion: batch/v1
 kind: CronJob
 metadata:
   name: {{ template "netdata.name" . }}-restarter
+  namespace: {{ .Release.Namespace }}
 spec:
   schedule: "{{ .Values.restarter.schedule }}"
   concurrencyPolicy: {{ .Values.restarter.concurrencyPolicy }}
