@@ -158,6 +158,8 @@ spec:
               mountPath: /host/sys
             - name: os-release
               mountPath: /host/etc/os-release
+            - name: varlog
+              mountPath: /host/var/log
             {{- range $name, $config := .Values.child.configs }}
             {{- if $config.enabled }}
             - name: {{ ternary "configmap" "configsecret" (ne $config.storedType "secret") }}
@@ -227,6 +229,9 @@ spec:
         - name: os-release
           hostPath:
             path: /etc/os-release
+        - name: varlog
+          hostPath:
+            path: /var/log
         - name: configmap
           configMap:
             name: netdata-conf-child
