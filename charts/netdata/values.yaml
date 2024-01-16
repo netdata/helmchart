@@ -300,6 +300,8 @@ child:
       enabled: true
       path: /etc/netdata/netdata.conf
       data: |
+        [web]
+          bind to = localhost:19999
         [db]
           mode = ram
         [health]
