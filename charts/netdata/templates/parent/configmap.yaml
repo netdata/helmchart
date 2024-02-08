@@ -1,0 +1,16 @@
+{{- $configmapParent := include "netdata.parent.configs.configmap" . }}
+{{- if and .Values.parent.enabled $configmapParent }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: netdata-conf-parent
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ template "netdata.name" . }}
+    chart: {{ template "netdata.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+data:
+  {{ $configmapParent | indent 2 }}
+{{- end }}

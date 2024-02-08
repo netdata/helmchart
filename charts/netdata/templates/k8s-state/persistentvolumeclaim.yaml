@@ -1,0 +1,22 @@
+{{- if and .Values.k8sState.enabled .Values.k8sState.persistence.enabled }}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ template "netdata.name" . }}-k8s-state-varlib
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ template "netdata.name" . }}
+    chart: {{ template "netdata.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    role: k8sState
+spec:
+  accessModes: [ "ReadWriteOnce" ]
+  {{- if (ne "-" .Values.k8sState.persistence.storageclass) }}
+  storageClassName: "{{ .Values.k8sState.persistence.storageclass }}"
+  {{- end }}
+  resources:
+    requests:
+      storage: {{ .Values.k8sState.persistence.volumesize }}
+{{- end }}
