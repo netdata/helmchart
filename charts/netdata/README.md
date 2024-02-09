@@ -134,11 +134,17 @@ The following table lists the configurable parameters of the netdata chart and t
 | `parent.enabled`                              | Install parent Deployment to receive metrics from children nodes                                                                                       | `true`                                                                                  |
 | `parent.port`                                 | Parent's listen port                                                                                                                                   | `19999`                                                                                 |
 | `parent.resources`                            | Resources for the parent deployment                                                                                                                    | `{}`                                                                                    |
+| `parent.livenessProbe.method`                 | How the liveness probe is initiated. Either "httpGet" or "exec"                                                                                        | `httpGet`                                                                               |
+| `parent.livenessProbe.httpGet`                | Liveness probe "httpGet" definition                                                                                                                    | `{path: /api/v1/info, port: http}`                                                      |
+| `parent.livenessProbe.exec`                   | Liveness probe "exec" definition                                                                                                                       | `{command: [netdatacli, ping]}`                                                         |
 | `parent.livenessProbe.initialDelaySeconds`    | Number of seconds after the container has started before liveness probes are initiated                                                                 | `0`                                                                                     |
 | `parent.livenessProbe.failureThreshold`       | When a liveness probe fails, Kubernetes will try failureThreshold times before giving up. Giving up the liveness probe means restarting the container  | `3`                                                                                     |
 | `parent.livenessProbe.periodSeconds`          | How often (in seconds) to perform the liveness probe                                                                                                   | `30`                                                                                    |
 | `parent.livenessProbe.successThreshold`       | Minimum consecutive successes for the liveness probe to be considered successful after having failed                                                   | `1`                                                                                     |
 | `parent.livenessProbe.timeoutSeconds`         | Number of seconds after which the liveness probe times out                                                                                             | `1`                                                                                     |
+| `parent.readinessProbe.method`                | How the readiness probe is initiated. Either "httpGet" or "exec"                                                                                       | `httpGet`                                                                               |
+| `parent.readinessProbe.httpGet`               | Readiness probe "httpGet" definition                                                                                                                   | `{path: /api/v1/info, port: http}`                                                      |
+| `parent.readinessProbe.exec`                  | Readiness probe "exec" definition                                                                                                                      | `{command: [netdatacli, ping]}`                                                         |
 | `parent.readinessProbe.initialDelaySeconds`   | Number of seconds after the container has started before readiness probes are initiated                                                                | `0`                                                                                     |
 | `parent.readinessProbe.failureThreshold`      | When a readiness probe fails, Kubernetes will try failureThreshold times before giving up. Giving up the readiness probe means marking the Pod Unready | `3`                                                                                     |
 | `parent.readinessProbe.periodSeconds`         | How often (in seconds) to perform the readiness probe                                                                                                  | `30`                                                                                    |
@@ -169,11 +175,17 @@ The following table lists the configurable parameters of the netdata chart and t
 | `k8sState.enabled`                            | Install this Deployment to gather data fr K8s cluster                                                                                                  | `yes`                                                                                   |
 | `k8sState.port`                               | Listen port                                                                                                                                            | `service.port` (Same as parent's listen port)                                           |
 | `k8sState.resources`                          | Compute resources required by this Deployment                                                                                                          | `{}`                                                                                    |
+| `k8sState.livenessProbe.method`               | How the liveness probe is initiated. Either "httpGet" or "exec"                                                                                        | `httpGet`                                                                               |
+| `k8sState.livenessProbe.httpGet`              | Liveness probe "httpGet" definition                                                                                                                    | `{path: /api/v1/info, port: http}`                                                      |
+| `k8sState.livenessProbe.exec`                 | Liveness probe "exec" definition                                                                                                                       | `{command: [netdatacli, ping]}`                                                         |
 | `k8sState.livenessProbe.initialDelaySeconds`  | Number of seconds after the container has started before liveness probes are initiated                                                                 | `0`                                                                                     |
 | `k8sState.livenessProbe.failureThreshold`     | When a liveness probe fails, Kubernetes will try failureThreshold times before giving up. Giving up the liveness probe means restarting the container  | `3`                                                                                     |
 | `k8sState.livenessProbe.periodSeconds`        | How often (in seconds) to perform the liveness probe                                                                                                   | `30`                                                                                    |
 | `k8sState.livenessProbe.successThreshold`     | Minimum consecutive successes for the liveness probe to be considered successful after having failed                                                   | `1`                                                                                     |
 | `k8sState.livenessProbe.timeoutSeconds`       | Number of seconds after which the liveness probe times out                                                                                             | `1`                                                                                     |
+| `k8sState.readinessProbe.method`              | How the readiness probe is initiated. Either "httpGet" or "exec"                                                                                       | `httpGet`                                                                               |
+| `k8sState.readinessProbe.httpGet`             | Readiness probe "httpGet" definition                                                                                                                   | `{path: /api/v1/info, port: http}`                                                      |
+| `k8sState.readinessProbe.exec`                | Readiness probe "exec" definition                                                                                                                      | `{command: [netdatacli, ping]}`                                                         |
 | `k8sState.readinessProbe.initialDelaySeconds` | Number of seconds after the container has started before readiness probes are initiated                                                                | `0`                                                                                     |
 | `k8sState.readinessProbe.failureThreshold`    | When a readiness probe fails, Kubernetes will try failureThreshold times before giving up. Giving up the readiness probe means marking the Pod Unready | `3`                                                                                     |
 | `k8sState.readinessProbe.periodSeconds`       | How often (in seconds) to perform the readiness probe                                                                                                  | `30`                                                                                    |
@@ -204,11 +216,17 @@ The following table lists the configurable parameters of the netdata chart and t
 | `child.port`                                  | Children's listen port                                                                                                                                 | `service.port` (Same as parent's listen port)                                           |
 | `child.updateStrategy`                        | An update strategy to replace existing DaemonSet pods with new pods                                                                                    | `{}`                                                                                    |
 | `child.resources`                             | Resources for the child DaemonSet                                                                                                                      | `{}`                                                                                    |
+| `child.livenessProbe.method`                  | How the liveness probe is initiated. Either "httpGet" or "exec". This may come important if the child runs with `hostNetwork` on a publicly accessible node, and you setup its configuration to bind to `localhost:19999`| `httpGet`             |
+| `child.livenessProbe.httpGet`                 | Liveness probe "httpGet" definition. Add `{host: 127.0.0.1}` if the child runs with `hostNetwork` on a publicly accessible node, and you setup its configuration to bind to `localhost:19999`| `{path: /api/v1/info, port: http}`                |
+| `child.livenessProbe.exec`                    | Liveness probe "exec" definition                                                                                                                       | `{command: [netdatacli, ping]}`                                                         |
 | `child.livenessProbe.initialDelaySeconds`     | Number of seconds after the container has started before liveness probes are initiated                                                                 | `0`                                                                                     |
 | `child.livenessProbe.failureThreshold`        | When a liveness probe fails, Kubernetes will try failureThreshold times before giving up. Giving up the liveness probe means restarting the container  | `3`                                                                                     |
 | `child.livenessProbe.periodSeconds`           | How often (in seconds) to perform the liveness probe                                                                                                   | `30`                                                                                    |
 | `child.livenessProbe.successThreshold`        | Minimum consecutive successes for the liveness probe to be considered successful after having failed                                                   | `1`                                                                                     |
 | `child.livenessProbe.timeoutSeconds`          | Number of seconds after which the liveness probe times out                                                                                             | `1`                                                                                     |
+| `child.readinessProbe.method`                 | How the readinessProbe is initiated. Either "httpGet" or "exec". This may come important if the child runs with `hostNetwork` on a publicly accessible node, and you setup its configuration to bind to `localhost:19999`| `httpGet`             |
+| `child.readinessProbe.httpGet`                | Readiness probe "httpGet" definition. Add `{host: 127.0.0.1}` if the child runs with `hostNetwork` on a publicly accessible node, and you setup its configuration to bind to `localhost:19999` | `{path: /api/v1/info, port: http}`              |
+| `child.readinessProbe.exec`                   | Readiness probe "exec" definition                                                                                                                      | `{command: [netdatacli, ping]}`                                                         |
 | `child.readinessProbe.initialDelaySeconds`    | Number of seconds after the container has started before readiness probes are initiated                                                                | `0`                                                                                     |
 | `child.readinessProbe.failureThreshold`       | When a readiness probe fails, Kubernetes will try failureThreshold times before giving up. Giving up the readiness probe means marking the Pod Unready | `3`                                                                                     |
 | `child.readinessProbe.periodSeconds`          | How often (in seconds) to perform the readiness probe                                                                                                  | `30`                                                                                    |
@@ -438,6 +456,54 @@ $ helm install \
   --set 'child.podAnnotations.chaoskube\.io/enabled=false' \
   --set 'parent.podAnnotations.chaoskube\.io/enabled=true' \
   netdata ./netdata-helmchart/charts/netdata
+```
+
+### Publicly accessible Kubernetes nodes
+
+By default, Netdata child pod will run as `hostNetwork` and it web UI binds to all interfaces.
+If the node is not on a private network or publicly available, that means Netdata web UI will be publicly accessible.
+
+You may want to prevent that by forcing the web interface of child pod to bind to local interfaces by overwriting
+the child `netdata.conf` thanks to Helm values, as such:
+
+```yaml
+child:
+  configs:
+    netdata:
+      data: |
+        [web]
+          bind to = localhost:19999
+        [db]
+          mode = ram
+        [health]
+          enabled = no
+        [ml]
+          enabled = no
+```
+
+And configure the child liveness and readiness probes to either probe `127.0.0.1` or avoid probing the Netdata API
+alltogether with an `exec` call (by default runs `netdatacli ping`).
+
+Either with Helm values:
+
+```yaml
+child:
+  livenessProbe:
+    httpGet:
+      host: 127.0.0.1
+  readinessProbe:
+    httpGet:
+      host: 127.0.0.1
+```
+
+or with Helm values:
+
+```yaml
+child:
+  livenessProbe:
+    method: exec
+  readinessProbe:
+    method: exec
 ```
 
 ## Contributing

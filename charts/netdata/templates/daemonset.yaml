@@ -133,18 +133,34 @@ spec:
               containerPort: {{ tpl (.Values.child.port | toString) . }}
               protocol: TCP
           livenessProbe:
+            {{- if eq ( toString .Values.child.livenessProbe.method ) "httpGet" }}
+            {{- with .Values.child.livenessProbe.httpGet }}
             httpGet:
-              path: /api/v1/info
-              port: http
+{{ toYaml . | indent 14 }}
+            {{- end }}
+            {{- else }}
+            {{- with .Values.child.livenessProbe.exec }}
+            exec:
+{{ toYaml . | indent 14 }}
+            {{- end }}
+            {{- end }}
             initialDelaySeconds: {{ .Values.child.livenessProbe.initialDelaySeconds }}
             failureThreshold: {{ .Values.child.livenessProbe.failureThreshold }}
             periodSeconds: {{ .Values.child.livenessProbe.periodSeconds }}
             successThreshold: {{ .Values.child.livenessProbe.successThreshold }}
             timeoutSeconds: {{ .Values.child.livenessProbe.timeoutSeconds }}
           readinessProbe:
+            {{- if eq ( toString .Values.child.readinessProbe.method ) "httpGet" }}
+            {{- with .Values.child.readinessProbe.httpGet }}
             httpGet:
-              path: /api/v1/info
-              port: http
+{{ toYaml . | indent 14 }}
+            {{- end }}
+            {{- else }}
+            {{- with .Values.child.readinessProbe.exec }}
+            exec:
+{{ toYaml . | indent 14 }}
+            {{- end }}
+            {{- end }}
             initialDelaySeconds: {{ .Values.child.readinessProbe.initialDelaySeconds }}
             failureThreshold: {{ .Values.child.readinessProbe.failureThreshold }}
             periodSeconds: {{ .Values.child.readinessProbe.periodSeconds }}

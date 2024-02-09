@@ -117,12 +117,28 @@ parent:
     #  memory: 4096Mi
 
   livenessProbe:
+    method: httpGet  # httpGet / exec
+    exec:
+      command:
+        - netdatacli
+        - ping
+    httpGet:
+      path: /api/v1/info
+      port: http
     initialDelaySeconds: 0
     failureThreshold: 3
     periodSeconds: 30
     successThreshold: 1
     timeoutSeconds: 1
   readinessProbe:
+    method: httpGet  # httpGet / exec
+    exec:
+      command:
+        - netdatacli
+        - ping
+    httpGet:
+      path: /api/v1/info
+      port: http
     initialDelaySeconds: 0
     failureThreshold: 3
     periodSeconds: 30
@@ -252,12 +268,30 @@ child:
     #  memory: 4096Mi
 
   livenessProbe:
+    method: httpGet  # httpGet / exec
+    exec:
+      command:
+        - netdatacli
+        - ping
+    httpGet:
+      # host: 127.0.0.1  # in case child is binded to localhost
+      path: /api/v1/info
+      port: http
     initialDelaySeconds: 0
     failureThreshold: 3
     periodSeconds: 30
     successThreshold: 1
     timeoutSeconds: 1
   readinessProbe:
+    method: httpGet  # httpGet / exec
+    exec:
+      command:
+        - netdatacli
+        - ping
+    httpGet:
+      # host: 127.0.0.1  # in case child is binded to localhost
+      path: /api/v1/info
+      port: http
     initialDelaySeconds: 0
     failureThreshold: 3
     periodSeconds: 30
@@ -300,6 +334,11 @@ child:
       enabled: true
       path: /etc/netdata/netdata.conf
       data: |
+        ## If using hostNetwork on a publicly accessible node
+        ## uncomment to bind to localhost
+        ## and configure child livenessProbe and readinessProbe to either "method: exec" or "httpGet.host: 127.0.0.1"
+        # [web]
+        #   bind to = localhost:19999
         [db]
           mode = ram
         [health]
@@ -392,12 +431,28 @@ k8sState:
     #  memory: 4096Mi
 
   livenessProbe:
+    method: httpGet  # httpGet / exec
+    exec:
+      command:
+        - netdatacli
+        - ping
+    httpGet:
+      path: /api/v1/info
+      port: http
     initialDelaySeconds: 0
     failureThreshold: 3
     periodSeconds: 30
     successThreshold: 1
     timeoutSeconds: 1
   readinessProbe:
+    method: httpGet  # httpGet / exec
+    exec:
+      command:
+        - netdatacli
+        - ping
+    httpGet:
+      path: /api/v1/info
+      port: http
     initialDelaySeconds: 0
     failureThreshold: 3
     periodSeconds: 30
