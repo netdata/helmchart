@@ -1,20 +1,3 @@
-{{- $configmapParent := include "netdata.parent.configs.configmap" . }}
-{{- if and .Values.parent.enabled $configmapParent }}
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: netdata-conf-parent
-  namespace: {{ .Release.Namespace }}
-  labels:
-    app: {{ template "netdata.name" . }}
-    chart: {{ template "netdata.chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
-data:
-  {{ $configmapParent | indent 2 }}
-{{- end }}
-
 {{- $configmapChild := include "netdata.child.configs.configmap" . }}
 {{- if and .Values.child.enabled $configmapChild}}
 ---
@@ -31,24 +14,6 @@ metadata:
 data:
   {{ $configmapChild | indent 2 }}
 {{- end }}
-
-{{- $configmapk8sState := include "netdata.k8sState.configs.configmap" . }}
-{{- if and .Values.k8sState.enabled $configmapk8sState }}
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: netdata-conf-k8s-state
-  namespace: {{ .Release.Namespace }}
-  labels:
-    app: {{ template "netdata.name" . }}
-    chart: {{ template "netdata.chart" . }}
-    release: {{ .Release.Name }}
-    heritage: {{ .Release.Service }}
-data:
-  {{ $configmapk8sState | indent 2 }}
-{{- end }}
-
 
 {{- if and .Values.child.enabled .Values.sd.child.enabled .Values.sd.child.configmap.from }}
 ---

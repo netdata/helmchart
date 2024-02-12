@@ -1,0 +1,16 @@
+{{- $configmapk8sState := include "netdata.k8sState.configs.configmap" . }}
+{{- if and .Values.k8sState.enabled $configmapk8sState }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: netdata-conf-k8s-state
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ template "netdata.name" . }}
+    chart: {{ template "netdata.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+data:
+  {{ $configmapk8sState | indent 2 }}
+{{- end }}
