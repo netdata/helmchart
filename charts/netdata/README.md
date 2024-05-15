@@ -73,7 +73,7 @@ section lists the parameters that can be configured during installation.
 > **Tip**: List all releases using `helm list`.
 
 Once the Netdata deployment is up and running, read our guide, [_Monitor a Kubernetes (k8s) cluster with
-Netdata_](https://github.com/netdata/netdata/blob/master/docs/guides/monitor/kubernetes-k8s-netdata.md), for a breakdown of all the collectors,
+Netdata_](https://github.com/netdata/netdata/blob/master/docs/developer-and-contributor-corner/kubernetes-k8s-netdata.md), for a breakdown of all the collectors,
 metrics, and charts available for health monitoring and performance troubleshooting.
 
 ## Uninstalling the Chart
