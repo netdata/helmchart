@@ -134,6 +134,7 @@ spec:
               protocol: TCP
           livenessProbe:
             httpGet:
+              host: {{ .Values.child.livenessProbe.httpGet.host }}
               path: /api/v1/info
               port: http
             initialDelaySeconds: {{ .Values.child.livenessProbe.initialDelaySeconds }}
@@ -143,6 +144,7 @@ spec:
             timeoutSeconds: {{ .Values.child.livenessProbe.timeoutSeconds }}
           readinessProbe:
             httpGet:
+              host: {{ .Values.child.readinessProbe.httpGet.host }}
               path: /api/v1/info
               port: http
             initialDelaySeconds: {{ .Values.child.readinessProbe.initialDelaySeconds }}
