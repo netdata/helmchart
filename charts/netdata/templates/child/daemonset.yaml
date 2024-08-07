@@ -134,7 +134,11 @@ spec:
               protocol: TCP
           livenessProbe:
             httpGet:
+            {{- if $.Values.child.livenessProbe.httpGet.host }}
               host: {{ .Values.child.livenessProbe.httpGet.host }}
+            {{- else if .Values.child.hostNetwork }}
+              host: 127.0.0.1
+            {{- end}}
               path: /api/v1/info
               port: http
             initialDelaySeconds: {{ .Values.child.livenessProbe.initialDelaySeconds }}
@@ -144,7 +148,11 @@ spec:
             timeoutSeconds: {{ .Values.child.livenessProbe.timeoutSeconds }}
           readinessProbe:
             httpGet:
+            {{- if $.Values.child.readinessProbe.httpGet.host }}
               host: {{ .Values.child.readinessProbe.httpGet.host }}
+            {{- else if .Values.child.hostNetwork }}
+              host: 127.0.0.1
+            {{- end}}
               path: /api/v1/info
               port: http
             initialDelaySeconds: {{ .Values.child.readinessProbe.initialDelaySeconds }}
