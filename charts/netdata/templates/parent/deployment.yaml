@@ -96,18 +96,20 @@ spec:
               containerPort: {{ .Values.parent.port }}
               protocol: TCP
           livenessProbe:
-            httpGet:
-              path: /api/v1/info
-              port: http
+            exec:
+              command:
+              - /usr/sbin/netdatacli
+              - ping
             initialDelaySeconds: {{ .Values.parent.livenessProbe.initialDelaySeconds }}
             failureThreshold: {{ .Values.parent.livenessProbe.failureThreshold }}
             periodSeconds: {{ .Values.parent.livenessProbe.periodSeconds }}
             successThreshold: {{ .Values.parent.livenessProbe.successThreshold }}
             timeoutSeconds: {{ .Values.parent.livenessProbe.timeoutSeconds }}
           readinessProbe:
-            httpGet:
-              path: /api/v1/info
-              port: http
+            exec:
+              command:
+              - /usr/sbin/netdatacli
+              - ping
             initialDelaySeconds: {{ .Values.parent.readinessProbe.initialDelaySeconds }}
             failureThreshold: {{ .Values.parent.readinessProbe.failureThreshold }}
             periodSeconds: {{ .Values.parent.readinessProbe.periodSeconds }}

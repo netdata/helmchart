@@ -252,16 +252,12 @@ child:
     #  memory: 4096Mi
 
   livenessProbe:
-    httpGet:
-      host: ""
     initialDelaySeconds: 0
     failureThreshold: 3
     periodSeconds: 30
     successThreshold: 1
     timeoutSeconds: 1
   readinessProbe:
-    httpGet:
-      host: ""
     initialDelaySeconds: 0
     failureThreshold: 3
     periodSeconds: 30
