@@ -133,20 +133,20 @@ spec:
               containerPort: {{ tpl (.Values.child.port | toString) . }}
               protocol: TCP
           livenessProbe:
-            httpGet:
-              host: {{ .Values.child.livenessProbe.httpGet.host }}
-              path: /api/v1/info
-              port: http
+            exec:
+              command:
+              - /usr/sbin/netdatacli
+              - ping
             initialDelaySeconds: {{ .Values.child.livenessProbe.initialDelaySeconds }}
             failureThreshold: {{ .Values.child.livenessProbe.failureThreshold }}
             periodSeconds: {{ .Values.child.livenessProbe.periodSeconds }}
             successThreshold: {{ .Values.child.livenessProbe.successThreshold }}
             timeoutSeconds: {{ .Values.child.livenessProbe.timeoutSeconds }}
           readinessProbe:
-            httpGet:
-              host: {{ .Values.child.readinessProbe.httpGet.host }}
-              path: /api/v1/info
-              port: http
+            exec:
+              command:
+              - /usr/sbin/netdatacli
+              - ping
             initialDelaySeconds: {{ .Values.child.readinessProbe.initialDelaySeconds }}
             failureThreshold: {{ .Values.child.readinessProbe.failureThreshold }}
             periodSeconds: {{ .Values.child.readinessProbe.periodSeconds }}
