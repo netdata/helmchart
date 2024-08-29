@@ -25,7 +25,7 @@ spec:
       {{- if .Values.child.podAnnotationAppArmor.enabled }}
         container.apparmor.security.beta.kubernetes.io/{{ .Chart.Name }}: unconfined
       {{- end }}
-        checksum/config: {{ include (print $.Template.BasePath "/child/configmap.yaml") . | sha256sum }}
+        checksum/config: {{ print (include (print $.Template.BasePath "/child/configmap.yaml") .) (include (print $.Template.BasePath "/child/secrets.yaml") .) | sha256sum }}
 {{- with .Values.child.podAnnotations }}
 {{ toYaml . | trim | indent 8 }}
 {{- end }}
