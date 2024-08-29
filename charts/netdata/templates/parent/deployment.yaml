@@ -29,7 +29,7 @@ spec:
 {{ toYaml . | trim | indent 8 }}
 {{- end }}
       annotations:
-        checksum/config: {{ include (print $.Template.BasePath "/parent/configmap.yaml") . | sha256sum }}
+        checksum/config: {{ print (include (print $.Template.BasePath "/parent/configmap.yaml") .) (include (print $.Template.BasePath "/parent/secrets.yaml") .) | sha256sum }}
 {{- with .Values.parent.podAnnotations }}
 {{ toYaml . | trim | indent 8 }}
 {{- end }}
