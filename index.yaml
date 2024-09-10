@@ -2,6 +2,28 @@ apiVersion: v1
 entries:
   netdata:
   - apiVersion: v2
+    appVersion: v1.47.1
+    created: "2024-09-10T14:27:23.520749392Z"
+    description: Real-time performance monitoring, done right!
+    digest: e68f6080e3c6054d8e8e27c6dfe974fac5e9ef0d19a1beb9cd7908bfc401cd5a
+    home: https://netdata.cloud/
+    icon: https://netdata.github.io/helmchart/logo.png
+    keywords:
+    - alerting
+    - metric
+    - monitoring
+    maintainers:
+    - email: cloud-sre@netdata.cloud
+      name: Netdata Cloud SRE team
+    name: netdata
+    sources:
+    - https://github.com/netdata/helmchart
+    - https://github.com/netdata/netdata
+    type: application
+    urls:
+    - https://github.com/netdata/helmchart/releases/download/netdata-3.7.101/netdata-3.7.101.tgz
+    version: 3.7.101
+  - apiVersion: v2
     appVersion: v1.47.0
     created: "2024-08-29T13:59:17.137357628Z"
     description: Real-time performance monitoring, done right!
@@ -3342,4 +3364,4 @@ entries:
     urls:
     - https://github.com/netdata/helmchart/releases/download/netdata-2.0.13/netdata-2.0.13.tgz
     version: 2.0.13
-generated: "2024-08-29T13:59:17.137703256Z"
+generated: "2024-09-10T14:27:23.521096237Z"
