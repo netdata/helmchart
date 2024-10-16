@@ -106,6 +106,7 @@ notifications:
     recipient: ""
 
 parent:
+  hostname: "netdata-parent"
   enabled: true
   port: 19999
   resources: {}
@@ -174,7 +175,7 @@ parent:
       path: /etc/netdata/netdata.conf
       data: |
         [global]
-          hostname = netdata-parent
+          hostname = {{ .Values.parent.hostname }}
         [db]
           mode = dbengine
 
@@ -380,6 +381,7 @@ child:
     #     path: /
 
 k8sState:
+  hostname: "netdata-k8s-state"
   enabled: true
   port: "{{ .Values.parent.port }}"
 
@@ -435,7 +437,7 @@ k8sState:
       path: /etc/netdata/netdata.conf
       data: |
         [global]
-          hostname = netdata-k8s-state
+          hostname = {{ .Values.k8sState.hostname }}
         [db]
           mode = ram
         [health]
