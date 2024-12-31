@@ -111,8 +111,10 @@ spec:
             - name: NETDATA_LISTENER_PORT
               value: '{{ tpl (.Values.child.port | toString) . }}'
             {{- if .Values.sd.child.enabled }}
+            {{- if include "netdata.verLess3" . }}
             - name: NETDATA_PLUGINS_GOD_WATCH_PATH
               value: "/etc/netdata/go.d/sd/go.d.yml"
+            {{- end }}
             {{- end }}
             {{- range $key, $value := .Values.child.env }}
             - name: {{ $key }}
@@ -174,8 +176,14 @@ spec:
               mountPath: /var/lib/netdata
             {{- end }}
             {{- if .Values.sd.child.enabled }}
+            {{- if include "netdata.verLess3" . }}
             - name: sd-shared
               mountPath: "/etc/netdata/go.d/sd/"
+            {{- else }}
+            - name: sdconfigmap
+              mountPath: "/etc/netdata/go.d/sd/k8s.conf"
+              subPath: {{ .Values.sd.child.configmap.key }}
+            {{- end }}
             {{- end }}
             {{- if .Values.child.extraVolumeMounts -}}
 {{ toYaml .Values.child.extraVolumeMounts | nindent 12 }}
@@ -188,6 +196,7 @@ spec:
           resources:
 {{ toYaml .Values.child.resources | indent 12 }}
         {{- if .Values.sd.child.enabled }}
+        {{- if include "netdata.verLess3" . }}
         - name: sd
           image: "{{ .Values.sd.image.repository }}:{{ .Values.sd.image.tag }}"
           imagePullPolicy: {{ .Values.sd.image.pullPolicy }}
@@ -207,6 +216,7 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: spec.nodeName
+        {{- end }}
         {{- end }}
     {{- with .Values.child.nodeSelector }}
       nodeSelector:
@@ -251,8 +261,15 @@ spec:
         {{- end }}
         {{- end }}
         {{- if .Values.sd.child.enabled }}
+        {{- if include "netdata.verLess3" . }}
         - name: sd-shared
           emptyDir: { }
+        {{- else }}
+        - name: sdconfigmap
+          configMap:
+            name: {{ .Values.sd.child.configmap.name }}
+            optional: true
+        {{- end }}
         {{- end }}
         {{- if .Values.child.extraVolumes }}
 {{ toYaml .Values.child.extraVolumes | indent 8}}
