@@ -38,7 +38,7 @@ data:
         {{- if .file }}
           {{- $.Files.Get .file | nindent 4 }}
         {{- else }}
-          {{- $configFile := ternary "sdconfig/child.yml" "sdconfig/k8s.yml" (eq (include "netdata.verLess3" $) "true") }}
+          {{- $configFile := ternary "sdconfig/child.yml" "sdconfig/k8s.yml" (eq (include "netdata.verLess22" $) "true") }}
           {{- $.Files.Get $configFile | nindent 4 }}
         {{- end }}
       {{- end}}

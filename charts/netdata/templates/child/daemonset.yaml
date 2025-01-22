@@ -111,7 +111,7 @@ spec:
             - name: NETDATA_LISTENER_PORT
               value: '{{ tpl (.Values.child.port | toString) . }}'
             {{- if .Values.sd.child.enabled }}
-            {{- if include "netdata.verLess3" . }}
+            {{- if include "netdata.verLess22" . }}
             - name: NETDATA_PLUGINS_GOD_WATCH_PATH
               value: "/etc/netdata/go.d/sd/go.d.yml"
             {{- end }}
@@ -176,7 +176,7 @@ spec:
               mountPath: /var/lib/netdata
             {{- end }}
             {{- if .Values.sd.child.enabled }}
-            {{- if include "netdata.verLess3" . }}
+            {{- if include "netdata.verLess22" . }}
             - name: sd-shared
               mountPath: "/etc/netdata/go.d/sd/"
             {{- else }}
@@ -196,7 +196,7 @@ spec:
           resources:
 {{ toYaml .Values.child.resources | indent 12 }}
         {{- if .Values.sd.child.enabled }}
-        {{- if include "netdata.verLess3" . }}
+        {{- if include "netdata.verLess22" . }}
         - name: sd
           image: "{{ .Values.sd.image.repository }}:{{ .Values.sd.image.tag }}"
           imagePullPolicy: {{ .Values.sd.image.pullPolicy }}
@@ -261,7 +261,7 @@ spec:
         {{- end }}
         {{- end }}
         {{- if .Values.sd.child.enabled }}
-        {{- if include "netdata.verLess3" . }}
+        {{- if include "netdata.verLess22" . }}
         - name: sd-shared
           emptyDir: { }
         {{- else }}
