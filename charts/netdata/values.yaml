@@ -21,7 +21,7 @@ sd:
       key: config.yml
       # if 'from' is {} the ConfigMap is not generated
       from:
-        file: sdconfig/child.yml
+        file: ""
         value: {}
     resources:
       limits:

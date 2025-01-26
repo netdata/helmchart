@@ -39,6 +39,17 @@ Return the target Kubernetes version
 {{- end -}}
 
 {{/*
+The function determines if the Netdata version is less than 3.0-0.
+*/}}
+{{- define "netdata.verLess22" -}}
+{{- if semverCompare "<2.2-0" .Chart.AppVersion -}}
+{{- "true" -}}
+{{- else -}}
+{{- "" -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
 Return the appropriate apiVersion for ingress.
 */}}
 {{- define "netdata.ingress.apiVersion" -}}
