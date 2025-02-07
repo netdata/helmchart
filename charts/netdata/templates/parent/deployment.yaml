@@ -70,8 +70,10 @@ spec:
             - name: NETDATA_CLAIM_TOKEN
               value: "{{ .Values.parent.claiming.token }}"
             {{- end }}
+            {{- if .Values.parent.claiming.rooms }}
             - name: NETDATA_CLAIM_ROOMS
               value: "{{ .Values.parent.claiming.rooms }}"
+            {{- end }}
             {{- end }}
             - name: MY_POD_NAME
               valueFrom:

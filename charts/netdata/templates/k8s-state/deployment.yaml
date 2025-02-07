@@ -74,8 +74,10 @@ spec:
             - name: NETDATA_CLAIM_TOKEN
               value: "{{ .Values.k8sState.claiming.token }}"
             {{- end }}
+            {{- if .Values.k8sState.claiming.rooms }}
             - name: NETDATA_CLAIM_ROOMS
               value: "{{ .Values.k8sState.claiming.rooms }}"
+            {{- end }}
             {{- end }}
             - name: NETDATA_LISTENER_PORT
               value: '{{ tpl (.Values.k8sState.port | toString) . }}'
