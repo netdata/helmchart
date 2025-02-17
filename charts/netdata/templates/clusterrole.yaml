@@ -24,7 +24,7 @@ rules:
       - "watch"
   - apiGroups: ["apps"]
     resources:
-      - "replicasets"
+      - "deployments"
     verbs:
       - "get"
       - "list"
