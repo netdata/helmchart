@@ -29,6 +29,14 @@ rules:
       - "get"
       - "list"
       - "watch"
+  - apiGroups: ["batch"]
+    resources:
+      - "cronjobs"
+      - "jobs"
+    verbs:
+      - "get"
+      - "list"
+      - "watch"
   - apiGroups: [""]
     resources:
       - "namespaces"  # used by go.d/k8s_state, netdata (cgroup-name.sh, get-kubernetes-labels.sh)
