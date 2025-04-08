@@ -71,10 +71,10 @@ spec:
           - /bin/sh
           - -ec
           - |
-            {{- if .database.persistence }}
+            {{- if $.Values.parent.database.persistence }}
             chown {{ $.Values.parent.securityContext.runAsUser }}:{{ $.Values.parent.securityContext.runAsGroup }} /var/cache/netdata
             {{- end }}
-            {{- if .alarms.persistence }}
+            {{- if $.Values.parent.alarms.persistence }}
             chown {{ $.Values.parent.securityContext.runAsUser }}:{{ $.Values.parent.securityContext.runAsGroup }} /var/lib/netdata
             {{- end }}
           resources:
