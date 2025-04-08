@@ -62,7 +62,7 @@ ingress:
   path: /
   pathType: Prefix
   hosts:
-    - netdata.k8s.local
+  - netdata.k8s.local
   ## whole spec is going to be included into ingress spec.
   ## if you intend to use ingressClassName declaration, remove ingress.class from annotations
   # spec:
@@ -129,6 +129,23 @@ parent:
     periodSeconds: 30
     successThreshold: 1
     timeoutSeconds: 1
+  securityContext:
+    runAsUser: 201
+    runAsGroup: 201
+    fsGroup: 201
+  volumePermissions:
+    enabled: false
+    image:
+      repository: bitnami/os-shell
+      tag: 12-debian-12-r41
+      pullPolicy: IfNotPresent
+    resources:
+      limits:
+        cpu: 500m
+        memory: 200Mi
+      requests:
+        cpu: 100m
+        memory: 100Mi
 
   terminationGracePeriodSeconds: 300
 
@@ -270,8 +287,8 @@ child:
   nodeSelector: {}
 
   tolerations:
-    - operator: Exists
-      effect: NoSchedule
+  - operator: Exists
+    effect: NoSchedule
 
   affinity: {}
 
