@@ -60,7 +60,7 @@ spec:
       {{- end }}
       {{- if .Values.parent.volumePermissions.enabled }}
       {{- with .Values.parent.volumePermissions }}
-        - name: volumePermissions
+        - name: volume-permissions
           image: "{{ .image.repository }}:{{ .image.tag }}"
           imagePullPolicy: {{ .image.pullPolicy }}
           securityContext:
