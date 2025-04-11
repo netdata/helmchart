@@ -133,19 +133,6 @@ parent:
     runAsUser: 201
     runAsGroup: 201
     fsGroup: 201
-  volumePermissions:
-    enabled: false
-    image:
-      repository: bitnami/os-shell
-      tag: 12-debian-12-r41
-      pullPolicy: IfNotPresent
-    resources:
-      limits:
-        cpu: 500m
-        memory: 200Mi
-      requests:
-        cpu: 100m
-        memory: 100Mi
 
   terminationGracePeriodSeconds: 300
 
@@ -252,6 +239,8 @@ parent:
   extraVolumeMounts: []
 
   extraVolumes: []
+
+  extraInitContainers: []
 
 child:
   enabled: true
