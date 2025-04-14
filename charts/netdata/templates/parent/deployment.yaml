@@ -35,7 +35,7 @@ spec:
 {{- end }}
     spec:
       securityContext:
-        fsGroup: 201
+        fsGroup: {{ .Values.parent.securityContext.fsGroup }}
       serviceAccountName: {{ .Values.serviceAccount.name }}
       {{- if .Values.parent.priorityClassName }}
       priorityClassName: "{{ .Values.parent.priorityClassName }}"
@@ -58,6 +58,7 @@ spec:
           resources:
 {{ toYaml .Values.sysctlInitContainer.resources | indent 12 }}
       {{- end }}
+{{ toYaml .Values.parent.extraInitContainers | indent 8 }}
       containers:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ tpl .Values.image.tag . }}"
@@ -117,6 +118,9 @@ spec:
             periodSeconds: {{ .Values.parent.readinessProbe.periodSeconds }}
             successThreshold: {{ .Values.parent.readinessProbe.successThreshold }}
             timeoutSeconds: {{ .Values.parent.readinessProbe.timeoutSeconds }}
+          securityContext:
+            runAsUser: {{ .Values.parent.securityContext.runAsUser }}
+            runAsGroup: {{ .Values.parent.securityContext.runAsGroup }}
           volumeMounts:
             - name: os-release
               mountPath: /host/etc/os-release

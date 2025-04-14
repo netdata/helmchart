@@ -62,7 +62,7 @@ ingress:
   path: /
   pathType: Prefix
   hosts:
-    - netdata.k8s.local
+  - netdata.k8s.local
   ## whole spec is going to be included into ingress spec.
   ## if you intend to use ingressClassName declaration, remove ingress.class from annotations
   # spec:
@@ -129,6 +129,10 @@ parent:
     periodSeconds: 30
     successThreshold: 1
     timeoutSeconds: 1
+  securityContext:
+    runAsUser: 201
+    runAsGroup: 201
+    fsGroup: 201
 
   terminationGracePeriodSeconds: 300
 
@@ -236,6 +240,8 @@ parent:
 
   extraVolumes: []
 
+  extraInitContainers: []
+
 child:
   enabled: true
   port: "{{ .Values.parent.port }}"
@@ -270,8 +276,8 @@ child:
   nodeSelector: {}
 
   tolerations:
-    - operator: Exists
-      effect: NoSchedule
+  - operator: Exists
+    effect: NoSchedule
 
   affinity: {}
 
