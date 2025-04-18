@@ -2,7 +2,7 @@
 
 <a href="https://artifacthub.io/packages/search?repo=netdata" target="_blank" rel="noopener noreferrer"><img loading="lazy" src="https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/netdata" alt="Artifact HUB" class="img_node_modules-@docusaurus-theme-classic-lib-theme-MDXComponents-Img-styles-module"></img></a>
 
-<img src="https://img.shields.io/badge/Version-3.7.134-informational" alt="Version: 3.7.134"></img>
+<img src="https://img.shields.io/badge/Version-3.7.135-informational" alt="Version: 3.7.135"></img>
 
 <img loading="lazy" src="https://img.shields.io/badge/AppVersion-v2.4.0-informational" alt="AppVersion: v2.4.0" class="img_node_modules-@docusaurus-theme-classic-lib-theme-MDXComponents-Img-styles-module"></img>
 
