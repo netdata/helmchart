@@ -309,6 +309,8 @@ child:
       data: |
         [db]
           mode = ram
+        [web]
+          bind to = localhost:19999
         [health]
           enabled = no
         [ml]
@@ -446,6 +448,8 @@ k8sState:
           hostname = {{ .Values.k8sState.hostname }}
         [db]
           mode = ram
+        [web]
+          bind to = localhost:19999
         [health]
           enabled = no
         [ml]
