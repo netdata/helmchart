@@ -4,7 +4,7 @@
 
 <img src="https://img.shields.io/badge/Version-3.7.137-informational" alt="Version: 3.7.137"></img>
 
-<img loading="lazy" src="https://img.shields.io/badge/AppVersion-v2.5.1-informational" alt="AppVersion: v2.5.1" class="img_node_modules-@docusaurus-theme-classic-lib-theme-MDXComponents-Img-styles-module"></img>
+<img loading="lazy" src="https://img.shields.io/badge/AppVersion-v2.5.2-informational" alt="AppVersion: v2.5.2" class="img_node_modules-@docusaurus-theme-classic-lib-theme-MDXComponents-Img-styles-module"></img>
 
 _Based on the work of varyumin (https://github.com/varyumin/netdata)_.
 
