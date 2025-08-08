@@ -345,8 +345,10 @@ child:
         update_every: 1
         autodetection_retry: 0
         jobs:
-          - url: http://127.0.0.1:10255/metrics
-          - url: https://localhost:10250/metrics
+          - name: local
+            url: http://127.0.0.1:10255/metrics
+          - name: local
+            url: https://localhost:10250/metrics
             tls_skip_verify: yes
     kubeproxy:
       enabled: true
@@ -355,7 +357,8 @@ child:
         update_every: 1
         autodetection_retry: 0
         jobs:
-          - url: http://127.0.0.1:10249/metrics
+          - name: local
+            url: http://127.0.0.1:10249/metrics
 
   env: {}
     ## To disable anonymous statistics:
