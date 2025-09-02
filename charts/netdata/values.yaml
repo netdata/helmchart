@@ -84,8 +84,9 @@ restarter:
   enabled: false
   schedule: "00 06 * * *"
   image:
-    repository: bitnami/kubectl
-    tag: 1.25
+    repository: rancher/kubectl
+    # if `.auto`, the image tag version of the rancher/kubectl will reflect the Kubernetes cluster version
+    tag: .auto
     pullPolicy: Always
   restartPolicy: Never
   resources: {}
