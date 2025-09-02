@@ -34,6 +34,7 @@ spec:
               image: {{ .Values.restarter.image.repository }}:{{ ternary (printf "v%s.%s.0" .Capabilities.KubeVersion.Major .Capabilities.KubeVersion.Minor) .Values.restarter.image.tag (eq (.Values.restarter.image.tag | toString) ".auto") }} 
               imagePullPolicy: {{ .Values.restarter.image.pullPolicy }}
               resources:
+{{ toYaml .Values.restarter.resources | indent 16 }}
               args:
 {{ toYaml (concat (list "rollout" "restart") $argsList) | indent 16 }}
 {{- end }}
