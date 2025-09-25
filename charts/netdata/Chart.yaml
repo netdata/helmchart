@@ -15,4 +15,4 @@ maintainers:
   - name: Netdata Cloud SRE team
     email: cloud-sre@netdata.cloud
 icon: https://netdata.github.io/helmchart/logo.png
-appVersion: v2.6.3
+appVersion: v2.7.0
