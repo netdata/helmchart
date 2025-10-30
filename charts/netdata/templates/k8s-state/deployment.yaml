@@ -67,6 +67,14 @@ spec:
           image: "{{ .Values.image.repository }}:{{ tpl .Values.image.tag . }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
+            - name: MY_POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: MY_POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
             {{- if .Values.k8sState.claiming.enabled }}
             - name: NETDATA_CLAIM_URL
               value: "{{ .Values.k8sState.claiming.url }}"
@@ -96,8 +104,8 @@ spec:
           livenessProbe:
             exec:
               command:
-              - /usr/sbin/netdatacli
-              - ping
+                - /usr/sbin/netdatacli
+                - ping
             initialDelaySeconds: {{ .Values.k8sState.livenessProbe.initialDelaySeconds }}
             failureThreshold: {{ .Values.k8sState.livenessProbe.failureThreshold }}
             periodSeconds: {{ .Values.k8sState.livenessProbe.periodSeconds }}
@@ -106,8 +114,8 @@ spec:
           readinessProbe:
             exec:
               command:
-              - /usr/sbin/netdatacli
-              - ping
+                - /usr/sbin/netdatacli
+                - ping
             initialDelaySeconds: {{ .Values.k8sState.readinessProbe.initialDelaySeconds }}
             failureThreshold: {{ .Values.k8sState.readinessProbe.failureThreshold }}
             periodSeconds: {{ .Values.k8sState.readinessProbe.periodSeconds }}
