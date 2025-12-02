@@ -399,33 +399,32 @@ and exports them, so they can be monitored.
 
 Service discovery currently supports the following applications via their associated collector:
 
-- [ActiveMQ](https://github.com/netdata/netdata/blob/master/src/go/collectors/go.d.plugin/modules/activemq/README.md)
-- [Apache](https://github.com/netdata/netdata/blob/master/src/go/collectors/go.d.plugin/modules/apache/README.md)
-- [Bind](https://github.com/netdata/netdata/blob/master/src/go/collectors/go.d.plugin/modules/bind/README.md)
-- [CockroachDB](https://github.com/netdata/netdata/blob/master/src/go/collectors/go.d.plugin/modules/cockroachdb/README.md)
-- [Consul](https://github.com/netdata/netdata/blob/master/src/go/collectors/go.d.plugin/modules/consul/README.md)
-- [CoreDNS](https://github.com/netdata/netdata/blob/master/src/go/collectors/go.d.plugin/modules/coredns/README.md)
-- [Elasticsearch](https://github.com/netdata/netdata/blob/master/src/go/collectors/go.d.plugin/modules/elasticsearch/README.md)
-- [Fluentd](https://github.com/netdata/netdata/blob/master/src/go/collectors/go.d.plugin/modules/fluentd/README.md)
-- [FreeRADIUS](https://github.com/netdata/netdata/blob/master/src/go/collectors/go.d.plugin/modules/freeradius/README.md)
-- [HDFS](https://github.com/netdata/netdata/blob/master/src/go/collectors/go.d.plugin/modules/hdfs/README.md)
-- [Lighttpd](https://github.com/netdata/netdata/blob/master/src/go/collectors/go.d.plugin/modules/lighttpd/README.md)
-- [Logstash](https://github.com/netdata/netdata/blob/master/src/go/collectors/go.d.plugin/modules/logstash/README.md)
-- [MySQL](https://github.com/netdata/netdata/blob/master/src/go/collectors/go.d.plugin/modules/mysql/README.md)
-- [NGINX](https://github.com/netdata/netdata/blob/master/src/go/collectors/go.d.plugin/modules/nginx/README.md)
-- [OpenVPN](https://github.com/netdata/netdata/blob/master/src/go/collectors/go.d.plugin/modules/openvpn/README.md)
-- [PHP-FPM](https://github.com/netdata/netdata/blob/master/src/go/collectors/go.d.plugin/modules/phpfpm/README.md)
-- [RabbitMQ](https://github.com/netdata/netdata/blob/master/src/go/collectors/go.d.plugin/modules/rabbitmq/README.md)
-- [Solr](https://github.com/netdata/netdata/blob/master/src/go/collectors/go.d.plugin/modules/solr/README.md)
-- [Tengine](https://github.com/netdata/netdata/blob/master/src/go/collectors/go.d.plugin/modules/tengine/README.md)
-- [Unbound](https://github.com/netdata/netdata/blob/master/src/go/collectors/go.d.plugin/modules/unbound/README.md)
-- [VerneMQ](https://github.com/netdata/netdata/blob/master/src/go/collectors/go.d.plugin/modules/vernemq/README.md)
-- [ZooKeeper](https://github.com/netdata/netdata/blob/master/src/go/collectors/go.d.plugin/modules/zookeeper/README.md)
+- [ActiveMQ](https://github.com/netdata/netdata/blob/master/src/go/plugin/go.d/collector/activemq/README.md)
+- [Apache](https://github.com/netdata/netdata/blob/master/src/go/plugin/go.d/collector/apache/README.md)
+- [Bind](https://github.com/netdata/netdata/blob/master/src/go/plugin/go.d/collector/bind/README.md)
+- [CockroachDB](https://github.com/netdata/netdata/blob/master/src/go/plugin/go.d/collector/cockroachdb/README.md)
+- [Consul](https://github.com/netdata/netdata/blob/master/src/go/plugin/go.d/collector/consul/README.md)
+- [CoreDNS](https://github.com/netdata/netdata/blob/master/src/go/plugin/go.d/collector/coredns/README.md)
+- [Elasticsearch](https://github.com/netdata/netdata/blob/master/src/go/plugin/go.d/collector/elasticsearch/README.md)
+- [Fluentd](https://github.com/netdata/netdata/blob/master/src/go/plugin/go.d/collector/fluentd/README.md)
+- [FreeRADIUS](https://github.com/netdata/netdata/blob/master/src/go/plugin/go.d/collector/freeradius/README.md)
+- [HDFS](https://github.com/netdata/netdata/blob/master/src/go/plugin/go.d/collector/hdfs/README.md)
+- [Lighttpd](https://github.com/netdata/netdata/blob/master/src/go/plugin/go.d/collector/lighttpd/README.md)
+- [Logstash](https://github.com/netdata/netdata/blob/master/src/go/plugin/go.d/collector/logstash/README.md)
+- [MySQL](https://github.com/netdata/netdata/blob/master/src/go/plugin/go.d/collector/mysql/README.md)
+- [NGINX](https://github.com/netdata/netdata/blob/master/src/go/plugin/go.d/collector/nginx/README.md)
+- [OpenVPN](https://github.com/netdata/netdata/blob/master/src/go/plugin/go.d/collector/openvpn/README.md)
+- [PHP-FPM](https://github.com/netdata/netdata/blob/master/src/go/plugin/go.d/collector/phpfpm/README.md)
+- [RabbitMQ](https://github.com/netdata/netdata/blob/master/src/go/plugin/go.d/collector/rabbitmq/README.md)
+- [Tengine](https://github.com/netdata/netdata/blob/master/src/go/plugin/go.d/collector/tengine/README.md)
+- [Unbound](https://github.com/netdata/netdata/blob/master/src/go/plugin/go.d/collector/unbound/README.md)
+- [VerneMQ](https://github.com/netdata/netdata/blob/master/src/go/plugin/go.d/collector/vernemq/README.md)
+- [ZooKeeper](https://github.com/netdata/netdata/blob/master/src/go/plugin/go.d/collector/zookeeper/README.md)
 
 #### Prometheus endpoints
 
 Service discovery supports Prometheus endpoints via
-the [Prometheus](https://github.com/netdata/netdata/blob/master/src/go/collectors/go.d.plugin/modules/prometheus/README.md) collector.
+the [Prometheus](https://github.com/netdata/netdata/blob/master/src/go/plugin/go.d/collector/prometheus/README.md) collector.
 
 Annotations on pods allow a fine control of the scraping process:
 
