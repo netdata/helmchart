@@ -416,7 +416,6 @@ Service discovery currently supports the following applications via their associ
 - [OpenVPN](https://github.com/netdata/netdata/blob/master/src/go/plugin/go.d/collector/openvpn/README.md)
 - [PHP-FPM](https://github.com/netdata/netdata/blob/master/src/go/plugin/go.d/collector/phpfpm/README.md)
 - [RabbitMQ](https://github.com/netdata/netdata/blob/master/src/go/plugin/go.d/collector/rabbitmq/README.md)
-- [Solr](https://github.com/netdata/netdata/blob/master/src/go/plugin/go.d/collector/solr/README.md)
 - [Tengine](https://github.com/netdata/netdata/blob/master/src/go/plugin/go.d/collector/tengine/README.md)
 - [Unbound](https://github.com/netdata/netdata/blob/master/src/go/plugin/go.d/collector/unbound/README.md)
 - [VerneMQ](https://github.com/netdata/netdata/blob/master/src/go/plugin/go.d/collector/vernemq/README.md)
