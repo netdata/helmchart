@@ -1,0 +1,177 @@
+{{- if .Values.netdataOpentelemetry.enabled }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "netdata.name" . }}-otel
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ template "netdata.name" . }}
+    chart: {{ template "netdata.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    role: otel
+spec:
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: {{ template "netdata.name" . }}
+      release: {{ .Release.Name }}
+      role: otel
+  template:
+    metadata:
+      annotations:
+      {{- if .Values.netdataOpentelemetry.podAnnotationAppArmor.enabled }}
+        container.apparmor.security.beta.kubernetes.io/{{ .Chart.Name }}: unconfined
+      {{- end }}
+        checksum/config: {{ print (include (print $.Template.BasePath "/netdata-otel/configmap.yaml") .) (include (print $.Template.BasePath "/netdata-otel/secrets.yaml") .) | sha256sum }}
+{{- with .Values.netdataOpentelemetry.podAnnotations }}
+{{ toYaml . | trim | indent 8 }}
+{{- end }}
+      labels:
+        app: {{ template "netdata.name" . }}
+        release: {{ .Release.Name }}
+        role: otel
+{{- with .Values.netdataOpentelemetry.podLabels }}
+{{ toYaml . | trim | indent 8 }}
+{{- end }}
+    spec:
+      securityContext:
+        fsGroup: 201
+      serviceAccountName: {{ .Values.serviceAccount.name }}
+      restartPolicy: Always
+      {{- if .Values.netdataOpentelemetry.priorityClassName }}
+      priorityClassName: "{{ .Values.netdataOpentelemetry.priorityClassName }}"
+      {{- end }}
+      {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+{{ toYaml .Values.imagePullSecrets | indent 8 }}
+      {{- end }}
+      initContainers:
+      {{- if .Values.sysctlInitContainer.enabled }}
+        - name: init-sysctl
+          image: "{{ .Values.initContainersImage.repository }}:{{ .Values.initContainersImage.tag }}"
+          imagePullPolicy: {{ .Values.initContainersImage.pullPolicy }}
+          command:
+{{ toYaml .Values.sysctlInitContainer.command | indent 12 }}
+          securityContext:
+            runAsNonRoot: false
+            privileged: true
+            runAsUser: 0
+          resources:
+{{ toYaml .Values.sysctlInitContainer.resources | indent 12 }}
+      {{- end }}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ tpl .Values.image.tag . }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            - name: MY_POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: MY_POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            {{- if .Values.netdataOpentelemetry.claiming.enabled }}
+            - name: NETDATA_CLAIM_URL
+              value: "{{ .Values.netdataOpentelemetry.claiming.url }}"
+            {{- if .Values.netdataOpentelemetry.claiming.token }}
+            - name: NETDATA_CLAIM_TOKEN
+              value: "{{ .Values.netdataOpentelemetry.claiming.token }}"
+            {{- end }}
+            {{- if .Values.netdataOpentelemetry.claiming.rooms }}
+            - name: NETDATA_CLAIM_ROOMS
+              value: "{{ .Values.netdataOpentelemetry.claiming.rooms }}"
+            {{- end }}
+            {{- end }}
+            - name: NETDATA_LISTENER_PORT
+              value: '{{ tpl (.Values.netdataOpentelemetry.port | toString) . }}'
+            {{- range $key, $value := .Values.netdataOpentelemetry.env }}
+            - name: {{ $key }}
+              value: {{ $value | quote }}
+            {{- end }}
+          {{- with .Values.netdataOpentelemetry.envFrom }}
+          envFrom:
+{{ toYaml . | indent 12 }}
+          {{- end }}
+          ports:
+            - name: http
+              containerPort: {{ tpl (.Values.netdataOpentelemetry.port | toString) . }}
+              protocol: TCP
+          livenessProbe:
+            exec:
+              command:
+                - /usr/sbin/netdatacli
+                - ping
+            initialDelaySeconds: {{ .Values.netdataOpentelemetry.livenessProbe.initialDelaySeconds }}
+            failureThreshold: {{ .Values.netdataOpentelemetry.livenessProbe.failureThreshold }}
+            periodSeconds: {{ .Values.netdataOpentelemetry.livenessProbe.periodSeconds }}
+            successThreshold: {{ .Values.netdataOpentelemetry.livenessProbe.successThreshold }}
+            timeoutSeconds: {{ .Values.netdataOpentelemetry.livenessProbe.timeoutSeconds }}
+          readinessProbe:
+            exec:
+              command:
+                - /usr/sbin/netdatacli
+                - ping
+            initialDelaySeconds: {{ .Values.netdataOpentelemetry.readinessProbe.initialDelaySeconds }}
+            failureThreshold: {{ .Values.netdataOpentelemetry.readinessProbe.failureThreshold }}
+            periodSeconds: {{ .Values.netdataOpentelemetry.readinessProbe.periodSeconds }}
+            successThreshold: {{ .Values.netdataOpentelemetry.readinessProbe.successThreshold }}
+            timeoutSeconds: {{ .Values.netdataOpentelemetry.readinessProbe.timeoutSeconds }}
+          volumeMounts:
+            - name: os-release
+              mountPath: /host/etc/os-release
+            {{- range $name, $config := .Values.netdataOpentelemetry.configs }}
+            {{- if $config.enabled }}
+            - name: {{ ternary "configmap" "configsecret" (ne $config.storedType "secret") }}
+              mountPath: {{ $config.path }}
+              subPath: {{ $name }}
+            {{- end }}
+            {{- end }}
+            {{- if .Values.netdataOpentelemetry.persistence.enabled }}
+            - name: varlib
+              mountPath: /var/lib/netdata
+            {{- end }}
+            {{- if .Values.netdataOpentelemetry.extraVolumeMounts -}}
+{{ toYaml .Values.netdataOpentelemetry.extraVolumeMounts | nindent 12 }}
+            {{- end }}
+          resources:
+{{ toYaml .Values.netdataOpentelemetry.resources | indent 12 }}
+    {{- with .Values.netdataOpentelemetry.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.netdataOpentelemetry.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.netdataOpentelemetry.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+      terminationGracePeriodSeconds: {{ .Values.netdataOpentelemetry.terminationGracePeriodSeconds }}
+      volumes:
+        - name: os-release
+          hostPath:
+            path: /etc/os-release
+        - name: configmap
+          configMap:
+            name: netdata-conf-otel
+            optional: true
+        - name: configsecret
+          secret:
+            secretName: netdata-conf-otel
+            optional: true
+        {{- if .Values.netdataOpentelemetry.persistence.enabled }}
+        - name: varlib
+          persistentVolumeClaim:
+            claimName: {{ template "netdata.name" . }}-otel-varlib
+        {{- end }}
+        {{- if .Values.netdataOpentelemetry.extraVolumes }}
+{{ toYaml .Values.netdataOpentelemetry.extraVolumes | indent 8}}
+        {{- end }}
+      dnsPolicy: {{ .Values.netdataOpentelemetry.dnsPolicy }}
+{{- end }}

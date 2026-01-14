@@ -1,0 +1,16 @@
+{{- $configmapOtel := include "netdata.netdataOpentelemetry.configs.configmap" . }}
+{{- if and .Values.netdataOpentelemetry.enabled $configmapOtel }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: netdata-conf-otel
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ template "netdata.name" . }}
+    chart: {{ template "netdata.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+data:
+  {{ $configmapOtel | indent 2 }}
+{{- end }}

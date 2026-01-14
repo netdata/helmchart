@@ -16,3 +16,9 @@ maintainers:
     email: cloud-sre@netdata.cloud
 icon: https://netdata.github.io/helmchart/logo.png
 appVersion: v2.9.0
+dependencies:
+  - name: opentelemetry-collector
+    alias: opentelemetryCollector
+    version: "0.115.0"
+    repository: "https://open-telemetry.github.io/opentelemetry-helm-charts"
+    condition: opentelemetryCollector.enabled

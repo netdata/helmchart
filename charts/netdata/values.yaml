@@ -62,7 +62,7 @@ ingress:
   path: /
   pathType: Prefix
   hosts:
-  - netdata.k8s.local
+    - netdata.k8s.local
   ## whole spec is going to be included into ingress spec.
   ## if you intend to use ingressClassName declaration, remove ingress.class from annotations
   # spec:
@@ -89,7 +89,8 @@ restarter:
     tag: .auto
     pullPolicy: Always
   restartPolicy: Never
-  resources: {}
+  resources:
+    {}
     # limits:
     #  cpu: 500m
     #  memory: 64Mi
@@ -110,7 +111,8 @@ parent:
   hostname: "netdata-parent"
   enabled: true
   port: 19999
-  resources: {}
+  resources:
+    {}
     # limits:
     #  cpu: 4
     #  memory: 4096Mi
@@ -145,11 +147,13 @@ parent:
 
   priorityClassName: ""
 
-  env: {}
+  env:
+    {}
     ## To disable anonymous statistics:
     # DO_NOT_TRACK: 1
 
-  envFrom: []
+  envFrom:
+    []
     ## E.g. to read Netdata Cloud claim token from an existing secret "netdata" set this to:
     # - secretRef:
     #     name: netdata
@@ -246,12 +250,14 @@ parent:
 child:
   enabled: true
   port: "{{ .Values.parent.port }}"
-  updateStrategy: {}
+  updateStrategy:
+    {}
     # type: RollingUpdate
     # rollingUpdate:
     #   maxUnavailable: 1
 
-  resources: {}
+  resources:
+    {}
     # limits:
     #  cpu: 4
     #  memory: 4096Mi
@@ -277,8 +283,8 @@ child:
   nodeSelector: {}
 
   tolerations:
-  - operator: Exists
-    effect: NoSchedule
+    - operator: Exists
+      effect: NoSchedule
 
   affinity: {}
 
@@ -361,11 +367,13 @@ child:
           - name: local
             url: http://127.0.0.1:10249/metrics
 
-  env: {}
+  env:
+    {}
     ## To disable anonymous statistics:
     # DO_NOT_TRACK: 1
 
-  envFrom: []
+  envFrom:
+    []
     ## E.g. to read Netdata Cloud claim token from an existing secret "netdata" set this to:
     # - secretRef:
     #     name: netdata
@@ -378,14 +386,16 @@ child:
     rooms: ""
     url: "https://api.netdata.cloud"
 
-  extraVolumeMounts: []
+  extraVolumeMounts:
+    []
     ## Additional volume mounts for netdata child
     ## E.g to mount all disks under / to be monitored via the diskspace plugin
     # - name: hostroot
     #   mountPath: /host/root
     #   readOnly: true
     #   mountPropagation: HostToContainer
-  extraVolumes: []
+  extraVolumes:
+    []
     ## Additional volumes for netdata child
     ## E.g to mount all disks under / to be monitored via the diskspace plugin
     # - name: hostroot
@@ -397,7 +407,8 @@ k8sState:
   enabled: true
   port: "{{ .Values.parent.port }}"
 
-  resources: {}
+  resources:
+    {}
     # limits:
     #  cpu: 4
     #  memory: 4096Mi
@@ -507,11 +518,13 @@ k8sState:
           - name: k8s_state
             update_every: 1
 
-  env: {}
+  env:
+    {}
     ## To disable anonymous statistics:
     # DO_NOT_TRACK: 1
 
-  envFrom: []
+  envFrom:
+    []
     ## E.g. to read Netdata Cloud claim token from an existing secret "netdata" set this to:
     # - secretRef:
     #     name: netdata
@@ -527,3 +540,326 @@ k8sState:
   extraVolumeMounts: []
 
   extraVolumes: []
+
+netdataOpentelemetry:
+  enabled: false
+  hostname: "netdata-otel"
+  port: "{{ .Values.parent.port }}"
+
+  ## Service responsible for receiving OTEL logs
+  service:
+    type: ClusterIP
+    port: 4317
+    annotations: {}
+    ## Only to be used with type LoadBalancer
+    # loadBalancerIP: 10.0.1.69
+    # loadBalancerSourceRanges: []
+    # externalTrafficPolicy: Local
+    ## Only to be used with type LoadBalancer and external traffic policy Local
+    # healthCheckNodePort:
+    ## Only to be used with type ClusterIP
+    # clusterIP: 10.1.2.3
+
+  resources:
+    {}
+    # limits:
+    #  cpu: 4
+    #  memory: 4096Mi
+    # requests:
+    #  cpu: 4
+    #  memory: 4096Mi
+
+  livenessProbe:
+    initialDelaySeconds: 0
+    failureThreshold: 3
+    periodSeconds: 30
+    successThreshold: 1
+    timeoutSeconds: 1
+  readinessProbe:
+    initialDelaySeconds: 0
+    failureThreshold: 3
+    periodSeconds: 30
+    successThreshold: 1
+    timeoutSeconds: 1
+
+  terminationGracePeriodSeconds: 30
+
+  nodeSelector: {}
+
+  tolerations: []
+
+  affinity: {}
+
+  priorityClassName: ""
+
+  podLabels: {}
+
+  podAnnotationAppArmor:
+    enabled: true
+
+  podAnnotations: {}
+
+  dnsPolicy: ClusterFirstWithHostNet
+
+  persistence:
+    enabled: true
+    ## Set '-' as the storageclass to get a volume from the default storage class.
+    storageclass: "-"
+    volumesize: 5Gi
+
+  configs:
+    netdata:
+      enabled: true
+      path: /etc/netdata/netdata.conf
+      data: |
+        [global]
+          hostname = {{ .Values.netdataOpentelemetry.hostname }}
+        [db]
+          mode = ram
+        [web]
+          bind to = localhost:19999
+        [health]
+          enabled = no
+        [ml]
+          enabled = no
+        [plugins]
+          timex = no
+          checks = no
+          idlejitter = no
+          tc = no
+          diskspace = no
+          proc = no
+          cgroups = no
+          enable running new plugins = no
+          slabinfo = no
+          perf = no
+          go.d = yes
+          ioping = no
+          ebpf = no
+          charts.d = no
+          apps = no
+          python.d = no
+          fping = no
+    stream:
+      enabled: true
+      path: /etc/netdata/stream.conf
+      data: |
+        [stream]
+          enabled = {{ ternary "yes" "no" .Values.parent.enabled }}
+          destination = netdata:{{ .Values.service.port }}
+          api key = 11111111-2222-3333-4444-555555555555
+          timeout seconds = 60
+          buffer size bytes = 1048576
+          reconnect delay seconds = 5
+          initial clock resync iterations = 60
+
+  env:
+    {}
+    ## To disable anonymous statistics:
+    # DO_NOT_TRACK: 1
+
+  envFrom:
+    []
+    ## E.g. to read Netdata Cloud claim token from an existing secret "netdata" set this to:
+    # - secretRef:
+    #     name: netdata
+    ## And create it with: kubectl create secret generic netdata --from-literal="NETDATA_CLAIM_TOKEN=<token>"
+    ## Also ensure that claim.token is empty
+
+  claiming:
+    enabled: false
+    token: ""
+    rooms: ""
+    url: "https://api.netdata.cloud"
+
+  extraVolumeMounts: []
+
+  extraVolumes: []
+
+# OpenTelemetry Collector subchart configuration
+# This is an optional component that allows to gather logs from k8s cluster.
+# If you already have an exporter of any kind, just point it to the netdata-otel service
+# Documentation: https://opentelemetry.io/docs/platforms/kubernetes/helm/collector/
+opentelemetryCollector:
+  # Set to true to enable the OpenTelemetry Collector
+  enabled: false
+
+  # Deployment mode: daemonset, deployment, or statefulset
+  mode: daemonset
+
+  # Image configuration
+  image:
+    repository: otel/opentelemetry-collector-k8s
+
+  # Presets enable quick configuration for common use cases
+  presets:
+    # Collect Kubernetes attributes and add them to logs
+    kubernetesAttributes:
+      enabled: true
+    # Collect logs from Kubernetes pods
+    logsCollection:
+      enabled: true
+      includeCollectorLogs: false
+
+  # OpenTelemetry Collector configuration
+  config:
+    receivers:
+      # Filelog receiver - collects logs from container log files
+      filelog:
+        include:
+          - /var/log/pods/*/*/*.log
+        exclude:
+          # Exclude OTel collector's own logs to avoid loop
+          - /var/log/pods/*/otc-container/*.log
+        start_at: end
+        include_file_path: true
+        include_file_name: false
+        operators:
+          # Parse CRI-O/containerd format logs
+          - type: container
+            id: container-parser
+            max_log_size: 102400
+
+    processors:
+      # Batch processor - recommended for better performance
+      batch:
+        send_batch_size: 1000
+        timeout: 10s
+        send_batch_max_size: 1500
+
+      # Memory limiter to prevent OOM
+      memory_limiter:
+        check_interval: 5s
+        limit_percentage: 80
+        spike_limit_percentage: 25
+
+      # Resource detection processor
+      resourcedetection:
+        detectors: [env, system]
+        timeout: 5s
+
+      # Kubernetes attributes processor - adds K8s metadata to logs
+      k8sattributes:
+        auth_type: "serviceAccount"
+        passthrough: false
+        extract:
+          metadata:
+            - k8s.namespace.name
+            - k8s.deployment.name
+            - k8s.statefulset.name
+            - k8s.daemonset.name
+            - k8s.cronjob.name
+            - k8s.job.name
+            - k8s.node.name
+            - k8s.pod.name
+            - k8s.pod.uid
+            - k8s.pod.start_time
+            - k8s.container.name
+          labels:
+            - tag_name: app
+              key: app
+              from: pod
+            - tag_name: component
+              key: component
+              from: pod
+          annotations:
+            - tag_name: annotation.app
+              key: app
+              from: pod
+        pod_association:
+          - sources:
+              - from: resource_attribute
+                name: k8s.pod.ip
+          - sources:
+              - from: resource_attribute
+                name: k8s.pod.uid
+          - sources:
+              - from: connection
+
+    exporters:
+      # OTLP gRPC exporter to your endpoint
+      otlp:
+        endpoint: "{{ .Release.Name }}-otel:4317"
+        tls:
+          insecure: true
+        # Uncomment and configure if you need authentication
+        # headers:
+        #   authorization: "Bearer YOUR_TOKEN"
+        #   api-key: "your-api-key"
+
+        # Retry configuration
+        retry_on_failure:
+          enabled: true
+          initial_interval: 5s
+          max_interval: 30s
+          max_elapsed_time: 300s
+
+        # Queue to handle temporary failures
+        sending_queue:
+          enabled: true
+          num_consumers: 10
+          queue_size: 1000
+
+      # Debug exporter for troubleshooting (optional)
+      # Uncomment to see logs being exported
+      # debug:
+      #   verbosity: detailed
+      #   sampling_initial: 5
+      #   sampling_thereafter: 200
+
+    service:
+      pipelines:
+        # Logs pipeline
+        logs:
+          receivers: [filelog]
+          processors: [memory_limiter, k8sattributes, resourcedetection, batch]
+          exporters: [otlp]
+
+  # Resources
+  resources:
+    limits:
+      cpu: 200m
+      memory: 256Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+
+  # Service account with necessary RBAC permissions
+  serviceAccount:
+    create: true
+
+  # RBAC for accessing Kubernetes API
+  clusterRole:
+    create: true
+    rules:
+      - apiGroups: [""]
+        resources: ["pods", "namespaces", "nodes"]
+        verbs: ["get", "list", "watch"]
+      - apiGroups: ["apps"]
+        resources: ["replicasets"]
+        verbs: ["get", "list", "watch"]
+
+  # Tolerations to run on all nodes
+  tolerations:
+    - effect: NoSchedule
+      operator: Exists
+    - effect: NoExecute
+      operator: Exists
+
+  # Ports configuration
+  ports:
+    otlp:
+      enabled: true
+      containerPort: 4317
+      servicePort: 4317
+      protocol: TCP
+    otlp-http:
+      enabled: true
+      containerPort: 4318
+      servicePort: 4318
+      protocol: TCP
+    metrics:
+      enabled: true
+      containerPort: 8888
+      servicePort: 8888
+      protocol: TCP

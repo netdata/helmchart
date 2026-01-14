@@ -1,0 +1,47 @@
+{{- if .Values.netdataOpentelemetry.enabled }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ template "netdata.name" . }}-otel
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ template "netdata.name" . }}
+    chart: {{ template "netdata.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    role: otel
+  annotations:
+{{- with .Values.netdataOpentelemetry.service.annotations }}
+{{ toYaml . | trim | indent 4 }}
+{{- end }}
+spec:
+  type: {{ .Values.netdataOpentelemetry.service.type }}
+  {{- if and (eq .Values.netdataOpentelemetry.service.type "LoadBalancer") .Values.netdataOpentelemetry.service.loadBalancerIP }}
+  loadBalancerIP: {{ .Values.netdataOpentelemetry.service.loadBalancerIP }}
+  {{- end }}
+  {{- if and (eq .Values.netdataOpentelemetry.service.type "LoadBalancer") .Values.netdataOpentelemetry.service.loadBalancerSourceRanges }}
+  loadBalancerSourceRanges:
+{{- with .Values.netdataOpentelemetry.service.loadBalancerSourceRanges }}
+{{ toYaml . | trim | indent 4 }}
+{{- end }}
+  {{- end }}
+  {{- if and (eq .Values.netdataOpentelemetry.service.type "LoadBalancer") .Values.netdataOpentelemetry.service.externalTrafficPolicy }}
+  externalTrafficPolicy: {{ .Values.netdataOpentelemetry.service.externalTrafficPolicy }}
+  {{- if and (eq .Values.netdataOpentelemetry.service.externalTrafficPolicy "Local") .Values.netdataOpentelemetry.service.healthCheckNodePort }}
+  healthCheckNodePort: {{ .Values.netdataOpentelemetry.service.healthCheckNodePort }}
+  {{- end }}
+  {{- end }}
+  {{- if and (eq .Values.netdataOpentelemetry.service.type "ClusterIP") .Values.netdataOpentelemetry.service.clusterIP }}
+  clusterIP: {{ .Values.netdataOpentelemetry.service.clusterIP }}
+  {{- end }}
+  ports:
+    - port: {{ .Values.netdataOpentelemetry.service.port }}
+      targetPort: http
+      protocol: TCP
+      name: http
+  selector:
+    app: {{ template "netdata.name" . }}
+    release: {{ .Release.Name }}
+    role: otel
+{{- end }}

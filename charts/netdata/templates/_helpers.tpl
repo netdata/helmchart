@@ -160,3 +160,31 @@ Return the secret data for the k8s state configuration, when you setup storedTyp
 {{- end -}}
 {{- end -}}
 {{- end -}}
+
+{{/*
+Return the configmap data for the netdata OpenTelemetry configuration. Configmap is the default choice for storing configuration.
+*/}}
+{{- define "netdata.netdataOpentelemetry.configs.configmap" -}}
+{{- range $name, $config := .Values.netdataOpentelemetry.configs -}}
+{{- $found := false -}}
+{{- if and $config.enabled (eq $config.storedType "configmap") -}}
+{{- $found = true -}}
+{{- else if and $config.enabled (ne $config.storedType "secret") -}}
+{{- $found = true -}}
+{{- end -}}
+{{- if $found }}
+{{ $name }}: {{ tpl $config.data $ | toYaml | indent 4 | trim }}
+{{- end -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Return the secret data for the netdata OpenTelemetry configuration, when you setup storedType as a secret.
+*/}}
+{{- define "netdata.netdataOpentelemetry.configs.secret" -}}
+{{- range $name, $config := .Values.netdataOpentelemetry.configs -}}
+{{- if and $config.enabled (eq $config.storedType "secret") }}
+{{ $name }}: {{ tpl $config.data $ | b64enc }}
+{{- end -}}
+{{- end -}}
+{{- end -}}
