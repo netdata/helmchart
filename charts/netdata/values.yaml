@@ -89,8 +89,7 @@ restarter:
     tag: .auto
     pullPolicy: Always
   restartPolicy: Never
-  resources:
-    {}
+  resources: {}
     # limits:
     #  cpu: 500m
     #  memory: 64Mi
@@ -111,8 +110,7 @@ parent:
   hostname: "netdata-parent"
   enabled: true
   port: 19999
-  resources:
-    {}
+  resources: {}
     # limits:
     #  cpu: 4
     #  memory: 4096Mi
@@ -147,13 +145,11 @@ parent:
 
   priorityClassName: ""
 
-  env:
-    {}
+  env: {}
     ## To disable anonymous statistics:
     # DO_NOT_TRACK: 1
 
-  envFrom:
-    []
+  envFrom: []
     ## E.g. to read Netdata Cloud claim token from an existing secret "netdata" set this to:
     # - secretRef:
     #     name: netdata
@@ -250,14 +246,12 @@ parent:
 child:
   enabled: true
   port: "{{ .Values.parent.port }}"
-  updateStrategy:
-    {}
+  updateStrategy: {}
     # type: RollingUpdate
     # rollingUpdate:
     #   maxUnavailable: 1
 
-  resources:
-    {}
+  resources: {}
     # limits:
     #  cpu: 4
     #  memory: 4096Mi
@@ -367,13 +361,11 @@ child:
           - name: local
             url: http://127.0.0.1:10249/metrics
 
-  env:
-    {}
+  env: {}
     ## To disable anonymous statistics:
     # DO_NOT_TRACK: 1
 
-  envFrom:
-    []
+  envFrom: []
     ## E.g. to read Netdata Cloud claim token from an existing secret "netdata" set this to:
     # - secretRef:
     #     name: netdata
@@ -386,16 +378,14 @@ child:
     rooms: ""
     url: "https://api.netdata.cloud"
 
-  extraVolumeMounts:
-    []
+  extraVolumeMounts: []
     ## Additional volume mounts for netdata child
     ## E.g to mount all disks under / to be monitored via the diskspace plugin
     # - name: hostroot
     #   mountPath: /host/root
     #   readOnly: true
     #   mountPropagation: HostToContainer
-  extraVolumes:
-    []
+  extraVolumes: []
     ## Additional volumes for netdata child
     ## E.g to mount all disks under / to be monitored via the diskspace plugin
     # - name: hostroot
@@ -407,8 +397,7 @@ k8sState:
   enabled: true
   port: "{{ .Values.parent.port }}"
 
-  resources:
-    {}
+  resources: {}
     # limits:
     #  cpu: 4
     #  memory: 4096Mi
@@ -518,13 +507,11 @@ k8sState:
           - name: k8s_state
             update_every: 1
 
-  env:
-    {}
+  env: {}
     ## To disable anonymous statistics:
     # DO_NOT_TRACK: 1
 
-  envFrom:
-    []
+  envFrom: []
     ## E.g. to read Netdata Cloud claim token from an existing secret "netdata" set this to:
     # - secretRef:
     #     name: netdata
@@ -560,8 +547,7 @@ netdataOpentelemetry:
     ## Only to be used with type ClusterIP
     # clusterIP: 10.1.2.3
 
-  resources:
-    {}
+  resources: {}
     # limits:
     #  cpu: 4
     #  memory: 4096Mi
@@ -605,7 +591,7 @@ netdataOpentelemetry:
     enabled: true
     ## Set '-' as the storageclass to get a volume from the default storage class.
     storageclass: "-"
-    volumesize: 5Gi
+    volumesize: 10Gi
 
   configs:
     netdata:
@@ -631,6 +617,8 @@ netdataOpentelemetry:
           proc = no
           cgroups = no
           enable running new plugins = no
+          otel = yes
+          journal-viewer = yes
           slabinfo = no
           perf = no
           go.d = yes
@@ -652,14 +640,34 @@ netdataOpentelemetry:
           buffer size bytes = 1048576
           reconnect delay seconds = 5
           initial clock resync iterations = 60
+    otel:
+      enabled: true
+      path: /etc/netdata/otel.yaml
+      data: |
+        endpoint:
+          path: "0.0.0.0:4317"
+          tls_cert_path: null
+          tls_key_path: null
+          tls_ca_cert_path: null
+        metrics:
+          print_flattened: false
+          buffer_samples: 10
+          throttle_charts: 100
+          chart_configs_dir: otel.d/v1/metrics
+        logs:
+          journal_dir: otel/v1
+          size_of_journal_file: "100MB"
+          number_of_journal_files: 10
+          size_of_journal_files: "1GB"
+          duration_of_journal_files: "7 days"
+          duration_of_journal_file: "2 hours"
+          store_otlp_json: false
 
-  env:
-    {}
+  env: {}
     ## To disable anonymous statistics:
     # DO_NOT_TRACK: 1
 
-  envFrom:
-    []
+  envFrom: []
     ## E.g. to read Netdata Cloud claim token from an existing secret "netdata" set this to:
     # - secretRef:
     #     name: netdata
@@ -680,7 +688,7 @@ netdataOpentelemetry:
 # This is an optional component that allows to gather logs from k8s cluster.
 # If you already have an exporter of any kind, just point it to the netdata-otel service
 # Documentation: https://opentelemetry.io/docs/platforms/kubernetes/helm/collector/
-opentelemetryCollector:
+otel-collector:
   # Set to true to enable the OpenTelemetry Collector
   enabled: false
 

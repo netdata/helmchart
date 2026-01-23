@@ -37,9 +37,9 @@ spec:
   {{- end }}
   ports:
     - port: {{ .Values.netdataOpentelemetry.service.port }}
-      targetPort: http
+      targetPort: {{ .Values.netdataOpentelemetry.service.port }}
       protocol: TCP
-      name: http
+      name: otel
   selector:
     app: {{ template "netdata.name" . }}
     release: {{ .Release.Name }}
