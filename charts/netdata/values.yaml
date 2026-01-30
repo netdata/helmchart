@@ -403,7 +403,7 @@ parent:
     # -- Claim token
     # @section -- Parent
     token: ""
-    # -- Comma separated list of claim rooms IDs
+    # -- Comma separated list of claim rooms IDs. Empty value = All nodes room only
     # @section -- Parent
     rooms: ""
     url: "https://api.netdata.cloud"
@@ -619,7 +619,7 @@ child:
     # -- Claim token
     # @section -- Child
     token: ""
-    # -- Comma separated list of claim rooms IDs
+    # -- Comma separated list of claim rooms IDs. Empty value = All nodes room only
     # @section -- Child
     rooms: ""
     url: "https://api.netdata.cloud"
@@ -833,7 +833,7 @@ k8sState:
     # -- Claim token
     # @section -- K8s State
     token: ""
-    # -- Comma separated list of claim rooms IDs
+    # -- Comma separated list of claim rooms IDs. Empty value = All nodes room only
     # @section -- K8s State
     rooms: ""
     url: "https://api.netdata.cloud"
@@ -1006,8 +1006,6 @@ netdataOpentelemetry:
           apps = no
           python.d = no
           fping = no
-        [logs]
-          level = debug
     stream:
       enabled: true
       path: /etc/netdata/stream.conf
@@ -1065,7 +1063,7 @@ netdataOpentelemetry:
     # -- Claim token
     # @section -- Netdata OpenTelemetry
     token: ""
-    # -- Comma separated list of claim rooms IDs
+    # -- Comma separated list of claim rooms IDs. Empty value = All nodes room only
     # @section -- Netdata OpenTelemetry
     rooms: ""
     url: "https://api.netdata.cloud"
@@ -1079,7 +1077,7 @@ netdataOpentelemetry:
   extraVolumes: []
 
 # OpenTelemetry Collector subchart configuration
-# This is an optional component that allows to gather logs from k8s cluster.
+# This is an optional component that allows to gather logs from k8s cluster (in this configuration).
 # If you already have an exporter of any kind, just point it to the netdata-otel service
 # Documentation: https://opentelemetry.io/docs/platforms/kubernetes/helm/collector/
 otel-collector:
