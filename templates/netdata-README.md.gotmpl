@@ -1,0 +1,330 @@
+# Netdata Helm chart for Kubernetes deployments
+
+<a href="https://artifacthub.io/packages/search?repo=netdata" target="_blank" rel="noopener noreferrer"><img loading="lazy" src="https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/netdata" alt="Artifact HUB" class="img_node_modules-@docusaurus-theme-classic-lib-theme-MDXComponents-Img-styles-module"></img></a>
+
+{{ template "chart.versionBadge" . }}
+
+{{ template "chart.appVersionBadge" . }}
+
+_Based on the work of varyumin (https://github.com/varyumin/netdata)_.
+
+## Introduction
+
+This chart bootstraps a [Netdata](https://github.com/netdata/netdata) deployment on a [Kubernetes](http://kubernetes.io)
+cluster using the [Helm](https://helm.sh) package manager.
+
+By default, the chart installs:
+
+- A Netdata child pod on each node of a cluster, using a `Daemonset`
+- A Netdata k8s state monitoring pod on one node, using a `Deployment`. This virtual node is called `netdata-k8s-state`.
+- A Netdata parent pod on one node, using a `Deployment`. This virtual node is called `netdata-parent`.
+
+Disabled by default:
+
+- A Netdata restarter `CronJob`. Its main purpose is to automatically update Netdata when using nightly releases.
+
+The child pods and the state pod function as headless collectors that collect and forward
+all the metrics to the parent pod. The parent pod uses persistent volumes to store metrics and alarms, handle alarm
+notifications, and provide the Netdata UI to view metrics using an ingress controller.
+
+Please validate that the settings are suitable for your cluster before using them in production.
+
+## Prerequisites
+
+- A working cluster running Kubernetes v1.9 or newer.
+- The [kubectl](https://kubernetes.io/docs/reference/kubectl/overview/) command line tool,
+  within [one minor version difference](https://kubernetes.io/docs/tasks/tools/install-kubectl/#before-you-begin) of
+  your cluster, on an administrative system.
+- The [Helm package manager](https://helm.sh/) v3.8.0 or newer on the same administrative system.
+
+## Required Resources and Permissions
+
+Netdata is a comprehensive monitoring solution that requires specific access to host resources to function effectively. By design, monitoring solutions like Netdata need visibility into various system components to collect metrics and provide insights. The following mounts, privileges, and capabilities are essential for Netdata's operation, and applying restrictive security profiles or limiting these accesses may significantly impact functionality or render the monitoring solution ineffective.
+
+<details>
+<summary>See required mounts, privileges and RBAC resources</summary>
+
+### Required Mounts
+
+| Mount                                                      |             Type             |          Node           | Components & Descriptions                                                                                                                                                                                                                                                                                                                             |
+|:-----------------------------------------------------------|:----------------------------:|:-----------------------:|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `/`                                                        |           hostPath           |          child          | •  **diskspace.plugin**: Host mount points monitoring.                                                                                                                                                                                                                                                                                                |
+| `/proc`                                                    |           hostPath           |          child          | •  **proc.plugin**: Host system monitoring (CPU, memory, network interfaces, disks, etc.).                                                                                                                                                                                                                                                            |
+| `/sys`                                                     |           hostPath           |          child          | •  **cgroups.plugin**: Docker containers monitoring and name resolution.                                                                                                                                                                                                                                                                              |
+| `/var/log`                                                 |           hostPath           |          child          | • **systemd-journal.plugin**: Viewing, exploring and analyzing systemd journal logs.                                                                                                                                                                                                                                                                  |
+| `/etc/os-release`                                          |           hostPath           | child, parent, k8sState | •  **netdata**: Host info detection.                                                                                                                                                                                                                                                                                                                  |
+| `/etc/passwd`, `/etc/group`                                |           hostPath           |          child          | •  **apps.plugin**: Monitoring of host system resource usage by each user and user group.                                                                                                                                                                                                                                                             |
+| `{{ "{{" }} .Values.child.persistence.hostPath {{ "}}" }}/var/lib/netdata` | hostPath (DirectoryOrCreate) |          child          | •  **netdata**: Persistence of Netdata's /var/lib/netdata directory which contains netdata public unique ID and other files that should persist across container recreations. Without persistence, a new netdata unique ID is generated for each child on every container recreation, causing children to appear as new nodes on the Parent instance. |
+
+### Required Privileges and Capabilities
+
+| Privilege/Capability | Node  | Components & Descriptions                                                                                                                                                                                                                                                                                                                                                                      |
+|:---------------------|:-----:|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Host Network Mode    | child | • **proc.plugin**: Host system networking stack monitoring. <br/>• **go.d.plugin**: Monitoring applications running on the host and inside containers. <br/>• **local-listeners**: Discovering local services/applications. Map open (listening) ports to running services/applications. <br/>• **network-viewer.plugin**: Discovering all current network sockets and building a network-map. |
+| Host PID Mode        | child | • **cgroups.plugin**: Container network interfaces monitoring. Map virtual interfaces in the system namespace to interfaces inside containers.                                                                                                                                                                                                                                                 |
+| SYS_ADMIN            | child | • **cgroups.plugin**: Container network interfaces monitoring. Map virtual interfaces in the system namespace to interfaces inside containers. <br/>• **network-viewer.plugin**: Discovering all current network sockets and building a network-map.                                                                                                                                           |
+| SYS_PTRACE           | child | • **local-listeners**: Discovering local services/applications. Map open (listening) ports to running services/applications.                                                                                                                                                                                                                                                                   |
+
+### Required Kubernetes RBAC Resources
+
+| Resource           | Verbs            | Components & Descriptions                                                                                                                                                        |
+|:-------------------|:-----------------|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| pods               | get, list, watch | • **service discovery**: Used for discovering services. <br/>• **go.d/k8s_state**: Kubernetes state monitoring. <br/>• **netdata**: Used by cgroup-name.sh and get-kubernetes-labels.sh scripts. |
+| services           | get, list, watch | • **service discovery**: Used for discovering services.                                                                                                                          |
+| configmaps         | get, list, watch | • **service discovery**: Used for discovering services.                                                                                                                          |
+| secrets            | get, list, watch | • **service discovery**: Used for discovering services.                                                                                                                          |
+| nodes              | get, list, watch | • **go.d/k8s_state**: Kubernetes state monitoring.                                                                                                                               |
+| nodes/metrics      | get, list, watch | • **go.d/k8s_kubelet**: Used when querying Kubelet HTTPS endpoint.                                                                                                               |
+| nodes/proxy        | get, list, watch | • **netdata**: Used by cgroup-name.sh when querying Kubelet /pods endpoint.                                                                                                      |
+| deployments (apps) | get, list, watch | • **go.d/k8s_state**: Kubernetes state monitoring.                                                                                                                               |
+| cronjobs (batch)   | get, list, watch | • **go.d/k8s_state**: Kubernetes state monitoring.                                                                                                                               |
+| jobs (batch)       | get, list, watch | • **go.d/k8s_state**: Kubernetes state monitoring.                                                                                                                               |
+| namespaces         | get              | • **go.d/k8s_state**: Kubernetes state monitoring. <br/>• **netdata**: Used by cgroup-name.sh and get-kubernetes-labels.sh scripts.                                              |
+
+</details>
+
+## Installing the Helm chart
+
+You can install the Helm chart via our Helm repository, or by cloning this repository.
+
+### Installing via our Helm repository (recommended)
+
+To use Netdata's Helm repository, run the following commands:
+
+```bash
+helm repo add netdata https://netdata.github.io/helmchart/
+helm install netdata netdata/netdata
+```
+
+**See our [install Netdata on Kubernetes](https://github.com/netdata/netdata/blob/master/packaging/installer/methods/kubernetes.md)
+documentation for detailed installation and configuration instructions.** The remainder of this document assumes you
+installed the Helm chart by cloning this repository, and thus uses slightly different `helm install`/`helm upgrade`
+commands.
+
+### Install by cloning the repository
+
+Clone the repository locally.
+
+```console
+git clone https://github.com/netdata/helmchart.git netdata-helmchart
+```
+
+To install the chart with the release name `netdata`:
+
+```console
+helm install netdata ./netdata-helmchart/charts/netdata
+```
+
+The command deploys ingress on the Kubernetes cluster in the default configuration. The [configuration](#configuration)
+section lists the parameters that can be configured during installation.
+
+> **Tip**: List all releases using `helm list`.
+
+## Uninstalling the Chart
+
+To uninstall/delete the `my-release` deployment:
+
+```console
+ helm delete netdata
+```
+
+The command removes all the Kubernetes components associated with the chart and deletes the release.
+
+## Configuration
+
+The following table lists the configurable parameters of the netdata chart and their default values.
+
+{{ template "chart.valuesTableHtml" . }}
+
+Example to set the parameters from the command line:
+
+```console
+$ helm install ./netdata --name my-release \
+    --set notifications.slack.webhook_url=MySlackAPIURL \
+    --set notifications.slack.recipient="@MyUser MyChannel"
+```
+
+Another example, to set a different ingress controller.
+
+By default `kubernetes.io/ingress.class` set to use `nginx` as an ingress controller, but you can set `Traefik` as your
+ingress controller by setting `ingress.annotations`.
+
+```
+$ helm install ./netdata --name my-release \
+    --set ingress.annotations=kubernetes.io/ingress.class: traefik
+```
+
+Alternatively to passing each variable in the command line, a YAML file that specifies the values for the parameters can
+be provided while installing the chart. For example,
+
+```console
+$ helm install ./netdata --name my-release -f values.yaml
+```
+
+> **Tip**: You can use the default values.yaml
+
+> **Note:**: To opt out of anonymous statistics, set the `DO_NOT_TRACK`
+> environment variable to non-zero or non-empty value in
+`parent.env` / `child.env` configuration (e.g.,: `DO_NOT_TRACK: 1`)
+> or uncomment the line in `values.yml`.
+
+### Configuration files
+
+| Parameter                         | Description                                                                           | Default                                                                                                                       |
+|-----------------------------------|---------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------|
+| `parent.configs.netdata`          | Contents of the parent's `netdata.conf`                                               | `memory mode = dbengine`                                                                                                      |
+| `parent.configs.stream`           | Contents of the parent's `stream.conf`                                                | Store child data, accept all connections, and issue alarms for child data.                                                    |
+| `parent.configs.health`           | Contents of `health_alarm_notify.conf`                                                | Email disabled, a sample of the required settings for Slack notifications                                                     |
+| `parent.configs.exporting`        | Contents of `exporting.conf`                                                          | Disabled                                                                                                                      |
+| `k8sState.configs.netdata`        | Contents of  `netdata.conf`                                                           | No persistent storage, no alarms                                                                                              |
+| `k8sState.configs.stream`         | Contents of `stream.conf`                                                             | Send metrics to the parent at netdata:{{ "{{" }} service.port {{ "}}" }}                                                                      |
+| `k8sState.configs.exporting`      | Contents of `exporting.conf`                                                          | Disabled                                                                                                                      |
+| `k8sState.configs.go.d`           | Contents of `go.d.conf`                                                               | Only k8s_state enabled                                                                                                        |
+| `k8sState.configs.go.d-k8s_state` | Contents of `go.d/k8s_state.conf`                                                     | k8s_state configuration                                                                                                       |
+| `child.configs.netdata`           | Contents of the child's `netdata.conf`                                                | No persistent storage, no alarms, no UI                                                                                       |
+| `child.configs.stream`            | Contents of the child's `stream.conf`                                                 | Send metrics to the parent at netdata:{{ "{{" }} service.port {{ "}}" }}                                                                      |
+| `child.configs.exporting`         | Contents of the child's `exporting.conf`                                              | Disabled                                                                                                                      |
+| `child.configs.kubelet`           | Contents of the child's `go.d/k8s_kubelet.conf` that drives the kubelet collector     | Update metrics every sec, do not retry to detect the endpoint, look for the kubelet metrics at http://127.0.0.1:10255/metrics |
+| `child.configs.kubeproxy`         | Contents of the child's `go.d/k8s_kubeproxy.conf` that drives the kubeproxy collector | Update metrics every sec, do not retry to detect the endpoint, look for the coredns metrics at http://127.0.0.1:10249/metrics |
+
+To deploy additional netdata user configuration files, you will need to add similar entries to either
+the `parent.configs` or the `child.configs` arrays. Regardless of whether you add config files that reside directly
+under `/etc/netdata` or in a subdirectory such as `/etc/netdata/go.d`, you can use the already provided configurations
+as reference. For reference, the `parent.configs` the array includes an `example` alarm that would get triggered if the
+python.d `example` module was enabled. Whenever you pass the sensitive data to your configuration like the database
+credential, you can take an option to put it into the Kubernetes Secret by specifying `storedType: secret` in the
+selected configuration. By default, all the configurations will be placed in the Kubernetes configmap.
+
+Note that in this chart's default configuration, the parent performs the health checks and triggers alarms but collects little data. As a result, the only other configuration files that might make sense to add to the parent are
+the alarm and alarm template definitions, under `/etc/netdata/health.d`.
+
+> **Tip**: Do pay attention to the indentation of the config file contents, as it matters for the parsing of the `yaml` file. Note that the first line under `var: |`
+> must be indented with two more spaces relative to the preceding line:
+
+```
+  data: |-
+    config line 1 #Need those two spaces
+        config line 2 #No problem indenting more here
+```
+
+### Persistent volumes
+
+There are two different persistent volumes on `parent` node by design (not counting any Configmap/Secret mounts). Both
+can be used, but they don't have to be. Keep in mind that whenever persistent volumes for `parent` are not used, all the
+data for specific PV is lost in case of pod removal.
+
+1. database (`/var/cache/netdata`) - all metrics data is stored here. Performance of this volume affects query timings.
+2. alarms (`/var/lib/netdata`) - alarm log, if not persistent pod recreation will result in parent appearing as a new
+   node in `netdata.cloud` (due to `./registry/` and `./cloud.d/` being removed).
+
+In case of `child` instance it is a bit simpler. By default, hostPath: `/var/lib/netdata-k8s-child` is mounted on child
+in: `/var/lib/netdata`. You can disable it, but this option is pretty much required in a real life scenario, as without
+it each pod deletion will result in a new replication node for a parent.
+
+### Service discovery and supported services
+
+Netdata's [service discovery](https://github.com/netdata/agent-service-discovery/), which is installed as part of the
+Helm chart installation, finds what services are running on a cluster's pods, converts that into configuration files,
+and exports them, so they can be monitored.
+
+#### Applications
+
+Service discovery currently supports the following applications via their associated collector:
+
+- [ActiveMQ](https://github.com/netdata/netdata/blob/master/src/go/plugin/go.d/collector/activemq/README.md)
+- [Apache](https://github.com/netdata/netdata/blob/master/src/go/plugin/go.d/collector/apache/README.md)
+- [Bind](https://github.com/netdata/netdata/blob/master/src/go/plugin/go.d/collector/bind/README.md)
+- [CockroachDB](https://github.com/netdata/netdata/blob/master/src/go/plugin/go.d/collector/cockroachdb/README.md)
+- [Consul](https://github.com/netdata/netdata/blob/master/src/go/plugin/go.d/collector/consul/README.md)
+- [CoreDNS](https://github.com/netdata/netdata/blob/master/src/go/plugin/go.d/collector/coredns/README.md)
+- [Elasticsearch](https://github.com/netdata/netdata/blob/master/src/go/plugin/go.d/collector/elasticsearch/README.md)
+- [Fluentd](https://github.com/netdata/netdata/blob/master/src/go/plugin/go.d/collector/fluentd/README.md)
+- [FreeRADIUS](https://github.com/netdata/netdata/blob/master/src/go/plugin/go.d/collector/freeradius/README.md)
+- [HDFS](https://github.com/netdata/netdata/blob/master/src/go/plugin/go.d/collector/hdfs/README.md)
+- [Lighttpd](https://github.com/netdata/netdata/blob/master/src/go/plugin/go.d/collector/lighttpd/README.md)
+- [Logstash](https://github.com/netdata/netdata/blob/master/src/go/plugin/go.d/collector/logstash/README.md)
+- [MySQL](https://github.com/netdata/netdata/blob/master/src/go/plugin/go.d/collector/mysql/README.md)
+- [NGINX](https://github.com/netdata/netdata/blob/master/src/go/plugin/go.d/collector/nginx/README.md)
+- [OpenVPN](https://github.com/netdata/netdata/blob/master/src/go/plugin/go.d/collector/openvpn/README.md)
+- [PHP-FPM](https://github.com/netdata/netdata/blob/master/src/go/plugin/go.d/collector/phpfpm/README.md)
+- [RabbitMQ](https://github.com/netdata/netdata/blob/master/src/go/plugin/go.d/collector/rabbitmq/README.md)
+- [Tengine](https://github.com/netdata/netdata/blob/master/src/go/plugin/go.d/collector/tengine/README.md)
+- [Unbound](https://github.com/netdata/netdata/blob/master/src/go/plugin/go.d/collector/unbound/README.md)
+- [VerneMQ](https://github.com/netdata/netdata/blob/master/src/go/plugin/go.d/collector/vernemq/README.md)
+- [ZooKeeper](https://github.com/netdata/netdata/blob/master/src/go/plugin/go.d/collector/zookeeper/README.md)
+
+#### Prometheus endpoints
+
+Service discovery supports Prometheus endpoints via
+the [Prometheus](https://github.com/netdata/netdata/blob/master/src/go/plugin/go.d/collector/prometheus/README.md) collector.
+
+Annotations on pods allow a fine control of the scraping process:
+
+- `prometheus.io/scrape`: The default configuration will scrape all pods and, if set to false, this annotation excludes
+  the pod from the scraping process.
+- `prometheus.io/path`: If the metrics path is not _/metrics_, define it with this annotation.
+- `prometheus.io/port`: Scrape the pod on the indicated port instead of the pod's declared ports.
+
+#### Configure service discovery
+
+If your cluster runs services on non-default ports or uses non-default names, you may need to configure service
+discovery to start collecting metrics from your services. You have to edit
+the [default ConfigMap](https://github.com/netdata/helmchart/blob/master/sdconfig/child.yml) that is shipped with the
+Helmchart and deploy that to your cluster.
+
+First, copy `netdata-helmchart/sdconfig/child.yml` to a new location outside the `netdata-helmchart` directory. The
+destination can be anywhere you like, but the following examples assume it resides next to the `netdata-helmchart`
+directory.
+
+```bash
+cp netdata-helmchart/sdconfig/child.yml .
+```
+
+Edit the new `child.yml` file according to your needs. See
+the [Helm chart configuration](https://github.com/netdata/helmchart#configuration) and the file itself for details. You
+can then run
+`helm install`/`helm upgrade` with the `--set-file` argument to use your configured `child.yml` file instead of the
+default, changing the path if you copied it elsewhere.
+
+```bash
+helm install --set-file sd.child.configmap.from.value=./child.yml netdata ./netdata-helmchart/charts/netdata
+helm upgrade --set-file sd.child.configmap.from.value=./child.yml netdata ./netdata-helmchart/charts/netdata
+```
+
+Now that you pushed an edited ConfigMap to your cluster, service discovery should find and set up metrics collection
+from your non-default service.
+
+### Custom pod labels and annotations
+
+Occasionally, you will want to add
+specific [labels](https://kubernetes.io/docs/concepts/overview/working-with-objects/labels/)
+and [annotations](https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/) to the parent and/or
+child pods. You might want to do this to tell other applications on the cluster how to treat your pods, or simply to
+categorize applications on your cluster. You can label and annotate the parent and child pods by using the `podLabels`
+and `podAnnotations` dictionaries under the `parent` and `child` objects, respectively.
+
+For example, suppose you're installing Netdata on all your database nodes, and you'd like the child pods to be labeled
+with `workload: database` so that you're able to recognize this.
+
+At the same time, say you've configured [chaoskube](https://github.com/helm/charts/tree/master/stable/chaoskube) to kill
+all pods annotated with `chaoskube.io/enabled: true`, and you'd like chaoskube to be enabled for the parent pod but not
+the childs.
+
+You would do this by installing as:
+
+```console
+$ helm install \
+  --set child.podLabels.workload=database \
+  --set 'child.podAnnotations.chaoskube\.io/enabled=false' \
+  --set 'parent.podAnnotations.chaoskube\.io/enabled=true' \
+  netdata ./netdata-helmchart/charts/netdata
+```
+
+## Contributing
+
+If you want to contribute, we're humbled!
+
+- Take a look at our [Contributing Guidelines](https://github.com/netdata/.github/blob/main/CONTRIBUTING.md).
+- This repository is under the [Netdata Code Of Conduct](https://github.com/netdata/.github/blob/main/CODE_OF_CONDUCT.md).
+- Chat about your contribution and let us help you in
+  our [forum](https://community.netdata.cloud/c/agent-development/9)!
