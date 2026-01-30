@@ -134,258 +134,1984 @@ The command removes all the Kubernetes components associated with the chart and 
 
 The following table lists the configurable parameters of the netdata chart and their default values.
 
-### General settings
-
-| Key | Type | Default | Description |
-|-----|------|---------|-------------|
-| replicaCount | int | `1` | Number of `replicas` for the parent netdata `Deployment` |
-| deploymentStrategy | object | `{"type":"Recreate"}` | Deployment strategy for pod deployments. Recreate is the safest value. |
-| imagePullSecrets | list | `[]` | An optional list of references to secrets in the same namespace to use for pulling any of the images |
-| image.repository | string | `"netdata/netdata"` | Container image repository |
-| image.tag | string | `"{{ .Chart.AppVersion }}"` | Container image tag |
-| image.pullPolicy | string | `"Always"` | Container image pull policy |
-| initContainersImage.repository | string | `"alpine"` | Init containers' image repository |
-| initContainersImage.tag | string | `"latest"` | Init containers' image tag |
-| initContainersImage.pullPolicy | string | `"Always"` | Init containers' image pull policy |
-| sysctlInitContainer.enabled | bool | `false` | Enable an init container to modify Kernel settings |
-| sysctlInitContainer.command | list | `[]` | sysctl init container command to execute |
-| sysctlInitContainer.resources | object | `{}` | sysctl Init container CPU/Memory resource requests/limits |
-| service.type | string | `"ClusterIP"` | Parent service type |
-| service.port | int | `19999` | Parent service port |
-| service.annotations | object | `{}` | Additional annotations to add to the service |
-| service.loadBalancerIP | string | `""` | Static LoadBalancer IP, only to be used with service type=LoadBalancer |
-| service.loadBalancerSourceRanges | list | `[]` | List of allowed IPs for LoadBalancer |
-| service.externalTrafficPolicy | string | `""` | Denotes if this Service desires to route external traffic to node-local or cluster-wide endpoints |
-| service.healthCheckNodePort | string | `nil` | Specifies the health check node port (only to be used with type LoadBalancer and external traffic policy Local) |
-| service.clusterIP | string | `""` | Specific cluster IP when service type is cluster IP. Use `None` for headless service |
-| ingress.enabled | bool | `true` | Create Ingress to access the netdata web UI |
-| ingress.annotations | object | `{"kubernetes.io/ingress.class":"nginx","kubernetes.io/tls-acme":"true"}` | Associate annotations to the Ingress |
-| ingress.path | string | `"/"` | URL path for the ingress. If changed, a proxy server needs to be configured in front of netdata to translate path from a custom one to a `/` |
-| ingress.pathType | string | `"Prefix"` | pathType for your ingress controller. Default value is correct for nginx. If you use your own ingress controller, check the correct value |
-| ingress.hosts | list | `["netdata.k8s.local"]` | URL hostnames for the ingress (they need to resolve to the external IP of the ingress controller) |
-| rbac.create | bool | `true` | if true, create & use RBAC resources |
-| rbac.pspEnabled | bool | `true` | Specifies whether a PodSecurityPolicy should be created |
-| serviceAccount.create | bool | `true` | if true, create a service account |
-| serviceAccount.name | string | `"netdata"` | The name of the service account to use. If not set and create is true, a name is generated using the fullname template |
-| restarter.enabled | bool | `false` | Install CronJob to update Netdata Pods |
-| restarter.schedule | string | `"00 06 * * *"` | The schedule in Cron format |
-| restarter.image.repository | string | `"rancher/kubectl"` | Container image repo |
-| restarter.image.tag | string | `".auto"` | Container image tag. If `.auto`, the image tag version of the rancher/kubectl will reflect the Kubernetes cluster version |
-| restarter.image.pullPolicy | string | `"Always"` | Container image pull policy |
-| restarter.restartPolicy | string | `"Never"` | Container restart policy |
-| restarter.resources | object | `{}` | Container resources |
-| restarter.concurrencyPolicy | string | `"Forbid"` | Specifies how to treat concurrent executions of a job |
-| restarter.startingDeadlineSeconds | int | `60` | Optional deadline in seconds for starting the job if it misses scheduled time for any reason |
-| restarter.successfulJobsHistoryLimit | int | `3` | The number of successful finished jobs to retain |
-| restarter.failedJobsHistoryLimit | int | `3` | The number of failed finished jobs to retain |
-| notifications.slack.webhook_url | string | `""` | Slack webhook URL |
-| notifications.slack.recipient | string | `""` | Slack recipient list |
-
-### Service Discovery
-
-| Key | Type | Default | Description |
-|-----|------|---------|-------------|
-| sd.image.repository | string | `"netdata/agent-sd"` | Container image repository |
-| sd.image.tag | string | `"v0.2.10"` | Container image tag |
-| sd.image.pullPolicy | string | `"Always"` | Container image pull policy |
-| sd.child.enabled | bool | `true` | Add service-discovery sidecar container to the netdata child pod definition |
-| sd.child.configmap.name | string | `"netdata-child-sd-config-map"` | Child service-discovery ConfigMap name |
-| sd.child.configmap.key | string | `"config.yml"` | Child service-discovery ConfigMap key |
-| sd.child.configmap.from.file | string | `""` | File to use for child service-discovery configuration generation |
-| sd.child.configmap.from.value | object | `{}` | Value to use for child service-discovery configuration generation |
-| sd.child.resources | object | `{"limits":{"cpu":"50m","memory":"150Mi"},"requests":{"cpu":"50m","memory":"100Mi"}}` | Child service-discovery container CPU/Memory resource requests/limits |
-
-### Parent
-
-| Key | Type | Default | Description |
-|-----|------|---------|-------------|
-| parent.hostname | string | `"netdata-parent"` | Parent node hostname |
-| parent.enabled | bool | `true` | Install parent Deployment to receive metrics from children nodes |
-| parent.port | int | `19999` | Parent's listen port |
-| parent.resources | object | `{}` | Resources for the parent deployment |
-| parent.livenessProbe.initialDelaySeconds | int | `0` | Number of seconds after the container has started before liveness probes are initiated |
-| parent.livenessProbe.failureThreshold | int | `3` | When a liveness probe fails, Kubernetes will try failureThreshold times before giving up. Giving up the liveness probe means restarting the container |
-| parent.livenessProbe.periodSeconds | int | `30` | How often (in seconds) to perform the liveness probe |
-| parent.livenessProbe.successThreshold | int | `1` | Minimum consecutive successes for the liveness probe to be considered successful after having failed |
-| parent.livenessProbe.timeoutSeconds | int | `1` | Number of seconds after which the liveness probe times out |
-| parent.readinessProbe.initialDelaySeconds | int | `0` | Number of seconds after the container has started before readiness probes are initiated |
-| parent.readinessProbe.failureThreshold | int | `3` | When a readiness probe fails, Kubernetes will try failureThreshold times before giving up. Giving up the readiness probe means marking the Pod Unready |
-| parent.readinessProbe.periodSeconds | int | `30` | How often (in seconds) to perform the readiness probe |
-| parent.readinessProbe.successThreshold | int | `1` | Minimum consecutive successes for the readiness probe to be considered successful after having failed |
-| parent.readinessProbe.timeoutSeconds | int | `1` | Number of seconds after which the readiness probe times out |
-| parent.securityContext.runAsUser | int | `201` | The UID to run the container process |
-| parent.securityContext.runAsGroup | int | `201` | The GID to run the container process |
-| parent.securityContext.fsGroup | int | `201` | The supplementary group for setting permissions on volumes |
-| parent.terminationGracePeriodSeconds | int | `300` | Duration in seconds the pod needs to terminate gracefully |
-| parent.nodeSelector | object | `{}` | Node selector for the parent deployment |
-| parent.tolerations | list | `[]` | Tolerations settings for the parent deployment |
-| parent.affinity | object | `{}` | Affinity settings for the parent deployment |
-| parent.priorityClassName | string | `""` | Pod priority class name for the parent deployment |
-| parent.env | object | `{}` | Set environment parameters for the parent deployment |
-| parent.envFrom | list | `[]` | Set environment parameters for the parent deployment from ConfigMap and/or Secrets |
-| parent.podLabels | object | `{}` | Additional labels to add to the parent pods |
-| parent.podAnnotations | object | `{}` | Additional annotations to add to the parent pods |
-| parent.dnsPolicy | string | `"Default"` | DNS policy for pod |
-| parent.database.persistence | bool | `true` | Whether the parent should use a persistent volume for the DB |
-| parent.database.storageclass | string | `"-"` | The storage class for the persistent volume claim of the parent's database store, mounted to `/var/cache/netdata` |
-| parent.database.volumesize | string | `"5Gi"` | The storage space for the PVC of the parent database |
-| parent.alarms.persistence | bool | `true` | Whether the parent should use a persistent volume for the alarms log |
-| parent.alarms.storageclass | string | `"-"` | The storage class for the persistent volume claim of the parent's alarm log, mounted to `/var/lib/netdata` |
-| parent.alarms.volumesize | string | `"1Gi"` | The storage space for the PVC of the parent alarm log |
-| parent.configs | object | See values.yaml for default configuration | Manage custom parent's configs |
-| parent.claiming.enabled | bool | `false` | Enable parent claiming for netdata cloud |
-| parent.claiming.token | string | `""` | Claim token |
-| parent.claiming.rooms | string | `""` | Comma separated list of claim rooms IDs. Empty value = All nodes room only |
-| parent.extraVolumeMounts | list | `[]` | Additional volumeMounts to add to the parent pods |
-| parent.extraVolumes | list | `[]` | Additional volumes to add to the parent pods |
-| parent.extraInitContainers | list | `[]` | Additional init containers to add to the parent pods |
-
-### Child
-
-| Key | Type | Default | Description |
-|-----|------|---------|-------------|
-| child.enabled | bool | `true` | Install child DaemonSet to gather data from nodes |
-| child.port | string | `"{{ .Values.parent.port }}"` | Children's listen port |
-| child.updateStrategy | object | `{}` | An update strategy to replace existing DaemonSet pods with new pods |
-| child.resources | object | `{}` | Resources for the child DaemonSet |
-| child.livenessProbe.initialDelaySeconds | int | `0` | Number of seconds after the container has started before liveness probes are initiated |
-| child.livenessProbe.failureThreshold | int | `3` | When a liveness probe fails, Kubernetes will try failureThreshold times before giving up. Giving up the liveness probe means restarting the container |
-| child.livenessProbe.successThreshold | int | `1` | Minimum consecutive successes for the liveness probe to be considered successful after having failed |
-| child.livenessProbe.timeoutSeconds | int | `1` | Number of seconds after which the liveness probe times out |
-| child.readinessProbe.initialDelaySeconds | int | `0` | Number of seconds after the container has started before readiness probes are initiated |
-| child.readinessProbe.failureThreshold | int | `3` | When a readiness probe fails, Kubernetes will try failureThreshold times before giving up. Giving up the readiness probe means marking the Pod Unready |
-| child.readinessProbe.periodSeconds | int | `30` | How often (in seconds) to perform the readiness probe |
-| child.readinessProbe.successThreshold | int | `1` | Minimum consecutive successes for the readiness probe to be considered successful after having failed |
-| child.readinessProbe.timeoutSeconds | int | `1` | Number of seconds after which the readiness probe times out |
-| child.terminationGracePeriodSeconds | int | `30` | Duration in seconds the pod needs to terminate gracefully |
-| child.nodeSelector | object | `{}` | Node selector for the child daemonsets |
-| child.tolerations | list | `[{"effect":"NoSchedule","operator":"Exists"}]` | Tolerations settings for the child daemonsets |
-| child.affinity | object | `{}` | Affinity settings for the child daemonsets |
-| child.priorityClassName | string | `""` | Pod priority class name for the child daemonsets |
-| child.podLabels | object | `{}` | Additional labels to add to the child pods |
-| child.podAnnotationAppArmor.enabled | bool | `true` | Whether or not to include the AppArmor security annotation |
-| child.podAnnotations | object | `{}` | Additional annotations to add to the child pods |
-| child.hostNetwork | bool | `true` | Usage of host networking and ports |
-| child.dnsPolicy | string | `"ClusterFirstWithHostNet"` | DNS policy for pod. Should be `ClusterFirstWithHostNet` if `child.hostNetwork = true` |
-| child.persistence.enabled | bool | `true` | Whether or not to persist `/var/lib/netdata` in the `child.persistence.hostPath` |
-| child.persistence.hostPath | string | `"/var/lib/netdata-k8s-child"` | Host node directory for storing child instance data |
-| child.podsMetadata.useKubelet | bool | `false` | Send requests to the Kubelet /pods endpoint instead of Kubernetes API server to get pod metadata |
-| child.podsMetadata.kubeletUrl | string | `"https://localhost:10250"` | Kubelet URL |
-| child.configs | object | See values.yaml for default configuration | Manage custom child's configs |
-| child.env | object | `{}` | Set environment parameters for the child daemonset |
-| child.envFrom | list | `[]` | Set environment parameters for the child daemonset from ConfigMap and/or Secrets |
-| child.claiming.enabled | bool | `false` | Enable child claiming for netdata cloud |
-| child.claiming.token | string | `""` | Claim token |
-| child.claiming.rooms | string | `""` | Comma separated list of claim rooms IDs. Empty value = All nodes room only |
-| child.extraVolumeMounts | list | `[]` | Additional volumeMounts to add to the child pods |
-| child.extraVolumes | list | `[]` | Additional volumes to add to the child pods |
-
-### Child1.0
-
-| Key | Type | Default | Description |
-|-----|------|---------|-------------|
-| child.livenessProbe.periodSeconds | int | `30` | How often (in seconds) to perform the liveness probe |
-
-### K8s State
-
-| Key | Type | Default | Description |
-|-----|------|---------|-------------|
-| k8sState.hostname | string | `"netdata-k8s-state"` | K8s state node hostname |
-| k8sState.enabled | bool | `true` | Install this Deployment to gather data from K8s cluster |
-| k8sState.port | string | `"{{ .Values.parent.port }}"` | Listen port |
-| k8sState.resources | object | `{}` | Compute resources required by this Deployment |
-| k8sState.livenessProbe.initialDelaySeconds | int | `0` | Number of seconds after the container has started before liveness probes are initiated |
-| k8sState.livenessProbe.failureThreshold | int | `3` | When a liveness probe fails, Kubernetes will try failureThreshold times before giving up. Giving up the liveness probe means restarting the container |
-| k8sState.livenessProbe.periodSeconds | int | `30` | How often (in seconds) to perform the liveness probe |
-| k8sState.livenessProbe.successThreshold | int | `1` | Minimum consecutive successes for the liveness probe to be considered successful after having failed |
-| k8sState.livenessProbe.timeoutSeconds | int | `1` | Number of seconds after which the liveness probe times out |
-| k8sState.readinessProbe.initialDelaySeconds | int | `0` | Number of seconds after the container has started before readiness probes are initiated |
-| k8sState.readinessProbe.failureThreshold | int | `3` | When a readiness probe fails, Kubernetes will try failureThreshold times before giving up. Giving up the readiness probe means marking the Pod Unready |
-| k8sState.readinessProbe.periodSeconds | int | `30` | How often (in seconds) to perform the readiness probe |
-| k8sState.readinessProbe.successThreshold | int | `1` | Minimum consecutive successes for the readiness probe to be considered successful after having failed |
-| k8sState.readinessProbe.timeoutSeconds | int | `1` | Number of seconds after which the readiness probe times out |
-| k8sState.terminationGracePeriodSeconds | int | `30` | Duration in seconds the pod needs to terminate gracefully |
-| k8sState.nodeSelector | object | `{}` | Node selector |
-| k8sState.tolerations | list | `[]` | Tolerations settings |
-| k8sState.affinity | object | `{}` | Affinity settings |
-| k8sState.priorityClassName | string | `""` | Pod priority class name |
-| k8sState.podLabels | object | `{}` | Additional labels |
-| k8sState.podAnnotationAppArmor.enabled | bool | `true` | Whether or not to include the AppArmor security annotation |
-| k8sState.podAnnotations | object | `{}` | Additional annotations |
-| k8sState.dnsPolicy | string | `"ClusterFirstWithHostNet"` | DNS policy for pod |
-| k8sState.persistence.enabled | bool | `true` | Whether should use a persistent volume for `/var/lib/netdata` |
-| k8sState.persistence.storageclass | string | `"-"` | The storage class for the persistent volume claim of `/var/lib/netdata` |
-| k8sState.persistence.volumesize | string | `"1Gi"` | The storage space for the PVC of `/var/lib/netdata` |
-| k8sState.env | object | `{}` | Set environment parameters |
-| k8sState.envFrom | list | `[]` | Set environment parameters from ConfigMap and/or Secrets |
-| k8sState.configs | object | See values.yaml for default configuration | Manage custom configs |
-| k8sState.claiming.enabled | bool | `false` | Enable claiming for netdata cloud |
-| k8sState.claiming.token | string | `""` | Claim token |
-| k8sState.claiming.rooms | string | `""` | Comma separated list of claim rooms IDs. Empty value = All nodes room only |
-| k8sState.extraVolumeMounts | list | `[]` | Additional volumeMounts to add to the k8sState pods |
-| k8sState.extraVolumes | list | `[]` | Additional volumes to add to the k8sState pods |
-
-### Netdata OpenTelemetry
-
-| Key | Type | Default | Description |
-|-----|------|---------|-------------|
-| netdataOpentelemetry.enabled | bool | `false` | Enable the Netdata OpenTelemetry Deployment |
-| netdataOpentelemetry.hostname | string | `"netdata-otel"` | Hostname for the Netdata OpenTelemetry instance |
-| netdataOpentelemetry.port | string | `"{{ .Values.parent.port }}"` | Listen port |
-| netdataOpentelemetry.service.type | string | `"ClusterIP"` | Service type |
-| netdataOpentelemetry.service.port | int | `4317` | Service port |
-| netdataOpentelemetry.service.annotations | object | `{}` | Service annotations |
-| netdataOpentelemetry.resources | object | `{}` | Compute resources required by this Deployment |
-| netdataOpentelemetry.livenessProbe.initialDelaySeconds | int | `0` | Number of seconds after the container has started before liveness probes are initiated |
-| netdataOpentelemetry.livenessProbe.failureThreshold | int | `3` | When a liveness probe fails, Kubernetes will try failureThreshold times before giving up |
-| netdataOpentelemetry.livenessProbe.periodSeconds | int | `30` | How often (in seconds) to perform the liveness probe |
-| netdataOpentelemetry.livenessProbe.successThreshold | int | `1` | Minimum consecutive successes for the liveness probe to be considered successful after having failed |
-| netdataOpentelemetry.livenessProbe.timeoutSeconds | int | `1` | Number of seconds after which the liveness probe times out |
-| netdataOpentelemetry.readinessProbe.initialDelaySeconds | int | `0` | Number of seconds after the container has started before readiness probes are initiated |
-| netdataOpentelemetry.readinessProbe.failureThreshold | int | `3` | When a readiness probe fails, Kubernetes will try failureThreshold times before giving up |
-| netdataOpentelemetry.readinessProbe.periodSeconds | int | `30` | How often (in seconds) to perform the readiness probe |
-| netdataOpentelemetry.readinessProbe.successThreshold | int | `1` | Minimum consecutive successes for the readiness probe to be considered successful after having failed |
-| netdataOpentelemetry.readinessProbe.timeoutSeconds | int | `1` | Number of seconds after which the readiness probe times out |
-| netdataOpentelemetry.terminationGracePeriodSeconds | int | `30` | Duration in seconds the pod needs to terminate gracefully |
-| netdataOpentelemetry.nodeSelector | object | `{}` | Node selector |
-| netdataOpentelemetry.tolerations | list | `[]` | Tolerations settings |
-| netdataOpentelemetry.affinity | object | `{}` | Affinity settings |
-| netdataOpentelemetry.priorityClassName | string | `""` | Pod priority class name |
-| netdataOpentelemetry.podLabels | object | `{}` | Additional labels |
-| netdataOpentelemetry.podAnnotationAppArmor.enabled | bool | `true` | Whether or not to include the AppArmor security annotation |
-| netdataOpentelemetry.podAnnotations | object | `{}` | Additional annotations |
-| netdataOpentelemetry.dnsPolicy | string | `"Default"` | DNS policy for pod |
-| netdataOpentelemetry.persistence.enabled | bool | `true` | Whether should use a persistent volume |
-| netdataOpentelemetry.persistence.storageclass | string | `"-"` | The storage class for the persistent volume claim |
-| netdataOpentelemetry.persistence.volumesize | string | `"10Gi"` | The storage space for the PVC |
-| netdataOpentelemetry.configs | object | See values.yaml for default configuration | Manage custom configs |
-| netdataOpentelemetry.env | object | `{}` | Set environment parameters |
-| netdataOpentelemetry.envFrom | list | `[]` | Set environment parameters from ConfigMap and/or Secrets |
-| netdataOpentelemetry.claiming.enabled | bool | `false` | Enable claiming for netdata cloud |
-| netdataOpentelemetry.claiming.token | string | `""` | Claim token |
-| netdataOpentelemetry.claiming.rooms | string | `""` | Comma separated list of claim rooms IDs. Empty value = All nodes room only |
-| netdataOpentelemetry.extraVolumeMounts | list | `[]` | Additional volumeMounts |
-| netdataOpentelemetry.extraVolumes | list | `[]` | Additional volumes |
-
-### OpenTelemetry Collector
-
-| Key | Type | Default | Description |
-|-----|------|---------|-------------|
-| otel-collector.enabled | bool | `false` | Set to true to enable the OpenTelemetry Collector |
-| otel-collector.mode | string | `"daemonset"` | Deployment mode: daemonset, deployment, or statefulset |
-| otel-collector.image.repository | string | `"otel/opentelemetry-collector-k8s"` | Image repository |
-| otel-collector.presets.kubernetesAttributes.enabled | bool | `true` | Enable Kubernetes attributes collection |
-| otel-collector.presets.logsCollection.enabled | bool | `true` | Enable logs collection from Kubernetes pods |
-| otel-collector.presets.logsCollection.includeCollectorLogs | bool | `false` | Include collector logs in the collection |
-| otel-collector.config | object | `{"exporters":{"otlp":{"endpoint":"{{ .Release.Name }}-otel:4317","retry_on_failure":{"enabled":true,"initial_interval":"5s","max_elapsed_time":"300s","max_interval":"30s"},"sending_queue":{"enabled":true,"num_consumers":10,"queue_size":1000},"tls":{"insecure":true}}},"processors":{"batch":{"send_batch_max_size":1500,"send_batch_size":1000,"timeout":"10s"},"k8sattributes":{"auth_type":"serviceAccount","extract":{"annotations":[{"from":"pod","key":"app","tag_name":"annotation.app"}],"labels":[{"from":"pod","key":"app","tag_name":"app"},{"from":"pod","key":"component","tag_name":"component"}],"metadata":["k8s.namespace.name","k8s.deployment.name","k8s.statefulset.name","k8s.daemonset.name","k8s.cronjob.name","k8s.job.name","k8s.node.name","k8s.pod.name","k8s.pod.uid","k8s.pod.start_time","k8s.container.name"]},"passthrough":false,"pod_association":[{"sources":[{"from":"resource_attribute","name":"k8s.pod.ip"}]},{"sources":[{"from":"resource_attribute","name":"k8s.pod.uid"}]},{"sources":[{"from":"connection"}]}]},"memory_limiter":{"check_interval":"5s","limit_percentage":80,"spike_limit_percentage":25},"resourcedetection":{"detectors":["env","system"],"timeout":"5s"}},"receivers":{"filelog":{"exclude":["/var/log/pods/*/otc-container/*.log"],"include":["/var/log/pods/*/*/*.log"],"include_file_name":false,"include_file_path":true,"operators":[{"id":"container-parser","max_log_size":102400,"type":"container"}],"start_at":"end"}},"service":{"pipelines":{"logs":{"exporters":["otlp"],"processors":["memory_limiter","k8sattributes","resourcedetection","batch"],"receivers":["filelog"]}}}}` | OpenTelemetry Collector configuration |
-| otel-collector.resources | object | `{"limits":{"cpu":"200m","memory":"256Mi"},"requests":{"cpu":"100m","memory":"128Mi"}}` | Resources |
-| otel-collector.serviceAccount.create | bool | `true` | Create service account |
-| otel-collector.clusterRole.create | bool | `true` | Create cluster role |
-| otel-collector.clusterRole.rules | list | `[{"apiGroups":[""],"resources":["pods","namespaces","nodes"],"verbs":["get","list","watch"]},{"apiGroups":["apps"],"resources":["replicasets"],"verbs":["get","list","watch"]}]` | Cluster role rules |
-| otel-collector.tolerations | list | `[{"effect":"NoSchedule","operator":"Exists"},{"effect":"NoExecute","operator":"Exists"}]` | Tolerations to run on all nodes |
-| otel-collector.ports.otlp.enabled | bool | `true` | Enable OTLP port |
-| otel-collector.ports.otlp-http.enabled | bool | `true` | Enable OTLP HTTP port |
-| otel-collector.ports.metrics.enabled | bool | `true` | Enable metrics port |
+<h3>General settings</h3>
+<table>
+	<thead>
+		<th>Key</th>
+		<th>Type</th>
+		<th>Default</th>
+		<th>Description</th>
+	</thead>
+	<tbody>
+		<tr>
+			<td>replicaCount</td>
+			<td>int</td>
+			<td><pre lang="json">
+1
+</pre>
+</td>
+			<td>Number of `replicas` for the parent netdata `Deployment`</td>
+		</tr>
+		<tr>
+			<td>deploymentStrategy.type</td>
+			<td>string</td>
+			<td><pre lang="json">
+"Recreate"
+</pre>
+</td>
+			<td>Deployment strategy for pod deployments. Recreate is the safest value.</td>
+		</tr>
+		<tr>
+			<td>imagePullSecrets</td>
+			<td>list</td>
+			<td><pre lang="json">
+[]
+</pre>
+</td>
+			<td>An optional list of references to secrets in the same namespace to use for pulling any of the images</td>
+		</tr>
+		<tr>
+			<td>image.repository</td>
+			<td>string</td>
+			<td><pre lang="json">
+"netdata/netdata"
+</pre>
+</td>
+			<td>Container image repository</td>
+		</tr>
+		<tr>
+			<td>image.tag</td>
+			<td>string</td>
+			<td><pre lang="json">
+"{{ .Chart.AppVersion }}"
+</pre>
+</td>
+			<td>Container image tag</td>
+		</tr>
+		<tr>
+			<td>image.pullPolicy</td>
+			<td>string</td>
+			<td><pre lang="json">
+"Always"
+</pre>
+</td>
+			<td>Container image pull policy</td>
+		</tr>
+		<tr>
+			<td>initContainersImage.repository</td>
+			<td>string</td>
+			<td><pre lang="json">
+"alpine"
+</pre>
+</td>
+			<td>Init containers' image repository</td>
+		</tr>
+		<tr>
+			<td>initContainersImage.tag</td>
+			<td>string</td>
+			<td><pre lang="json">
+"latest"
+</pre>
+</td>
+			<td>Init containers' image tag</td>
+		</tr>
+		<tr>
+			<td>initContainersImage.pullPolicy</td>
+			<td>string</td>
+			<td><pre lang="json">
+"Always"
+</pre>
+</td>
+			<td>Init containers' image pull policy</td>
+		</tr>
+		<tr>
+			<td>sysctlInitContainer.enabled</td>
+			<td>bool</td>
+			<td><pre lang="json">
+false
+</pre>
+</td>
+			<td>Enable an init container to modify Kernel settings</td>
+		</tr>
+		<tr>
+			<td>sysctlInitContainer.command</td>
+			<td>list</td>
+			<td><pre lang="json">
+[]
+</pre>
+</td>
+			<td>sysctl init container command to execute</td>
+		</tr>
+		<tr>
+			<td>sysctlInitContainer.resources</td>
+			<td>object</td>
+			<td><pre lang="json">
+{}
+</pre>
+</td>
+			<td>sysctl Init container CPU/Memory resource requests/limits</td>
+		</tr>
+		<tr>
+			<td>service.type</td>
+			<td>string</td>
+			<td><pre lang="json">
+"ClusterIP"
+</pre>
+</td>
+			<td>Parent service type</td>
+		</tr>
+		<tr>
+			<td>service.port</td>
+			<td>int</td>
+			<td><pre lang="json">
+19999
+</pre>
+</td>
+			<td>Parent service port</td>
+		</tr>
+		<tr>
+			<td>service.annotations</td>
+			<td>object</td>
+			<td><pre lang="json">
+{}
+</pre>
+</td>
+			<td>Additional annotations to add to the service</td>
+		</tr>
+		<tr>
+			<td>service.loadBalancerIP</td>
+			<td>string</td>
+			<td><pre lang="json">
+""
+</pre>
+</td>
+			<td>Static LoadBalancer IP, only to be used with service type=LoadBalancer</td>
+		</tr>
+		<tr>
+			<td>service.loadBalancerSourceRanges</td>
+			<td>list</td>
+			<td><pre lang="json">
+[]
+</pre>
+</td>
+			<td>List of allowed IPs for LoadBalancer</td>
+		</tr>
+		<tr>
+			<td>service.externalTrafficPolicy</td>
+			<td>string</td>
+			<td><pre lang="json">
+""
+</pre>
+</td>
+			<td>Denotes if this Service desires to route external traffic to node-local or cluster-wide endpoints</td>
+		</tr>
+		<tr>
+			<td>service.healthCheckNodePort</td>
+			<td>string</td>
+			<td><pre lang="json">
+null
+</pre>
+</td>
+			<td>Specifies the health check node port (only to be used with type LoadBalancer and external traffic policy Local)</td>
+		</tr>
+		<tr>
+			<td>service.clusterIP</td>
+			<td>string</td>
+			<td><pre lang="json">
+""
+</pre>
+</td>
+			<td>Specific cluster IP when service type is cluster IP. Use `None` for headless service</td>
+		</tr>
+		<tr>
+			<td>ingress.enabled</td>
+			<td>bool</td>
+			<td><pre lang="json">
+true
+</pre>
+</td>
+			<td>Create Ingress to access the netdata web UI</td>
+		</tr>
+		<tr>
+			<td>ingress.annotations</td>
+			<td>object</td>
+			<td><pre lang="">
+See values.yaml for defaults
+</pre>
+</td>
+			<td>Associate annotations to the Ingress</td>
+		</tr>
+		<tr>
+			<td>ingress.path</td>
+			<td>string</td>
+			<td><pre lang="json">
+"/"
+</pre>
+</td>
+			<td>URL path for the ingress. If changed, a proxy server needs to be configured in front of netdata to translate path from a custom one to a `/`</td>
+		</tr>
+		<tr>
+			<td>ingress.pathType</td>
+			<td>string</td>
+			<td><pre lang="json">
+"Prefix"
+</pre>
+</td>
+			<td>pathType for your ingress controller. Default value is correct for nginx. If you use your own ingress controller, check the correct value</td>
+		</tr>
+		<tr>
+			<td>ingress.hosts[0]</td>
+			<td>string</td>
+			<td><pre lang="json">
+"netdata.k8s.local"
+</pre>
+</td>
+			<td>URL hostnames for the ingress (they need to resolve to the external IP of the ingress controller)</td>
+		</tr>
+		<tr>
+			<td>rbac.create</td>
+			<td>bool</td>
+			<td><pre lang="json">
+true
+</pre>
+</td>
+			<td>if true, create & use RBAC resources</td>
+		</tr>
+		<tr>
+			<td>rbac.pspEnabled</td>
+			<td>bool</td>
+			<td><pre lang="json">
+true
+</pre>
+</td>
+			<td>Specifies whether a PodSecurityPolicy should be created</td>
+		</tr>
+		<tr>
+			<td>serviceAccount.create</td>
+			<td>bool</td>
+			<td><pre lang="json">
+true
+</pre>
+</td>
+			<td>if true, create a service account</td>
+		</tr>
+		<tr>
+			<td>serviceAccount.name</td>
+			<td>string</td>
+			<td><pre lang="json">
+"netdata"
+</pre>
+</td>
+			<td>The name of the service account to use. If not set and create is true, a name is generated using the fullname template</td>
+		</tr>
+		<tr>
+			<td>restarter.enabled</td>
+			<td>bool</td>
+			<td><pre lang="json">
+false
+</pre>
+</td>
+			<td>Install CronJob to update Netdata Pods</td>
+		</tr>
+		<tr>
+			<td>restarter.schedule</td>
+			<td>string</td>
+			<td><pre lang="json">
+"00 06 * * *"
+</pre>
+</td>
+			<td>The schedule in Cron format</td>
+		</tr>
+		<tr>
+			<td>restarter.image.repository</td>
+			<td>string</td>
+			<td><pre lang="json">
+"rancher/kubectl"
+</pre>
+</td>
+			<td>Container image repo</td>
+		</tr>
+		<tr>
+			<td>restarter.image.tag</td>
+			<td>string</td>
+			<td><pre lang="json">
+".auto"
+</pre>
+</td>
+			<td>Container image tag. If `.auto`, the image tag version of the rancher/kubectl will reflect the Kubernetes cluster version</td>
+		</tr>
+		<tr>
+			<td>restarter.image.pullPolicy</td>
+			<td>string</td>
+			<td><pre lang="json">
+"Always"
+</pre>
+</td>
+			<td>Container image pull policy</td>
+		</tr>
+		<tr>
+			<td>restarter.restartPolicy</td>
+			<td>string</td>
+			<td><pre lang="json">
+"Never"
+</pre>
+</td>
+			<td>Container restart policy</td>
+		</tr>
+		<tr>
+			<td>restarter.resources</td>
+			<td>object</td>
+			<td><pre lang="json">
+{}
+</pre>
+</td>
+			<td>Container resources</td>
+		</tr>
+		<tr>
+			<td>restarter.concurrencyPolicy</td>
+			<td>string</td>
+			<td><pre lang="json">
+"Forbid"
+</pre>
+</td>
+			<td>Specifies how to treat concurrent executions of a job</td>
+		</tr>
+		<tr>
+			<td>restarter.startingDeadlineSeconds</td>
+			<td>int</td>
+			<td><pre lang="json">
+60
+</pre>
+</td>
+			<td>Optional deadline in seconds for starting the job if it misses scheduled time for any reason</td>
+		</tr>
+		<tr>
+			<td>restarter.successfulJobsHistoryLimit</td>
+			<td>int</td>
+			<td><pre lang="json">
+3
+</pre>
+</td>
+			<td>The number of successful finished jobs to retain</td>
+		</tr>
+		<tr>
+			<td>restarter.failedJobsHistoryLimit</td>
+			<td>int</td>
+			<td><pre lang="json">
+3
+</pre>
+</td>
+			<td>The number of failed finished jobs to retain</td>
+		</tr>
+		<tr>
+			<td>notifications.slack.webhook_url</td>
+			<td>string</td>
+			<td><pre lang="json">
+""
+</pre>
+</td>
+			<td>Slack webhook URL</td>
+		</tr>
+		<tr>
+			<td>notifications.slack.recipient</td>
+			<td>string</td>
+			<td><pre lang="json">
+""
+</pre>
+</td>
+			<td>Slack recipient list</td>
+		</tr>
+	</tbody>
+</table>
+<h3>Service Discovery</h3>
+<table>
+	<thead>
+		<th>Key</th>
+		<th>Type</th>
+		<th>Default</th>
+		<th>Description</th>
+	</thead>
+	<tbody>
+		<tr>
+			<td>sd.image.repository</td>
+			<td>string</td>
+			<td><pre lang="json">
+"netdata/agent-sd"
+</pre>
+</td>
+			<td>Container image repository</td>
+		</tr>
+		<tr>
+			<td>sd.image.tag</td>
+			<td>string</td>
+			<td><pre lang="json">
+"v0.2.10"
+</pre>
+</td>
+			<td>Container image tag</td>
+		</tr>
+		<tr>
+			<td>sd.image.pullPolicy</td>
+			<td>string</td>
+			<td><pre lang="json">
+"Always"
+</pre>
+</td>
+			<td>Container image pull policy</td>
+		</tr>
+		<tr>
+			<td>sd.child.enabled</td>
+			<td>bool</td>
+			<td><pre lang="json">
+true
+</pre>
+</td>
+			<td>Add service-discovery sidecar container to the netdata child pod definition</td>
+		</tr>
+		<tr>
+			<td>sd.child.configmap.name</td>
+			<td>string</td>
+			<td><pre lang="json">
+"netdata-child-sd-config-map"
+</pre>
+</td>
+			<td>Child service-discovery ConfigMap name</td>
+		</tr>
+		<tr>
+			<td>sd.child.configmap.key</td>
+			<td>string</td>
+			<td><pre lang="json">
+"config.yml"
+</pre>
+</td>
+			<td>Child service-discovery ConfigMap key</td>
+		</tr>
+		<tr>
+			<td>sd.child.configmap.from.file</td>
+			<td>string</td>
+			<td><pre lang="json">
+""
+</pre>
+</td>
+			<td>File to use for child service-discovery configuration generation</td>
+		</tr>
+		<tr>
+			<td>sd.child.configmap.from.value</td>
+			<td>object</td>
+			<td><pre lang="json">
+{}
+</pre>
+</td>
+			<td>Value to use for child service-discovery configuration generation</td>
+		</tr>
+		<tr>
+			<td>sd.child.resources</td>
+			<td>object</td>
+			<td><pre lang="">
+See values.yaml for defaults
+</pre>
+</td>
+			<td>Child service-discovery container CPU/Memory resource requests/limits</td>
+		</tr>
+	</tbody>
+</table>
+<h3>Parent</h3>
+<table>
+	<thead>
+		<th>Key</th>
+		<th>Type</th>
+		<th>Default</th>
+		<th>Description</th>
+	</thead>
+	<tbody>
+		<tr>
+			<td>parent.hostname</td>
+			<td>string</td>
+			<td><pre lang="json">
+"netdata-parent"
+</pre>
+</td>
+			<td>Parent node hostname</td>
+		</tr>
+		<tr>
+			<td>parent.enabled</td>
+			<td>bool</td>
+			<td><pre lang="json">
+true
+</pre>
+</td>
+			<td>Install parent Deployment to receive metrics from children nodes</td>
+		</tr>
+		<tr>
+			<td>parent.port</td>
+			<td>int</td>
+			<td><pre lang="json">
+19999
+</pre>
+</td>
+			<td>Parent's listen port</td>
+		</tr>
+		<tr>
+			<td>parent.resources</td>
+			<td>object</td>
+			<td><pre lang="json">
+{}
+</pre>
+</td>
+			<td>Resources for the parent deployment</td>
+		</tr>
+		<tr>
+			<td>parent.livenessProbe.initialDelaySeconds</td>
+			<td>int</td>
+			<td><pre lang="json">
+0
+</pre>
+</td>
+			<td>Number of seconds after the container has started before liveness probes are initiated</td>
+		</tr>
+		<tr>
+			<td>parent.livenessProbe.failureThreshold</td>
+			<td>int</td>
+			<td><pre lang="json">
+3
+</pre>
+</td>
+			<td>When a liveness probe fails, Kubernetes will try failureThreshold times before giving up. Giving up the liveness probe means restarting the container</td>
+		</tr>
+		<tr>
+			<td>parent.livenessProbe.periodSeconds</td>
+			<td>int</td>
+			<td><pre lang="json">
+30
+</pre>
+</td>
+			<td>How often (in seconds) to perform the liveness probe</td>
+		</tr>
+		<tr>
+			<td>parent.livenessProbe.successThreshold</td>
+			<td>int</td>
+			<td><pre lang="json">
+1
+</pre>
+</td>
+			<td>Minimum consecutive successes for the liveness probe to be considered successful after having failed</td>
+		</tr>
+		<tr>
+			<td>parent.livenessProbe.timeoutSeconds</td>
+			<td>int</td>
+			<td><pre lang="json">
+1
+</pre>
+</td>
+			<td>Number of seconds after which the liveness probe times out</td>
+		</tr>
+		<tr>
+			<td>parent.readinessProbe.initialDelaySeconds</td>
+			<td>int</td>
+			<td><pre lang="json">
+0
+</pre>
+</td>
+			<td>Number of seconds after the container has started before readiness probes are initiated</td>
+		</tr>
+		<tr>
+			<td>parent.readinessProbe.failureThreshold</td>
+			<td>int</td>
+			<td><pre lang="json">
+3
+</pre>
+</td>
+			<td>When a readiness probe fails, Kubernetes will try failureThreshold times before giving up. Giving up the readiness probe means marking the Pod Unready</td>
+		</tr>
+		<tr>
+			<td>parent.readinessProbe.periodSeconds</td>
+			<td>int</td>
+			<td><pre lang="json">
+30
+</pre>
+</td>
+			<td>How often (in seconds) to perform the readiness probe</td>
+		</tr>
+		<tr>
+			<td>parent.readinessProbe.successThreshold</td>
+			<td>int</td>
+			<td><pre lang="json">
+1
+</pre>
+</td>
+			<td>Minimum consecutive successes for the readiness probe to be considered successful after having failed</td>
+		</tr>
+		<tr>
+			<td>parent.readinessProbe.timeoutSeconds</td>
+			<td>int</td>
+			<td><pre lang="json">
+1
+</pre>
+</td>
+			<td>Number of seconds after which the readiness probe times out</td>
+		</tr>
+		<tr>
+			<td>parent.securityContext.runAsUser</td>
+			<td>int</td>
+			<td><pre lang="json">
+201
+</pre>
+</td>
+			<td>The UID to run the container process</td>
+		</tr>
+		<tr>
+			<td>parent.securityContext.runAsGroup</td>
+			<td>int</td>
+			<td><pre lang="json">
+201
+</pre>
+</td>
+			<td>The GID to run the container process</td>
+		</tr>
+		<tr>
+			<td>parent.securityContext.fsGroup</td>
+			<td>int</td>
+			<td><pre lang="json">
+201
+</pre>
+</td>
+			<td>The supplementary group for setting permissions on volumes</td>
+		</tr>
+		<tr>
+			<td>parent.terminationGracePeriodSeconds</td>
+			<td>int</td>
+			<td><pre lang="json">
+300
+</pre>
+</td>
+			<td>Duration in seconds the pod needs to terminate gracefully</td>
+		</tr>
+		<tr>
+			<td>parent.nodeSelector</td>
+			<td>object</td>
+			<td><pre lang="json">
+{}
+</pre>
+</td>
+			<td>Node selector for the parent deployment</td>
+		</tr>
+		<tr>
+			<td>parent.tolerations</td>
+			<td>list</td>
+			<td><pre lang="json">
+[]
+</pre>
+</td>
+			<td>Tolerations settings for the parent deployment</td>
+		</tr>
+		<tr>
+			<td>parent.affinity</td>
+			<td>object</td>
+			<td><pre lang="json">
+{}
+</pre>
+</td>
+			<td>Affinity settings for the parent deployment</td>
+		</tr>
+		<tr>
+			<td>parent.priorityClassName</td>
+			<td>string</td>
+			<td><pre lang="json">
+""
+</pre>
+</td>
+			<td>Pod priority class name for the parent deployment</td>
+		</tr>
+		<tr>
+			<td>parent.env</td>
+			<td>object</td>
+			<td><pre lang="json">
+{}
+</pre>
+</td>
+			<td>Set environment parameters for the parent deployment</td>
+		</tr>
+		<tr>
+			<td>parent.envFrom</td>
+			<td>list</td>
+			<td><pre lang="json">
+[]
+</pre>
+</td>
+			<td>Set environment parameters for the parent deployment from ConfigMap and/or Secrets</td>
+		</tr>
+		<tr>
+			<td>parent.podLabels</td>
+			<td>object</td>
+			<td><pre lang="json">
+{}
+</pre>
+</td>
+			<td>Additional labels to add to the parent pods</td>
+		</tr>
+		<tr>
+			<td>parent.podAnnotations</td>
+			<td>object</td>
+			<td><pre lang="json">
+{}
+</pre>
+</td>
+			<td>Additional annotations to add to the parent pods</td>
+		</tr>
+		<tr>
+			<td>parent.dnsPolicy</td>
+			<td>string</td>
+			<td><pre lang="json">
+"Default"
+</pre>
+</td>
+			<td>DNS policy for pod</td>
+		</tr>
+		<tr>
+			<td>parent.database.persistence</td>
+			<td>bool</td>
+			<td><pre lang="json">
+true
+</pre>
+</td>
+			<td>Whether the parent should use a persistent volume for the DB</td>
+		</tr>
+		<tr>
+			<td>parent.database.storageclass</td>
+			<td>string</td>
+			<td><pre lang="json">
+"-"
+</pre>
+</td>
+			<td>The storage class for the persistent volume claim of the parent's database store, mounted to `/var/cache/netdata`</td>
+		</tr>
+		<tr>
+			<td>parent.database.volumesize</td>
+			<td>string</td>
+			<td><pre lang="json">
+"5Gi"
+</pre>
+</td>
+			<td>The storage space for the PVC of the parent database</td>
+		</tr>
+		<tr>
+			<td>parent.alarms.persistence</td>
+			<td>bool</td>
+			<td><pre lang="json">
+true
+</pre>
+</td>
+			<td>Whether the parent should use a persistent volume for the alarms log</td>
+		</tr>
+		<tr>
+			<td>parent.alarms.storageclass</td>
+			<td>string</td>
+			<td><pre lang="json">
+"-"
+</pre>
+</td>
+			<td>The storage class for the persistent volume claim of the parent's alarm log, mounted to `/var/lib/netdata`</td>
+		</tr>
+		<tr>
+			<td>parent.alarms.volumesize</td>
+			<td>string</td>
+			<td><pre lang="json">
+"1Gi"
+</pre>
+</td>
+			<td>The storage space for the PVC of the parent alarm log</td>
+		</tr>
+		<tr>
+			<td>parent.configs</td>
+			<td>object</td>
+			<td><pre lang="">
+See values.yaml for defaults
+</pre>
+</td>
+			<td>Manage custom parent's configs</td>
+		</tr>
+		<tr>
+			<td>parent.claiming.enabled</td>
+			<td>bool</td>
+			<td><pre lang="json">
+false
+</pre>
+</td>
+			<td>Enable parent claiming for netdata cloud</td>
+		</tr>
+		<tr>
+			<td>parent.claiming.token</td>
+			<td>string</td>
+			<td><pre lang="json">
+""
+</pre>
+</td>
+			<td>Claim token</td>
+		</tr>
+		<tr>
+			<td>parent.claiming.rooms</td>
+			<td>string</td>
+			<td><pre lang="json">
+""
+</pre>
+</td>
+			<td>Comma separated list of claim rooms IDs. Empty value = All nodes room only</td>
+		</tr>
+		<tr>
+			<td>parent.extraVolumeMounts</td>
+			<td>list</td>
+			<td><pre lang="json">
+[]
+</pre>
+</td>
+			<td>Additional volumeMounts to add to the parent pods</td>
+		</tr>
+		<tr>
+			<td>parent.extraVolumes</td>
+			<td>list</td>
+			<td><pre lang="json">
+[]
+</pre>
+</td>
+			<td>Additional volumes to add to the parent pods</td>
+		</tr>
+		<tr>
+			<td>parent.extraInitContainers</td>
+			<td>list</td>
+			<td><pre lang="json">
+[]
+</pre>
+</td>
+			<td>Additional init containers to add to the parent pods</td>
+		</tr>
+	</tbody>
+</table>
+<h3>Child</h3>
+<table>
+	<thead>
+		<th>Key</th>
+		<th>Type</th>
+		<th>Default</th>
+		<th>Description</th>
+	</thead>
+	<tbody>
+		<tr>
+			<td>child.enabled</td>
+			<td>bool</td>
+			<td><pre lang="json">
+true
+</pre>
+</td>
+			<td>Install child DaemonSet to gather data from nodes</td>
+		</tr>
+		<tr>
+			<td>child.port</td>
+			<td>string</td>
+			<td><pre lang="json">
+"{{ .Values.parent.port }}"
+</pre>
+</td>
+			<td>Children's listen port</td>
+		</tr>
+		<tr>
+			<td>child.updateStrategy</td>
+			<td>object</td>
+			<td><pre lang="json">
+{}
+</pre>
+</td>
+			<td>An update strategy to replace existing DaemonSet pods with new pods</td>
+		</tr>
+		<tr>
+			<td>child.resources</td>
+			<td>object</td>
+			<td><pre lang="json">
+{}
+</pre>
+</td>
+			<td>Resources for the child DaemonSet</td>
+		</tr>
+		<tr>
+			<td>child.livenessProbe.initialDelaySeconds</td>
+			<td>int</td>
+			<td><pre lang="json">
+0
+</pre>
+</td>
+			<td>Number of seconds after the container has started before liveness probes are initiated</td>
+		</tr>
+		<tr>
+			<td>child.livenessProbe.failureThreshold</td>
+			<td>int</td>
+			<td><pre lang="json">
+3
+</pre>
+</td>
+			<td>When a liveness probe fails, Kubernetes will try failureThreshold times before giving up. Giving up the liveness probe means restarting the container</td>
+		</tr>
+		<tr>
+			<td>child.livenessProbe.successThreshold</td>
+			<td>int</td>
+			<td><pre lang="json">
+1
+</pre>
+</td>
+			<td>Minimum consecutive successes for the liveness probe to be considered successful after having failed</td>
+		</tr>
+		<tr>
+			<td>child.livenessProbe.timeoutSeconds</td>
+			<td>int</td>
+			<td><pre lang="json">
+1
+</pre>
+</td>
+			<td>Number of seconds after which the liveness probe times out</td>
+		</tr>
+		<tr>
+			<td>child.readinessProbe.initialDelaySeconds</td>
+			<td>int</td>
+			<td><pre lang="json">
+0
+</pre>
+</td>
+			<td>Number of seconds after the container has started before readiness probes are initiated</td>
+		</tr>
+		<tr>
+			<td>child.readinessProbe.failureThreshold</td>
+			<td>int</td>
+			<td><pre lang="json">
+3
+</pre>
+</td>
+			<td>When a readiness probe fails, Kubernetes will try failureThreshold times before giving up. Giving up the readiness probe means marking the Pod Unready</td>
+		</tr>
+		<tr>
+			<td>child.readinessProbe.periodSeconds</td>
+			<td>int</td>
+			<td><pre lang="json">
+30
+</pre>
+</td>
+			<td>How often (in seconds) to perform the readiness probe</td>
+		</tr>
+		<tr>
+			<td>child.readinessProbe.successThreshold</td>
+			<td>int</td>
+			<td><pre lang="json">
+1
+</pre>
+</td>
+			<td>Minimum consecutive successes for the readiness probe to be considered successful after having failed</td>
+		</tr>
+		<tr>
+			<td>child.readinessProbe.timeoutSeconds</td>
+			<td>int</td>
+			<td><pre lang="json">
+1
+</pre>
+</td>
+			<td>Number of seconds after which the readiness probe times out</td>
+		</tr>
+		<tr>
+			<td>child.terminationGracePeriodSeconds</td>
+			<td>int</td>
+			<td><pre lang="json">
+30
+</pre>
+</td>
+			<td>Duration in seconds the pod needs to terminate gracefully</td>
+		</tr>
+		<tr>
+			<td>child.nodeSelector</td>
+			<td>object</td>
+			<td><pre lang="json">
+{}
+</pre>
+</td>
+			<td>Node selector for the child daemonsets</td>
+		</tr>
+		<tr>
+			<td>child.tolerations</td>
+			<td>list</td>
+			<td><pre lang="">
+See values.yaml for defaults
+</pre>
+</td>
+			<td>Tolerations settings for the child daemonsets</td>
+		</tr>
+		<tr>
+			<td>child.affinity</td>
+			<td>object</td>
+			<td><pre lang="json">
+{}
+</pre>
+</td>
+			<td>Affinity settings for the child daemonsets</td>
+		</tr>
+		<tr>
+			<td>child.priorityClassName</td>
+			<td>string</td>
+			<td><pre lang="json">
+""
+</pre>
+</td>
+			<td>Pod priority class name for the child daemonsets</td>
+		</tr>
+		<tr>
+			<td>child.podLabels</td>
+			<td>object</td>
+			<td><pre lang="json">
+{}
+</pre>
+</td>
+			<td>Additional labels to add to the child pods</td>
+		</tr>
+		<tr>
+			<td>child.podAnnotationAppArmor.enabled</td>
+			<td>bool</td>
+			<td><pre lang="json">
+true
+</pre>
+</td>
+			<td>Whether or not to include the AppArmor security annotation</td>
+		</tr>
+		<tr>
+			<td>child.podAnnotations</td>
+			<td>object</td>
+			<td><pre lang="json">
+{}
+</pre>
+</td>
+			<td>Additional annotations to add to the child pods</td>
+		</tr>
+		<tr>
+			<td>child.hostNetwork</td>
+			<td>bool</td>
+			<td><pre lang="json">
+true
+</pre>
+</td>
+			<td>Usage of host networking and ports</td>
+		</tr>
+		<tr>
+			<td>child.dnsPolicy</td>
+			<td>string</td>
+			<td><pre lang="json">
+"ClusterFirstWithHostNet"
+</pre>
+</td>
+			<td>DNS policy for pod. Should be `ClusterFirstWithHostNet` if `child.hostNetwork = true`</td>
+		</tr>
+		<tr>
+			<td>child.persistence.enabled</td>
+			<td>bool</td>
+			<td><pre lang="json">
+true
+</pre>
+</td>
+			<td>Whether or not to persist `/var/lib/netdata` in the `child.persistence.hostPath`</td>
+		</tr>
+		<tr>
+			<td>child.persistence.hostPath</td>
+			<td>string</td>
+			<td><pre lang="json">
+"/var/lib/netdata-k8s-child"
+</pre>
+</td>
+			<td>Host node directory for storing child instance data</td>
+		</tr>
+		<tr>
+			<td>child.podsMetadata.useKubelet</td>
+			<td>bool</td>
+			<td><pre lang="json">
+false
+</pre>
+</td>
+			<td>Send requests to the Kubelet /pods endpoint instead of Kubernetes API server to get pod metadata</td>
+		</tr>
+		<tr>
+			<td>child.podsMetadata.kubeletUrl</td>
+			<td>string</td>
+			<td><pre lang="json">
+"https://localhost:10250"
+</pre>
+</td>
+			<td>Kubelet URL</td>
+		</tr>
+		<tr>
+			<td>child.configs</td>
+			<td>object</td>
+			<td><pre lang="">
+See values.yaml for defaults
+</pre>
+</td>
+			<td>Manage custom child's configs</td>
+		</tr>
+		<tr>
+			<td>child.env</td>
+			<td>object</td>
+			<td><pre lang="json">
+{}
+</pre>
+</td>
+			<td>Set environment parameters for the child daemonset</td>
+		</tr>
+		<tr>
+			<td>child.envFrom</td>
+			<td>list</td>
+			<td><pre lang="json">
+[]
+</pre>
+</td>
+			<td>Set environment parameters for the child daemonset from ConfigMap and/or Secrets</td>
+		</tr>
+		<tr>
+			<td>child.claiming.enabled</td>
+			<td>bool</td>
+			<td><pre lang="json">
+false
+</pre>
+</td>
+			<td>Enable child claiming for netdata cloud</td>
+		</tr>
+		<tr>
+			<td>child.claiming.token</td>
+			<td>string</td>
+			<td><pre lang="json">
+""
+</pre>
+</td>
+			<td>Claim token</td>
+		</tr>
+		<tr>
+			<td>child.claiming.rooms</td>
+			<td>string</td>
+			<td><pre lang="json">
+""
+</pre>
+</td>
+			<td>Comma separated list of claim rooms IDs. Empty value = All nodes room only</td>
+		</tr>
+		<tr>
+			<td>child.extraVolumeMounts</td>
+			<td>list</td>
+			<td><pre lang="json">
+[]
+</pre>
+</td>
+			<td>Additional volumeMounts to add to the child pods</td>
+		</tr>
+		<tr>
+			<td>child.extraVolumes</td>
+			<td>list</td>
+			<td><pre lang="json">
+[]
+</pre>
+</td>
+			<td>Additional volumes to add to the child pods</td>
+		</tr>
+	</tbody>
+</table>
+<h3>Child1.0</h3>
+<table>
+	<thead>
+		<th>Key</th>
+		<th>Type</th>
+		<th>Default</th>
+		<th>Description</th>
+	</thead>
+	<tbody>
+		<tr>
+			<td>child.livenessProbe.periodSeconds</td>
+			<td>int</td>
+			<td><pre lang="json">
+30
+</pre>
+</td>
+			<td>How often (in seconds) to perform the liveness probe</td>
+		</tr>
+	</tbody>
+</table>
+<h3>K8s State</h3>
+<table>
+	<thead>
+		<th>Key</th>
+		<th>Type</th>
+		<th>Default</th>
+		<th>Description</th>
+	</thead>
+	<tbody>
+		<tr>
+			<td>k8sState.hostname</td>
+			<td>string</td>
+			<td><pre lang="json">
+"netdata-k8s-state"
+</pre>
+</td>
+			<td>K8s state node hostname</td>
+		</tr>
+		<tr>
+			<td>k8sState.enabled</td>
+			<td>bool</td>
+			<td><pre lang="json">
+true
+</pre>
+</td>
+			<td>Install this Deployment to gather data from K8s cluster</td>
+		</tr>
+		<tr>
+			<td>k8sState.port</td>
+			<td>string</td>
+			<td><pre lang="json">
+"{{ .Values.parent.port }}"
+</pre>
+</td>
+			<td>Listen port</td>
+		</tr>
+		<tr>
+			<td>k8sState.resources</td>
+			<td>object</td>
+			<td><pre lang="json">
+{}
+</pre>
+</td>
+			<td>Compute resources required by this Deployment</td>
+		</tr>
+		<tr>
+			<td>k8sState.livenessProbe.initialDelaySeconds</td>
+			<td>int</td>
+			<td><pre lang="json">
+0
+</pre>
+</td>
+			<td>Number of seconds after the container has started before liveness probes are initiated</td>
+		</tr>
+		<tr>
+			<td>k8sState.livenessProbe.failureThreshold</td>
+			<td>int</td>
+			<td><pre lang="json">
+3
+</pre>
+</td>
+			<td>When a liveness probe fails, Kubernetes will try failureThreshold times before giving up. Giving up the liveness probe means restarting the container</td>
+		</tr>
+		<tr>
+			<td>k8sState.livenessProbe.periodSeconds</td>
+			<td>int</td>
+			<td><pre lang="json">
+30
+</pre>
+</td>
+			<td>How often (in seconds) to perform the liveness probe</td>
+		</tr>
+		<tr>
+			<td>k8sState.livenessProbe.successThreshold</td>
+			<td>int</td>
+			<td><pre lang="json">
+1
+</pre>
+</td>
+			<td>Minimum consecutive successes for the liveness probe to be considered successful after having failed</td>
+		</tr>
+		<tr>
+			<td>k8sState.livenessProbe.timeoutSeconds</td>
+			<td>int</td>
+			<td><pre lang="json">
+1
+</pre>
+</td>
+			<td>Number of seconds after which the liveness probe times out</td>
+		</tr>
+		<tr>
+			<td>k8sState.readinessProbe.initialDelaySeconds</td>
+			<td>int</td>
+			<td><pre lang="json">
+0
+</pre>
+</td>
+			<td>Number of seconds after the container has started before readiness probes are initiated</td>
+		</tr>
+		<tr>
+			<td>k8sState.readinessProbe.failureThreshold</td>
+			<td>int</td>
+			<td><pre lang="json">
+3
+</pre>
+</td>
+			<td>When a readiness probe fails, Kubernetes will try failureThreshold times before giving up. Giving up the readiness probe means marking the Pod Unready</td>
+		</tr>
+		<tr>
+			<td>k8sState.readinessProbe.periodSeconds</td>
+			<td>int</td>
+			<td><pre lang="json">
+30
+</pre>
+</td>
+			<td>How often (in seconds) to perform the readiness probe</td>
+		</tr>
+		<tr>
+			<td>k8sState.readinessProbe.successThreshold</td>
+			<td>int</td>
+			<td><pre lang="json">
+1
+</pre>
+</td>
+			<td>Minimum consecutive successes for the readiness probe to be considered successful after having failed</td>
+		</tr>
+		<tr>
+			<td>k8sState.readinessProbe.timeoutSeconds</td>
+			<td>int</td>
+			<td><pre lang="json">
+1
+</pre>
+</td>
+			<td>Number of seconds after which the readiness probe times out</td>
+		</tr>
+		<tr>
+			<td>k8sState.terminationGracePeriodSeconds</td>
+			<td>int</td>
+			<td><pre lang="json">
+30
+</pre>
+</td>
+			<td>Duration in seconds the pod needs to terminate gracefully</td>
+		</tr>
+		<tr>
+			<td>k8sState.nodeSelector</td>
+			<td>object</td>
+			<td><pre lang="json">
+{}
+</pre>
+</td>
+			<td>Node selector</td>
+		</tr>
+		<tr>
+			<td>k8sState.tolerations</td>
+			<td>list</td>
+			<td><pre lang="json">
+[]
+</pre>
+</td>
+			<td>Tolerations settings</td>
+		</tr>
+		<tr>
+			<td>k8sState.affinity</td>
+			<td>object</td>
+			<td><pre lang="json">
+{}
+</pre>
+</td>
+			<td>Affinity settings</td>
+		</tr>
+		<tr>
+			<td>k8sState.priorityClassName</td>
+			<td>string</td>
+			<td><pre lang="json">
+""
+</pre>
+</td>
+			<td>Pod priority class name</td>
+		</tr>
+		<tr>
+			<td>k8sState.podLabels</td>
+			<td>object</td>
+			<td><pre lang="json">
+{}
+</pre>
+</td>
+			<td>Additional labels</td>
+		</tr>
+		<tr>
+			<td>k8sState.podAnnotationAppArmor.enabled</td>
+			<td>bool</td>
+			<td><pre lang="json">
+true
+</pre>
+</td>
+			<td>Whether or not to include the AppArmor security annotation</td>
+		</tr>
+		<tr>
+			<td>k8sState.podAnnotations</td>
+			<td>object</td>
+			<td><pre lang="json">
+{}
+</pre>
+</td>
+			<td>Additional annotations</td>
+		</tr>
+		<tr>
+			<td>k8sState.dnsPolicy</td>
+			<td>string</td>
+			<td><pre lang="json">
+"ClusterFirstWithHostNet"
+</pre>
+</td>
+			<td>DNS policy for pod</td>
+		</tr>
+		<tr>
+			<td>k8sState.persistence.enabled</td>
+			<td>bool</td>
+			<td><pre lang="json">
+true
+</pre>
+</td>
+			<td>Whether should use a persistent volume for `/var/lib/netdata`</td>
+		</tr>
+		<tr>
+			<td>k8sState.persistence.storageclass</td>
+			<td>string</td>
+			<td><pre lang="json">
+"-"
+</pre>
+</td>
+			<td>The storage class for the persistent volume claim of `/var/lib/netdata`</td>
+		</tr>
+		<tr>
+			<td>k8sState.persistence.volumesize</td>
+			<td>string</td>
+			<td><pre lang="json">
+"1Gi"
+</pre>
+</td>
+			<td>The storage space for the PVC of `/var/lib/netdata`</td>
+		</tr>
+		<tr>
+			<td>k8sState.env</td>
+			<td>object</td>
+			<td><pre lang="json">
+{}
+</pre>
+</td>
+			<td>Set environment parameters</td>
+		</tr>
+		<tr>
+			<td>k8sState.envFrom</td>
+			<td>list</td>
+			<td><pre lang="json">
+[]
+</pre>
+</td>
+			<td>Set environment parameters from ConfigMap and/or Secrets</td>
+		</tr>
+		<tr>
+			<td>k8sState.configs</td>
+			<td>object</td>
+			<td><pre lang="">
+See values.yaml for defaults
+</pre>
+</td>
+			<td>Manage custom configs</td>
+		</tr>
+		<tr>
+			<td>k8sState.claiming.enabled</td>
+			<td>bool</td>
+			<td><pre lang="json">
+false
+</pre>
+</td>
+			<td>Enable claiming for netdata cloud</td>
+		</tr>
+		<tr>
+			<td>k8sState.claiming.token</td>
+			<td>string</td>
+			<td><pre lang="json">
+""
+</pre>
+</td>
+			<td>Claim token</td>
+		</tr>
+		<tr>
+			<td>k8sState.claiming.rooms</td>
+			<td>string</td>
+			<td><pre lang="json">
+""
+</pre>
+</td>
+			<td>Comma separated list of claim rooms IDs. Empty value = All nodes room only</td>
+		</tr>
+		<tr>
+			<td>k8sState.extraVolumeMounts</td>
+			<td>list</td>
+			<td><pre lang="json">
+[]
+</pre>
+</td>
+			<td>Additional volumeMounts to add to the k8sState pods</td>
+		</tr>
+		<tr>
+			<td>k8sState.extraVolumes</td>
+			<td>list</td>
+			<td><pre lang="json">
+[]
+</pre>
+</td>
+			<td>Additional volumes to add to the k8sState pods</td>
+		</tr>
+	</tbody>
+</table>
+<h3>Netdata OpenTelemetry</h3>
+<table>
+	<thead>
+		<th>Key</th>
+		<th>Type</th>
+		<th>Default</th>
+		<th>Description</th>
+	</thead>
+	<tbody>
+		<tr>
+			<td>netdataOpentelemetry.enabled</td>
+			<td>bool</td>
+			<td><pre lang="json">
+false
+</pre>
+</td>
+			<td>Enable the Netdata OpenTelemetry Deployment</td>
+		</tr>
+		<tr>
+			<td>netdataOpentelemetry.hostname</td>
+			<td>string</td>
+			<td><pre lang="json">
+"netdata-otel"
+</pre>
+</td>
+			<td>Hostname for the Netdata OpenTelemetry instance</td>
+		</tr>
+		<tr>
+			<td>netdataOpentelemetry.port</td>
+			<td>string</td>
+			<td><pre lang="json">
+"{{ .Values.parent.port }}"
+</pre>
+</td>
+			<td>Listen port</td>
+		</tr>
+		<tr>
+			<td>netdataOpentelemetry.service.type</td>
+			<td>string</td>
+			<td><pre lang="json">
+"ClusterIP"
+</pre>
+</td>
+			<td>Service type</td>
+		</tr>
+		<tr>
+			<td>netdataOpentelemetry.service.port</td>
+			<td>int</td>
+			<td><pre lang="json">
+4317
+</pre>
+</td>
+			<td>Service port</td>
+		</tr>
+		<tr>
+			<td>netdataOpentelemetry.service.annotations</td>
+			<td>object</td>
+			<td><pre lang="json">
+{}
+</pre>
+</td>
+			<td>Service annotations</td>
+		</tr>
+		<tr>
+			<td>netdataOpentelemetry.resources</td>
+			<td>object</td>
+			<td><pre lang="json">
+{}
+</pre>
+</td>
+			<td>Compute resources required by this Deployment</td>
+		</tr>
+		<tr>
+			<td>netdataOpentelemetry.livenessProbe.initialDelaySeconds</td>
+			<td>int</td>
+			<td><pre lang="json">
+0
+</pre>
+</td>
+			<td>Number of seconds after the container has started before liveness probes are initiated</td>
+		</tr>
+		<tr>
+			<td>netdataOpentelemetry.livenessProbe.failureThreshold</td>
+			<td>int</td>
+			<td><pre lang="json">
+3
+</pre>
+</td>
+			<td>When a liveness probe fails, Kubernetes will try failureThreshold times before giving up</td>
+		</tr>
+		<tr>
+			<td>netdataOpentelemetry.livenessProbe.periodSeconds</td>
+			<td>int</td>
+			<td><pre lang="json">
+30
+</pre>
+</td>
+			<td>How often (in seconds) to perform the liveness probe</td>
+		</tr>
+		<tr>
+			<td>netdataOpentelemetry.livenessProbe.successThreshold</td>
+			<td>int</td>
+			<td><pre lang="json">
+1
+</pre>
+</td>
+			<td>Minimum consecutive successes for the liveness probe to be considered successful after having failed</td>
+		</tr>
+		<tr>
+			<td>netdataOpentelemetry.livenessProbe.timeoutSeconds</td>
+			<td>int</td>
+			<td><pre lang="json">
+1
+</pre>
+</td>
+			<td>Number of seconds after which the liveness probe times out</td>
+		</tr>
+		<tr>
+			<td>netdataOpentelemetry.readinessProbe.initialDelaySeconds</td>
+			<td>int</td>
+			<td><pre lang="json">
+0
+</pre>
+</td>
+			<td>Number of seconds after the container has started before readiness probes are initiated</td>
+		</tr>
+		<tr>
+			<td>netdataOpentelemetry.readinessProbe.failureThreshold</td>
+			<td>int</td>
+			<td><pre lang="json">
+3
+</pre>
+</td>
+			<td>When a readiness probe fails, Kubernetes will try failureThreshold times before giving up</td>
+		</tr>
+		<tr>
+			<td>netdataOpentelemetry.readinessProbe.periodSeconds</td>
+			<td>int</td>
+			<td><pre lang="json">
+30
+</pre>
+</td>
+			<td>How often (in seconds) to perform the readiness probe</td>
+		</tr>
+		<tr>
+			<td>netdataOpentelemetry.readinessProbe.successThreshold</td>
+			<td>int</td>
+			<td><pre lang="json">
+1
+</pre>
+</td>
+			<td>Minimum consecutive successes for the readiness probe to be considered successful after having failed</td>
+		</tr>
+		<tr>
+			<td>netdataOpentelemetry.readinessProbe.timeoutSeconds</td>
+			<td>int</td>
+			<td><pre lang="json">
+1
+</pre>
+</td>
+			<td>Number of seconds after which the readiness probe times out</td>
+		</tr>
+		<tr>
+			<td>netdataOpentelemetry.terminationGracePeriodSeconds</td>
+			<td>int</td>
+			<td><pre lang="json">
+30
+</pre>
+</td>
+			<td>Duration in seconds the pod needs to terminate gracefully</td>
+		</tr>
+		<tr>
+			<td>netdataOpentelemetry.nodeSelector</td>
+			<td>object</td>
+			<td><pre lang="json">
+{}
+</pre>
+</td>
+			<td>Node selector</td>
+		</tr>
+		<tr>
+			<td>netdataOpentelemetry.tolerations</td>
+			<td>list</td>
+			<td><pre lang="json">
+[]
+</pre>
+</td>
+			<td>Tolerations settings</td>
+		</tr>
+		<tr>
+			<td>netdataOpentelemetry.affinity</td>
+			<td>object</td>
+			<td><pre lang="json">
+{}
+</pre>
+</td>
+			<td>Affinity settings</td>
+		</tr>
+		<tr>
+			<td>netdataOpentelemetry.priorityClassName</td>
+			<td>string</td>
+			<td><pre lang="json">
+""
+</pre>
+</td>
+			<td>Pod priority class name</td>
+		</tr>
+		<tr>
+			<td>netdataOpentelemetry.podLabels</td>
+			<td>object</td>
+			<td><pre lang="json">
+{}
+</pre>
+</td>
+			<td>Additional labels</td>
+		</tr>
+		<tr>
+			<td>netdataOpentelemetry.podAnnotationAppArmor.enabled</td>
+			<td>bool</td>
+			<td><pre lang="json">
+true
+</pre>
+</td>
+			<td>Whether or not to include the AppArmor security annotation</td>
+		</tr>
+		<tr>
+			<td>netdataOpentelemetry.podAnnotations</td>
+			<td>object</td>
+			<td><pre lang="json">
+{}
+</pre>
+</td>
+			<td>Additional annotations</td>
+		</tr>
+		<tr>
+			<td>netdataOpentelemetry.dnsPolicy</td>
+			<td>string</td>
+			<td><pre lang="json">
+"Default"
+</pre>
+</td>
+			<td>DNS policy for pod</td>
+		</tr>
+		<tr>
+			<td>netdataOpentelemetry.persistence.enabled</td>
+			<td>bool</td>
+			<td><pre lang="json">
+true
+</pre>
+</td>
+			<td>Whether should use a persistent volume</td>
+		</tr>
+		<tr>
+			<td>netdataOpentelemetry.persistence.storageclass</td>
+			<td>string</td>
+			<td><pre lang="json">
+"-"
+</pre>
+</td>
+			<td>The storage class for the persistent volume claim</td>
+		</tr>
+		<tr>
+			<td>netdataOpentelemetry.persistence.volumesize</td>
+			<td>string</td>
+			<td><pre lang="json">
+"10Gi"
+</pre>
+</td>
+			<td>The storage space for the PVC</td>
+		</tr>
+		<tr>
+			<td>netdataOpentelemetry.configs</td>
+			<td>object</td>
+			<td><pre lang="">
+See values.yaml for defaults
+</pre>
+</td>
+			<td>Manage custom configs</td>
+		</tr>
+		<tr>
+			<td>netdataOpentelemetry.env</td>
+			<td>object</td>
+			<td><pre lang="json">
+{}
+</pre>
+</td>
+			<td>Set environment parameters</td>
+		</tr>
+		<tr>
+			<td>netdataOpentelemetry.envFrom</td>
+			<td>list</td>
+			<td><pre lang="json">
+[]
+</pre>
+</td>
+			<td>Set environment parameters from ConfigMap and/or Secrets</td>
+		</tr>
+		<tr>
+			<td>netdataOpentelemetry.claiming.enabled</td>
+			<td>bool</td>
+			<td><pre lang="json">
+false
+</pre>
+</td>
+			<td>Enable claiming for netdata cloud</td>
+		</tr>
+		<tr>
+			<td>netdataOpentelemetry.claiming.token</td>
+			<td>string</td>
+			<td><pre lang="json">
+""
+</pre>
+</td>
+			<td>Claim token</td>
+		</tr>
+		<tr>
+			<td>netdataOpentelemetry.claiming.rooms</td>
+			<td>string</td>
+			<td><pre lang="json">
+""
+</pre>
+</td>
+			<td>Comma separated list of claim rooms IDs. Empty value = All nodes room only</td>
+		</tr>
+		<tr>
+			<td>netdataOpentelemetry.extraVolumeMounts</td>
+			<td>list</td>
+			<td><pre lang="json">
+[]
+</pre>
+</td>
+			<td>Additional volumeMounts</td>
+		</tr>
+		<tr>
+			<td>netdataOpentelemetry.extraVolumes</td>
+			<td>list</td>
+			<td><pre lang="json">
+[]
+</pre>
+</td>
+			<td>Additional volumes</td>
+		</tr>
+	</tbody>
+</table>
+<h3>OpenTelemetry Collector</h3>
+<table>
+	<thead>
+		<th>Key</th>
+		<th>Type</th>
+		<th>Default</th>
+		<th>Description</th>
+	</thead>
+	<tbody>
+		<tr>
+			<td>otel-collector.enabled</td>
+			<td>bool</td>
+			<td><pre lang="json">
+false
+</pre>
+</td>
+			<td>Set to true to enable the OpenTelemetry Collector</td>
+		</tr>
+		<tr>
+			<td>otel-collector.mode</td>
+			<td>string</td>
+			<td><pre lang="json">
+"daemonset"
+</pre>
+</td>
+			<td>Deployment mode: daemonset, deployment, or statefulset</td>
+		</tr>
+		<tr>
+			<td>otel-collector.image.repository</td>
+			<td>string</td>
+			<td><pre lang="json">
+"otel/opentelemetry-collector-k8s"
+</pre>
+</td>
+			<td>Image repository</td>
+		</tr>
+		<tr>
+			<td>otel-collector.presets.kubernetesAttributes.enabled</td>
+			<td>bool</td>
+			<td><pre lang="json">
+true
+</pre>
+</td>
+			<td>Enable Kubernetes attributes collection</td>
+		</tr>
+		<tr>
+			<td>otel-collector.presets.logsCollection.enabled</td>
+			<td>bool</td>
+			<td><pre lang="json">
+true
+</pre>
+</td>
+			<td>Enable logs collection from Kubernetes pods</td>
+		</tr>
+		<tr>
+			<td>otel-collector.presets.logsCollection.includeCollectorLogs</td>
+			<td>bool</td>
+			<td><pre lang="json">
+false
+</pre>
+</td>
+			<td>Include collector logs in the collection</td>
+		</tr>
+		<tr>
+			<td>otel-collector.config</td>
+			<td>object</td>
+			<td><pre lang="">
+See values.yaml for defaults
+</pre>
+</td>
+			<td>OpenTelemetry Collector configuration</td>
+		</tr>
+		<tr>
+			<td>otel-collector.resources</td>
+			<td>object</td>
+			<td><pre lang="">
+See values.yaml for defaults
+</pre>
+</td>
+			<td>Resources</td>
+		</tr>
+		<tr>
+			<td>otel-collector.serviceAccount.create</td>
+			<td>bool</td>
+			<td><pre lang="json">
+true
+</pre>
+</td>
+			<td>Create service account</td>
+		</tr>
+		<tr>
+			<td>otel-collector.clusterRole.create</td>
+			<td>bool</td>
+			<td><pre lang="json">
+true
+</pre>
+</td>
+			<td>Create cluster role</td>
+		</tr>
+		<tr>
+			<td>otel-collector.clusterRole.rules</td>
+			<td>list</td>
+			<td><pre lang="">
+See values.yaml for defaults
+</pre>
+</td>
+			<td>Cluster role rules</td>
+		</tr>
+		<tr>
+			<td>otel-collector.tolerations</td>
+			<td>list</td>
+			<td><pre lang="">
+See values.yaml for defaults
+</pre>
+</td>
+			<td>Tolerations to run on all nodes</td>
+		</tr>
+	</tbody>
+</table>
 
 Example to set the parameters from the command line:
 

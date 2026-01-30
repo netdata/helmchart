@@ -1,9 +1,9 @@
 # -- Number of `replicas` for the parent netdata `Deployment`
 # @section -- General settings
 replicaCount: 1
-# -- Deployment strategy for pod deployments. Recreate is the safest value.
-# @section -- General settings
 deploymentStrategy:
+  # -- Deployment strategy for pod deployments. Recreate is the safest value.
+  # @section -- General settings
   type: Recreate
 
 # -- An optional list of references to secrets in the same namespace to use for pulling any of the images
@@ -52,6 +52,7 @@ sd:
         # @section -- Service Discovery
         value: {}
     # -- Child service-discovery container CPU/Memory resource requests/limits
+    # @default -- See values.yaml for defaults
     # @section -- Service Discovery
     resources:
       limits:
@@ -114,6 +115,7 @@ ingress:
   # @section -- General settings
   enabled: true
   # -- Associate annotations to the Ingress
+  # @default -- See values.yaml for defaults
   # @section -- General settings
   annotations:
     kubernetes.io/ingress.class: nginx
@@ -124,9 +126,9 @@ ingress:
   # -- pathType for your ingress controller. Default value is correct for nginx. If you use your own ingress controller, check the correct value
   # @section -- General settings
   pathType: Prefix
-  # -- URL hostnames for the ingress (they need to resolve to the external IP of the ingress controller)
-  # @section -- General settings
   hosts:
+    # -- URL hostnames for the ingress (they need to resolve to the external IP of the ingress controller)
+    # @section -- General settings
     - netdata.k8s.local
   ## whole spec is going to be included into ingress spec.
   ## if you intend to use ingressClassName declaration, remove ingress.class from annotations
@@ -337,7 +339,7 @@ parent:
     volumesize: 1Gi
 
   # -- Manage custom parent's configs
-  # @default -- See values.yaml for default configuration
+  # @default -- See values.yaml for defaults
   # @section -- Parent
   configs:
     netdata:
@@ -486,6 +488,7 @@ child:
   nodeSelector: {}
 
   # -- Tolerations settings for the child daemonsets
+  # @default -- See values.yaml for defaults
   # @section -- Child
   tolerations:
     - operator: Exists
@@ -537,7 +540,7 @@ child:
     kubeletUrl: "https://localhost:10250"
 
   # -- Manage custom child's configs
-  # @default -- See values.yaml for default configuration
+  # @default -- See values.yaml for defaults
   # @section -- Child
   configs:
     netdata:
@@ -760,7 +763,7 @@ k8sState:
     ## Also ensure that claim.token is empty
 
   # -- Manage custom configs
-  # @default -- See values.yaml for default configuration
+  # @default -- See values.yaml for defaults
   # @section -- K8s State
   configs:
     netdata:
@@ -969,7 +972,7 @@ netdataOpentelemetry:
     volumesize: 10Gi
 
   # -- Manage custom configs
-  # @default -- See values.yaml for default configuration
+  # @default -- See values.yaml for defaults
   # @section -- Netdata OpenTelemetry
   configs:
     netdata:
@@ -1112,6 +1115,7 @@ otel-collector:
       includeCollectorLogs: false
 
   # -- OpenTelemetry Collector configuration
+  # @default -- See values.yaml for defaults
   # @section -- OpenTelemetry Collector
   config:
     receivers:
@@ -1216,6 +1220,7 @@ otel-collector:
           exporters: [otlp]
 
   # -- Resources
+  # @default -- See values.yaml for defaults
   # @section -- OpenTelemetry Collector
   resources:
     limits:
@@ -1237,6 +1242,7 @@ otel-collector:
     # @section -- OpenTelemetry Collector
     create: true
     # -- Cluster role rules
+    # @default -- See values.yaml for defaults
     # @section -- OpenTelemetry Collector
     rules:
       - apiGroups: [""]
@@ -1247,6 +1253,7 @@ otel-collector:
         verbs: ["get", "list", "watch"]
 
   # -- Tolerations to run on all nodes
+  # @default -- See values.yaml for defaults
   # @section -- OpenTelemetry Collector
   tolerations:
     - effect: NoSchedule
@@ -1255,24 +1262,20 @@ otel-collector:
       operator: Exists
 
   # Ports configuration
+  # @default -- See values.yaml for defaults
+  # @section -- OpenTelemetry Collector
   ports:
     otlp:
-      # -- Enable OTLP port
-      # @section -- OpenTelemetry Collector
       enabled: true
       containerPort: 4317
       servicePort: 4317
       protocol: TCP
     otlp-http:
-      # -- Enable OTLP HTTP port
-      # @section -- OpenTelemetry Collector
       enabled: true
       containerPort: 4318
       servicePort: 4318
       protocol: TCP
     metrics:
-      # -- Enable metrics port
-      # @section -- OpenTelemetry Collector
       enabled: true
       containerPort: 8888
       servicePort: 8888
