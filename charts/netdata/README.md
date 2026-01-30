@@ -971,7 +971,7 @@ false
 ""
 </pre>
 </td>
-			<td>Comma separated list of claim rooms IDs</td>
+			<td>Comma separated list of claim rooms IDs. Empty value = All nodes room only</td>
 		</tr>
 		<tr>
 			<td>parent.extraVolumeMounts</td>
@@ -1311,7 +1311,7 @@ false
 ""
 </pre>
 </td>
-			<td>Comma separated list of claim rooms IDs</td>
+			<td>Comma separated list of claim rooms IDs. Empty value = All nodes room only</td>
 		</tr>
 		<tr>
 			<td>child.extraVolumeMounts</td>
@@ -1648,7 +1648,7 @@ false
 ""
 </pre>
 </td>
-			<td>Comma separated list of claim rooms IDs</td>
+			<td>Comma separated list of claim rooms IDs. Empty value = All nodes room only</td>
 		</tr>
 		<tr>
 			<td>k8sState.extraVolumeMounts</td>
@@ -1992,7 +1992,7 @@ false
 ""
 </pre>
 </td>
-			<td>Comma separated list of claim rooms IDs</td>
+			<td>Comma separated list of claim rooms IDs. Empty value = All nodes room only</td>
 		</tr>
 		<tr>
 			<td>netdataOpentelemetry.extraVolumeMounts</td>
