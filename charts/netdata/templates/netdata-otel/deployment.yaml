@@ -37,8 +37,6 @@ spec:
 {{ toYaml . | trim | indent 8 }}
 {{- end }}
     spec:
-      securityContext:
-        fsGroup: 201
       serviceAccountName: {{ .Values.serviceAccount.name }}
       restartPolicy: Always
       {{- if .Values.netdataOpentelemetry.priorityClassName }}
@@ -101,6 +99,9 @@ spec:
             - name: http
               containerPort: {{ tpl (.Values.netdataOpentelemetry.port | toString) . }}
               protocol: TCP
+            - name: otel
+              containerPort: {{ tpl (.Values.netdataOpentelemetry.service.port | toString) . }}
+              protocol: TCP
           livenessProbe:
             exec:
               command:
@@ -132,7 +133,7 @@ spec:
             {{- end }}
             {{- end }}
             {{- if .Values.netdataOpentelemetry.persistence.enabled }}
-            - name: varlib
+            - name: varlog
               mountPath: /var/log/netdata/otel
             {{- end }}
             {{- if .Values.netdataOpentelemetry.extraVolumeMounts -}}
@@ -166,7 +167,7 @@ spec:
             secretName: netdata-conf-otel
             optional: true
         {{- if .Values.netdataOpentelemetry.persistence.enabled }}
-        - name: varlib
+        - name: varlog
           persistentVolumeClaim:
             claimName: {{ template "netdata.name" . }}-otel-varlog
         {{- end }}
