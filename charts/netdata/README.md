@@ -1050,6 +1050,15 @@ true
 			<td>When a liveness probe fails, Kubernetes will try failureThreshold times before giving up. Giving up the liveness probe means restarting the container</td>
 		</tr>
 		<tr>
+			<td>child.livenessProbe.periodSeconds</td>
+			<td>int</td>
+			<td><pre lang="json">
+30
+</pre>
+</td>
+			<td>How often (in seconds) to perform the liveness probe</td>
+		</tr>
+		<tr>
 			<td>child.livenessProbe.successThreshold</td>
 			<td>int</td>
 			<td><pre lang="json">
@@ -1309,26 +1318,6 @@ false
 </pre>
 </td>
 			<td>Additional volumes to add to the child pods</td>
-		</tr>
-	</tbody>
-</table>
-<h3>Child1.0</h3>
-<table>
-	<thead>
-		<th>Key</th>
-		<th>Type</th>
-		<th>Default</th>
-		<th>Description</th>
-	</thead>
-	<tbody>
-		<tr>
-			<td>child.livenessProbe.periodSeconds</td>
-			<td>int</td>
-			<td><pre lang="json">
-30
-</pre>
-</td>
-			<td>How often (in seconds) to perform the liveness probe</td>
 		</tr>
 	</tbody>
 </table>
@@ -1711,6 +1700,51 @@ false
 </pre>
 </td>
 			<td>Service annotations</td>
+		</tr>
+		<tr>
+			<td>netdataOpentelemetry.service.clusterIP</td>
+			<td>string</td>
+			<td><pre lang="json">
+""
+</pre>
+</td>
+			<td>Cluster IP address (only used with service.type ClusterIP)</td>
+		</tr>
+		<tr>
+			<td>netdataOpentelemetry.service.loadBalancerIP</td>
+			<td>string</td>
+			<td><pre lang="json">
+""
+</pre>
+</td>
+			<td>LoadBalancer IP address (only used with service.type LoadBalancer)</td>
+		</tr>
+		<tr>
+			<td>netdataOpentelemetry.service.loadBalancerSourceRanges</td>
+			<td>list</td>
+			<td><pre lang="json">
+[]
+</pre>
+</td>
+			<td>Allowed source ranges for LoadBalancer (only used with service.type LoadBalancer)</td>
+		</tr>
+		<tr>
+			<td>netdataOpentelemetry.service.externalTrafficPolicy</td>
+			<td>string</td>
+			<td><pre lang="json">
+""
+</pre>
+</td>
+			<td>External traffic policy (only used with service.type LoadBalancer)</td>
+		</tr>
+		<tr>
+			<td>netdataOpentelemetry.service.healthCheckNodePort</td>
+			<td>string</td>
+			<td><pre lang="json">
+""
+</pre>
+</td>
+			<td>Health check node port (only used with service.type LoadBalancer and external traffic policy Local)</td>
 		</tr>
 		<tr>
 			<td>netdataOpentelemetry.resources</td>

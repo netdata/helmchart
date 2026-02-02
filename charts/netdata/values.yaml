@@ -454,7 +454,7 @@ child:
     # @section -- Child
     failureThreshold: 3
     # -- How often (in seconds) to perform the liveness probe
-    # @section -- Child1.0
+    # @section -- Child
     periodSeconds: 30
     # -- Minimum consecutive successes for the liveness probe to be considered successful after having failed
     # @section -- Child
@@ -871,14 +871,21 @@ netdataOpentelemetry:
     # -- Service annotations
     # @section -- Netdata OpenTelemetry
     annotations: {}
-    ## Only to be used with type LoadBalancer
-    # loadBalancerIP: 10.0.1.69
-    # loadBalancerSourceRanges: []
-    # externalTrafficPolicy: Local
-    ## Only to be used with type LoadBalancer and external traffic policy Local
-    # healthCheckNodePort:
-    ## Only to be used with type ClusterIP
-    # clusterIP: 10.1.2.3
+    # -- Cluster IP address (only used with service.type ClusterIP)
+    # @section -- Netdata OpenTelemetry
+    clusterIP: ""
+    # -- LoadBalancer IP address (only used with service.type LoadBalancer)
+    # @section -- Netdata OpenTelemetry
+    loadBalancerIP: ""
+    # -- Allowed source ranges for LoadBalancer (only used with service.type LoadBalancer)
+    # @section -- Netdata OpenTelemetry
+    loadBalancerSourceRanges: []
+    # -- External traffic policy (only used with service.type LoadBalancer)
+    # @section -- Netdata OpenTelemetry
+    externalTrafficPolicy: ""
+    # -- Health check node port (only used with service.type LoadBalancer and external traffic policy Local)
+    # @section -- Netdata OpenTelemetry
+    healthCheckNodePort: ""
 
   # -- Compute resources required by this Deployment
   # @section -- Netdata OpenTelemetry
