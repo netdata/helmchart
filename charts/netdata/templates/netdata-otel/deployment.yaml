@@ -37,6 +37,8 @@ spec:
 {{ toYaml . | trim | indent 8 }}
 {{- end }}
     spec:
+      securityContext:
+          fsGroup: {{ .Values.netdataOpentelemetry.securityContext.fsGroup }}
       serviceAccountName: {{ .Values.serviceAccount.name }}
       restartPolicy: Always
       {{- if .Values.netdataOpentelemetry.priorityClassName }}
@@ -122,6 +124,9 @@ spec:
             periodSeconds: {{ .Values.netdataOpentelemetry.readinessProbe.periodSeconds }}
             successThreshold: {{ .Values.netdataOpentelemetry.readinessProbe.successThreshold }}
             timeoutSeconds: {{ .Values.netdataOpentelemetry.readinessProbe.timeoutSeconds }}
+          securityContext:
+            runAsUser: {{ .Values.netdataOpentelemetry.securityContext.runAsUser }}
+            runAsGroup: {{ .Values.netdataOpentelemetry.securityContext.runAsGroup }}
           volumeMounts:
             - name: os-release
               mountPath: /host/etc/os-release

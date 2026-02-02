@@ -930,6 +930,17 @@ netdataOpentelemetry:
     # @section -- Netdata OpenTelemetry
     timeoutSeconds: 1
 
+  securityContext:
+    # -- The UID to run the container process
+    # @section -- Netdata OpenTelemetry
+    runAsUser: 201
+    # -- The GID to run the container process
+    # @section -- Netdata OpenTelemetry
+    runAsGroup: 201
+    # -- The supplementary group for setting permissions on volumes
+    # @section -- Netdata OpenTelemetry
+    fsGroup: 201
+
   # -- Duration in seconds the pod needs to terminate gracefully
   # @section -- Netdata OpenTelemetry
   terminationGracePeriodSeconds: 30

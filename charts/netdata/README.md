@@ -1846,6 +1846,33 @@ false
 			<td>Number of seconds after which the readiness probe times out</td>
 		</tr>
 		<tr>
+			<td>netdataOpentelemetry.securityContext.runAsUser</td>
+			<td>int</td>
+			<td><pre lang="json">
+201
+</pre>
+</td>
+			<td>The UID to run the container process</td>
+		</tr>
+		<tr>
+			<td>netdataOpentelemetry.securityContext.runAsGroup</td>
+			<td>int</td>
+			<td><pre lang="json">
+201
+</pre>
+</td>
+			<td>The GID to run the container process</td>
+		</tr>
+		<tr>
+			<td>netdataOpentelemetry.securityContext.fsGroup</td>
+			<td>int</td>
+			<td><pre lang="json">
+201
+</pre>
+</td>
+			<td>The supplementary group for setting permissions on volumes</td>
+		</tr>
+		<tr>
 			<td>netdataOpentelemetry.terminationGracePeriodSeconds</td>
 			<td>int</td>
 			<td><pre lang="json">
