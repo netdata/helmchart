@@ -29,11 +29,6 @@ jobs:
           git config --global user.name Netdatabot
           git config --global user.email bot@netdata.cloud
 
-      - name: Set up Helm
-        uses: azure/setup-helm@v4
-        with:
-          version: v3.12.0
-
       - name: Add helm repo for dependencies
         run: |
           helm repo add opentelemetry-collector https://open-telemetry.github.io/opentelemetry-helm-charts
