@@ -1044,7 +1044,7 @@ netdataOpentelemetry:
       path: /etc/netdata/otel.yaml
       data: |
         endpoint:
-          path: "0.0.0.0:4317"
+          path: {{ printf "\"0.0.0.0:%v\"" .Values.netdataOpentelemetry.service.port }}
           tls_cert_path: null
           tls_key_path: null
           tls_ca_cert_path: null
