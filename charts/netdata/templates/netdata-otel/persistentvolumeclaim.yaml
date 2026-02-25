@@ -1,0 +1,22 @@
+{{- if and .Values.netdataOpentelemetry.enabled .Values.netdataOpentelemetry.persistence.enabled }}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ template "netdata.name" . }}-otel-varlog
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ template "netdata.name" . }}
+    chart: {{ template "netdata.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+    role: otel
+spec:
+  accessModes: [ "ReadWriteOnce" ]
+  {{- if (ne "-" .Values.netdataOpentelemetry.persistence.storageclass) }}
+  storageClassName: "{{ .Values.netdataOpentelemetry.persistence.storageclass }}"
+  {{- end }}
+  resources:
+    requests:
+      storage: {{ .Values.netdataOpentelemetry.persistence.volumesize }}
+{{- end }}

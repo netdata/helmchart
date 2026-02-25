@@ -32,6 +32,26 @@ jobs:
             echo "changed=true" >> $GITHUB_OUTPUT
           fi
 
+      - name: Install helm-docs
+        run: |
+          GOBIN=/usr/local/bin/ go install github.com/norwoodj/helm-docs/cmd/helm-docs@v1.14.2
+
+      - name: Add helm repo for otel
+        run: |
+          helm repo add opentelemetry-collector https://open-telemetry.github.io/opentelemetry-helm-charts
+
+      - name: Build chart dependencies
+        run: |
+          helm dependency build charts/netdata
+
+      - name: Check documentation is up-to-date
+        run: |
+          ./generate-documentation.sh
+          if ! git diff --exit-code charts/netdata/README.md; then
+            echo "::error::README.md is out of date. Please run ./generate-documentation.sh and commit the changes."
+            exit 1
+          fi
+
       - name: Run chart-testing (lint)
         run: ct lint --check-version-increment=false --validate-maintainers=false --target-branch ${{ github.event.repository.default_branch }}
 
@@ -41,3 +61,6 @@ jobs:
 
       - name: Run chart-testing (install)
         run: ct install --target-branch ${{ github.event.repository.default_branch }}
+
+      - name: Run chart-testing (install with OpenTelemetry)
+        run: ct install --target-branch ${{ github.event.repository.default_branch }} --helm-extra-set-args "--set netdataOpentelemetry.enabled=true --set otel-collector.enabled=true"

@@ -29,6 +29,14 @@ jobs:
           git config --global user.name Netdatabot
           git config --global user.email bot@netdata.cloud
 
+      - name: Add helm repo for dependencies
+        run: |
+          helm repo add opentelemetry-collector https://open-telemetry.github.io/opentelemetry-helm-charts
+
+      - name: Build chart dependencies
+        run: |
+          helm dependency build charts/netdata
+
       - name: Get current version
         id: get_current_var
         run: echo "current_version=$(.github/scripts/update_versions.py get_chart_version)" >> $GITHUB_OUTPUT

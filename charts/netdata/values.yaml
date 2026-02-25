@@ -1,28 +1,59 @@
+# -- Number of `replicas` for the parent netdata `Deployment`
+# @section -- General settings
 replicaCount: 1
 deploymentStrategy:
+  # -- Deployment strategy for pod deployments. Recreate is the safest value.
+  # @section -- General settings
   type: Recreate
 
+# -- An optional list of references to secrets in the same namespace to use for pulling any of the images
+# @section -- General settings
 imagePullSecrets: []
 
 image:
+  # -- Container image repository
+  # @section -- General settings
   repository: netdata/netdata
+  # -- Container image tag
+  # @section -- General settings
   tag: "{{ .Chart.AppVersion }}"
+  # -- Container image pull policy
+  # @section -- General settings
   pullPolicy: Always
 
 sd:
   image:
+    # -- Container image repository
+    # @section -- Service Discovery
     repository: netdata/agent-sd
+    # -- Container image tag
+    # @section -- Service Discovery
     tag: v0.2.10
+    # -- Container image pull policy
+    # @section -- Service Discovery
     pullPolicy: Always
   child:
+    # -- Add service-discovery sidecar container to the netdata child pod definition
+    # @section -- Service Discovery
     enabled: true
     configmap:
+      # -- Child service-discovery ConfigMap name
+      # @section -- Service Discovery
       name: netdata-child-sd-config-map
+      # -- Child service-discovery ConfigMap key
+      # @section -- Service Discovery
       key: config.yml
       # if 'from' is {} the ConfigMap is not generated
       from:
+        # -- File to use for child service-discovery configuration generation
+        # @section -- Service Discovery
         file: ""
+        # -- Value to use for child service-discovery configuration generation
+        # @section -- Service Discovery
         value: {}
+    # -- Child service-discovery container CPU/Memory resource requests/limits
+    # @default -- See values.yaml for defaults
+    # @section -- Service Discovery
     resources:
       limits:
         cpu: 50m
@@ -32,37 +63,73 @@ sd:
         memory: 100Mi
 
 initContainersImage:
+  # -- Init containers' image repository
+  # @section -- General settings
   repository: alpine
+  # -- Init containers' image tag
+  # @section -- General settings
   tag: latest
+  # -- Init containers' image pull policy
+  # @section -- General settings
   pullPolicy: Always
 
 sysctlInitContainer:
+  # -- Enable an init container to modify Kernel settings
+  # @section -- General settings
   enabled: false
+  # -- sysctl init container command to execute
+  # @section -- General settings
   command: []
+  # -- sysctl Init container CPU/Memory resource requests/limits
+  # @section -- General settings
   resources: {}
 
 service:
+  # -- Parent service type
+  # @section -- General settings
   type: ClusterIP
+  # -- Parent service port
+  # @section -- General settings
   port: 19999
+  # -- Additional annotations to add to the service
+  # @section -- General settings
   annotations: {}
-  ## Only to be used with type LoadBalancer
-  # loadBalancerIP: 10.0.1.69
-  # loadBalancerSourceRanges: []
-  # externalTrafficPolicy: Local
-  ## Only to be used with type LoadBalancer and external traffic policy Local
-  # healthCheckNodePort:
-  ## Only to be used with type ClusterIP
-  # clusterIP: 10.1.2.3
+  # -- Static LoadBalancer IP, only to be used with service type=LoadBalancer
+  # @section -- General settings
+  loadBalancerIP: ""
+  # -- List of allowed IPs for LoadBalancer
+  # @section -- General settings
+  loadBalancerSourceRanges: []
+  # -- Denotes if this Service desires to route external traffic to node-local or cluster-wide endpoints
+  # @section -- General settings
+  externalTrafficPolicy: ""
+  # -- Specifies the health check node port (only to be used with type LoadBalancer and external traffic policy Local)
+  # @section -- General settings
+  healthCheckNodePort: null
+  # -- Specific cluster IP when service type is cluster IP. Use `None` for headless service
+  # @section -- General settings
+  clusterIP: ""
 
 ingress:
+  # -- Create Ingress to access the netdata web UI
+  # @section -- General settings
   enabled: true
+  # -- Associate annotations to the Ingress
+  # @default -- See values.yaml for defaults
+  # @section -- General settings
   annotations:
     kubernetes.io/ingress.class: nginx
     kubernetes.io/tls-acme: "true"
+  # -- URL path for the ingress. If changed, a proxy server needs to be configured in front of netdata to translate path from a custom one to a `/`
+  # @section -- General settings
   path: /
+  # -- pathType for your ingress controller. Default value is correct for nginx. If you use your own ingress controller, check the correct value
+  # @section -- General settings
   pathType: Prefix
   hosts:
-  - netdata.k8s.local
+    # -- URL hostnames for the ingress (they need to resolve to the external IP of the ingress controller)
+    # @section -- General settings
+    - netdata.k8s.local
   ## whole spec is going to be included into ingress spec.
   ## if you intend to use ingressClassName declaration, remove ingress.class from annotations
   # spec:
@@ -73,22 +140,43 @@ ingress:
   #       - netdata.k8s.local
 
 rbac:
+  # -- if true, create & use RBAC resources
+  # @section -- General settings
   create: true
+  # -- Specifies whether a PodSecurityPolicy should be created
+  # @section -- General settings
   pspEnabled: true
 
 serviceAccount:
+  # -- if true, create a service account
+  # @section -- General settings
   create: true
+  # -- The name of the service account to use. If not set and create is true, a name is generated using the fullname template
+  # @section -- General settings
   name: netdata
 
 restarter:
+  # -- Install CronJob to update Netdata Pods
+  # @section -- General settings
   enabled: false
+  # -- The schedule in Cron format
+  # @section -- General settings
   schedule: "00 06 * * *"
   image:
+    # -- Container image repo
+    # @section -- General settings
     repository: rancher/kubectl
-    # if `.auto`, the image tag version of the rancher/kubectl will reflect the Kubernetes cluster version
+    # -- Container image tag. If `.auto`, the image tag version of the rancher/kubectl will reflect the Kubernetes cluster version
+    # @section -- General settings
     tag: .auto
+    # -- Container image pull policy
+    # @section -- General settings
     pullPolicy: Always
+  # -- Container restart policy
+  # @section -- General settings
   restartPolicy: Never
+  # -- Container resources
+  # @section -- General settings
   resources: {}
     # limits:
     #  cpu: 500m
@@ -96,20 +184,40 @@ restarter:
     # requests:
     #  cpu: 250m
   #  memory: 32Mi
+  # -- Specifies how to treat concurrent executions of a job
+  # @section -- General settings
   concurrencyPolicy: Forbid
+  # -- Optional deadline in seconds for starting the job if it misses scheduled time for any reason
+  # @section -- General settings
   startingDeadlineSeconds: 60
+  # -- The number of successful finished jobs to retain
+  # @section -- General settings
   successfulJobsHistoryLimit: 3
+  # -- The number of failed finished jobs to retain
+  # @section -- General settings
   failedJobsHistoryLimit: 3
 
 notifications:
   slack:
+    # -- Slack webhook URL
+    # @section -- General settings
     webhook_url: ""
+    # -- Slack recipient list
+    # @section -- General settings
     recipient: ""
 
 parent:
+  # -- Parent node hostname
+  # @section -- Parent
   hostname: "netdata-parent"
+  # -- Install parent Deployment to receive metrics from children nodes
+  # @section -- Parent
   enabled: true
+  # -- Parent's listen port
+  # @section -- Parent
   port: 19999
+  # -- Resources for the parent deployment
+  # @section -- Parent
   resources: {}
     # limits:
     #  cpu: 4
@@ -119,36 +227,76 @@ parent:
     #  memory: 4096Mi
 
   livenessProbe:
+    # -- Number of seconds after the container has started before liveness probes are initiated
+    # @section -- Parent
     initialDelaySeconds: 0
+    # -- When a liveness probe fails, Kubernetes will try failureThreshold times before giving up. Giving up the liveness probe means restarting the container
+    # @section -- Parent
     failureThreshold: 3
+    # -- How often (in seconds) to perform the liveness probe
+    # @section -- Parent
     periodSeconds: 30
+    # -- Minimum consecutive successes for the liveness probe to be considered successful after having failed
+    # @section -- Parent
     successThreshold: 1
+    # -- Number of seconds after which the liveness probe times out
+    # @section -- Parent
     timeoutSeconds: 1
   readinessProbe:
+    # -- Number of seconds after the container has started before readiness probes are initiated
+    # @section -- Parent
     initialDelaySeconds: 0
+    # -- When a readiness probe fails, Kubernetes will try failureThreshold times before giving up. Giving up the readiness probe means marking the Pod Unready
+    # @section -- Parent
     failureThreshold: 3
+    # -- How often (in seconds) to perform the readiness probe
+    # @section -- Parent
     periodSeconds: 30
+    # -- Minimum consecutive successes for the readiness probe to be considered successful after having failed
+    # @section -- Parent
     successThreshold: 1
+    # -- Number of seconds after which the readiness probe times out
+    # @section -- Parent
     timeoutSeconds: 1
   securityContext:
+    # -- The UID to run the container process
+    # @section -- Parent
     runAsUser: 201
+    # -- The GID to run the container process
+    # @section -- Parent
     runAsGroup: 201
+    # -- The supplementary group for setting permissions on volumes
+    # @section -- Parent
     fsGroup: 201
 
+  # -- Duration in seconds the pod needs to terminate gracefully
+  # @section -- Parent
   terminationGracePeriodSeconds: 300
 
+  # -- Node selector for the parent deployment
+  # @section -- Parent
   nodeSelector: {}
 
+  # -- Tolerations settings for the parent deployment
+  # @section -- Parent
   tolerations: []
 
+  # -- Affinity settings for the parent deployment
+  # @section -- Parent
   affinity: {}
 
+  # -- Pod priority class name for the parent deployment
+  # @section -- Parent
   priorityClassName: ""
 
+  # -- Set environment parameters for the parent deployment
+  # @section -- Parent
   env: {}
     ## To disable anonymous statistics:
     # DO_NOT_TRACK: 1
 
+  # -- Set environment parameters for the parent deployment from ConfigMap and/or Secrets
+  # @section -- Parent
   envFrom: []
     ## E.g. to read Netdata Cloud claim token from an existing secret "netdata" set this to:
     # - secretRef:
@@ -156,24 +304,43 @@ parent:
     ## And create it with: kubectl create secret generic netdata --from-literal="NETDATA_CLAIM_TOKEN=<token>"
     ## Also ensure that claim.token is empty
 
+  # -- Additional labels to add to the parent pods
+  # @section -- Parent
   podLabels: {}
 
+  # -- Additional annotations to add to the parent pods
+  # @section -- Parent
   podAnnotations: {}
 
+  # -- DNS policy for pod
+  # @section -- Parent
   dnsPolicy: Default
 
   database:
+    # -- Whether the parent should use a persistent volume for the DB
+    # @section -- Parent
     persistence: true
-    ## Set '-' as the storageclass to get a volume from the default storage class.
+    # -- The storage class for the persistent volume claim of the parent's database store, mounted to `/var/cache/netdata`
+    # @section -- Parent
     storageclass: "-"
+    # -- The storage space for the PVC of the parent database
+    # @section -- Parent
     volumesize: 5Gi
 
   alarms:
+    # -- Whether the parent should use a persistent volume for the alarms log
+    # @section -- Parent
     persistence: true
-    ## Set '-' as the storageclass to get a volume from the default storage class.
+    # -- The storage class for the persistent volume claim of the parent's alarm log, mounted to `/var/lib/netdata`
+    # @section -- Parent
     storageclass: "-"
+    # -- The storage space for the PVC of the parent alarm log
+    # @section -- Parent
     volumesize: 1Gi
 
+  # -- Manage custom parent's configs
+  # @default -- See values.yaml for defaults
+  # @section -- Parent
   configs:
     netdata:
       enabled: true
@@ -232,25 +399,45 @@ parent:
           to: sysadmin
 
   claiming:
+    # -- Enable parent claiming for netdata cloud
+    # @section -- Parent
     enabled: false
+    # -- Claim token
+    # @section -- Parent
     token: ""
+    # -- Comma separated list of claim rooms IDs. Empty value = All nodes room only
+    # @section -- Parent
     rooms: ""
     url: "https://api.netdata.cloud"
 
+  # -- Additional volumeMounts to add to the parent pods
+  # @section -- Parent
   extraVolumeMounts: []
 
+  # -- Additional volumes to add to the parent pods
+  # @section -- Parent
   extraVolumes: []
 
+  # -- Additional init containers to add to the parent pods
+  # @section -- Parent
   extraInitContainers: []
 
 child:
+  # -- Install child DaemonSet to gather data from nodes
+  # @section -- Child
   enabled: true
+  # -- Children's listen port
+  # @section -- Child
   port: "{{ .Values.parent.port }}"
+  # -- An update strategy to replace existing DaemonSet pods with new pods
+  # @section -- Child
   updateStrategy: {}
     # type: RollingUpdate
     # rollingUpdate:
     #   maxUnavailable: 1
 
+  # -- Resources for the child DaemonSet
+  # @section -- Child
   resources: {}
     # limits:
     #  cpu: 4
@@ -260,49 +447,101 @@ child:
     #  memory: 4096Mi
 
   livenessProbe:
+    # -- Number of seconds after the container has started before liveness probes are initiated
+    # @section -- Child
     initialDelaySeconds: 0
+    # -- When a liveness probe fails, Kubernetes will try failureThreshold times before giving up. Giving up the liveness probe means restarting the container
+    # @section -- Child
     failureThreshold: 3
+    # -- How often (in seconds) to perform the liveness probe
+    # @section -- Child
     periodSeconds: 30
+    # -- Minimum consecutive successes for the liveness probe to be considered successful after having failed
+    # @section -- Child
     successThreshold: 1
+    # -- Number of seconds after which the liveness probe times out
+    # @section -- Child
     timeoutSeconds: 1
   readinessProbe:
+    # -- Number of seconds after the container has started before readiness probes are initiated
+    # @section -- Child
     initialDelaySeconds: 0
+    # -- When a readiness probe fails, Kubernetes will try failureThreshold times before giving up. Giving up the readiness probe means marking the Pod Unready
+    # @section -- Child
     failureThreshold: 3
+    # -- How often (in seconds) to perform the readiness probe
+    # @section -- Child
     periodSeconds: 30
+    # -- Minimum consecutive successes for the readiness probe to be considered successful after having failed
+    # @section -- Child
     successThreshold: 1
+    # -- Number of seconds after which the readiness probe times out
+    # @section -- Child
     timeoutSeconds: 1
 
+  # -- Duration in seconds the pod needs to terminate gracefully
+  # @section -- Child
   terminationGracePeriodSeconds: 30
 
+  # -- Node selector for the child daemonsets
+  # @section -- Child
   nodeSelector: {}
 
+  # -- Tolerations settings for the child daemonsets
+  # @default -- See values.yaml for defaults
+  # @section -- Child
   tolerations:
-  - operator: Exists
-    effect: NoSchedule
+    - operator: Exists
+      effect: NoSchedule
 
+  # -- Affinity settings for the child daemonsets
+  # @section -- Child
   affinity: {}
 
+  # -- Pod priority class name for the child daemonsets
+  # @section -- Child
   priorityClassName: ""
 
+  # -- Additional labels to add to the child pods
+  # @section -- Child
   podLabels: {}
 
   podAnnotationAppArmor:
+    # -- Whether or not to include the AppArmor security annotation
+    # @section -- Child
     enabled: true
 
+  # -- Additional annotations to add to the child pods
+  # @section -- Child
   podAnnotations: {}
 
+  # -- Usage of host networking and ports
+  # @section -- Child
   hostNetwork: true
 
+  # -- DNS policy for pod. Should be `ClusterFirstWithHostNet` if `child.hostNetwork = true`
+  # @section -- Child
   dnsPolicy: ClusterFirstWithHostNet
 
   persistence:
+    # -- Whether or not to persist `/var/lib/netdata` in the `child.persistence.hostPath`
+    # @section -- Child
     enabled: true
+    # -- Host node directory for storing child instance data
+    # @section -- Child
     hostPath: /var/lib/netdata-k8s-child
 
   podsMetadata:
+    # -- Send requests to the Kubelet /pods endpoint instead of Kubernetes API server to get pod metadata
+    # @section -- Child
     useKubelet: false
+    # -- Kubelet URL
+    # @section -- Child
     kubeletUrl: "https://localhost:10250"
 
+  # -- Manage custom child's configs
+  # @default -- See values.yaml for defaults
+  # @section -- Child
   configs:
     netdata:
       enabled: true
@@ -361,10 +600,14 @@ child:
           - name: local
             url: http://127.0.0.1:10249/metrics
 
+  # -- Set environment parameters for the child daemonset
+  # @section -- Child
   env: {}
     ## To disable anonymous statistics:
     # DO_NOT_TRACK: 1
 
+  # -- Set environment parameters for the child daemonset from ConfigMap and/or Secrets
+  # @section -- Child
   envFrom: []
     ## E.g. to read Netdata Cloud claim token from an existing secret "netdata" set this to:
     # - secretRef:
@@ -373,11 +616,19 @@ child:
     ## Also ensure that claim.token is empty
 
   claiming:
+    # -- Enable child claiming for netdata cloud
+    # @section -- Child
     enabled: false
+    # -- Claim token
+    # @section -- Child
     token: ""
+    # -- Comma separated list of claim rooms IDs. Empty value = All nodes room only
+    # @section -- Child
     rooms: ""
     url: "https://api.netdata.cloud"
 
+  # -- Additional volumeMounts to add to the child pods
+  # @section -- Child
   extraVolumeMounts: []
     ## Additional volume mounts for netdata child
     ## E.g to mount all disks under / to be monitored via the diskspace plugin
@@ -385,6 +636,8 @@ child:
     #   mountPath: /host/root
     #   readOnly: true
     #   mountPropagation: HostToContainer
+  # -- Additional volumes to add to the child pods
+  # @section -- Child
   extraVolumes: []
     ## Additional volumes for netdata child
     ## E.g to mount all disks under / to be monitored via the diskspace plugin
@@ -393,10 +646,18 @@ child:
     #     path: /
 
 k8sState:
+  # -- K8s state node hostname
+  # @section -- K8s State
   hostname: "netdata-k8s-state"
+  # -- Install this Deployment to gather data from K8s cluster
+  # @section -- K8s State
   enabled: true
+  # -- Listen port
+  # @section -- K8s State
   port: "{{ .Values.parent.port }}"
 
+  # -- Compute resources required by this Deployment
+  # @section -- K8s State
   resources: {}
     # limits:
     #  cpu: 4
@@ -406,43 +667,104 @@ k8sState:
     #  memory: 4096Mi
 
   livenessProbe:
+    # -- Number of seconds after the container has started before liveness probes are initiated
+    # @section -- K8s State
     initialDelaySeconds: 0
+    # -- When a liveness probe fails, Kubernetes will try failureThreshold times before giving up. Giving up the liveness probe means restarting the container
+    # @section -- K8s State
     failureThreshold: 3
+    # -- How often (in seconds) to perform the liveness probe
+    # @section -- K8s State
     periodSeconds: 30
+    # -- Minimum consecutive successes for the liveness probe to be considered successful after having failed
+    # @section -- K8s State
     successThreshold: 1
+    # -- Number of seconds after which the liveness probe times out
+    # @section -- K8s State
     timeoutSeconds: 1
   readinessProbe:
+    # -- Number of seconds after the container has started before readiness probes are initiated
+    # @section -- K8s State
     initialDelaySeconds: 0
+    # -- When a readiness probe fails, Kubernetes will try failureThreshold times before giving up. Giving up the readiness probe means marking the Pod Unready
+    # @section -- K8s State
     failureThreshold: 3
+    # -- How often (in seconds) to perform the readiness probe
+    # @section -- K8s State
     periodSeconds: 30
+    # -- Minimum consecutive successes for the readiness probe to be considered successful after having failed
+    # @section -- K8s State
     successThreshold: 1
+    # -- Number of seconds after which the readiness probe times out
+    # @section -- K8s State
     timeoutSeconds: 1
 
+  # -- Duration in seconds the pod needs to terminate gracefully
+  # @section -- K8s State
   terminationGracePeriodSeconds: 30
 
+  # -- Node selector
+  # @section -- K8s State
   nodeSelector: {}
 
+  # -- Tolerations settings
+  # @section -- K8s State
   tolerations: []
 
+  # -- Affinity settings
+  # @section -- K8s State
   affinity: {}
 
+  # -- Pod priority class name
+  # @section -- K8s State
   priorityClassName: ""
 
+  # -- Additional labels
+  # @section -- K8s State
   podLabels: {}
 
   podAnnotationAppArmor:
+    # -- Whether or not to include the AppArmor security annotation
+    # @section -- K8s State
     enabled: true
 
+  # -- Additional annotations
+  # @section -- K8s State
   podAnnotations: {}
 
+  # -- DNS policy for pod
+  # @section -- K8s State
   dnsPolicy: ClusterFirstWithHostNet
 
   persistence:
+    # -- Whether should use a persistent volume for `/var/lib/netdata`
+    # @section -- K8s State
     enabled: true
-    ## Set '-' as the storageclass to get a volume from the default storage class.
+    # -- The storage class for the persistent volume claim of `/var/lib/netdata`
+    # @section -- K8s State
     storageclass: "-"
+    # -- The storage space for the PVC of `/var/lib/netdata`
+    # @section -- K8s State
     volumesize: 1Gi
 
+  # -- Set environment parameters
+  # @section -- K8s State
+  env: {}
+    ## To disable anonymous statistics:
+    # DO_NOT_TRACK: 1
+
+  # -- Set environment parameters from ConfigMap and/or Secrets
+  # @section -- K8s State
+  envFrom: []
+    ## E.g. to read Netdata Cloud claim token from an existing secret "netdata" set this to:
+    # - secretRef:
+    #     name: netdata
+    ## And create it with: kubectl create secret generic netdata --from-literal="NETDATA_CLAIM_TOKEN=<token>"
+    ## Also ensure that claim.token is empty
+
+  # -- Manage custom configs
+  # @default -- See values.yaml for defaults
+  # @section -- K8s State
   configs:
     netdata:
       enabled: true
@@ -507,10 +829,247 @@ k8sState:
           - name: k8s_state
             update_every: 1
 
+  claiming:
+    # -- Enable claiming for netdata cloud
+    # @section -- K8s State
+    enabled: false
+    # -- Claim token
+    # @section -- K8s State
+    token: ""
+    # -- Comma separated list of claim rooms IDs. Empty value = All nodes room only
+    # @section -- K8s State
+    rooms: ""
+    url: "https://api.netdata.cloud"
+
+  # -- Additional volumeMounts to add to the k8sState pods
+  # @section -- K8s State
+  extraVolumeMounts: []
+
+  # -- Additional volumes to add to the k8sState pods
+  # @section -- K8s State
+  extraVolumes: []
+
+netdataOpentelemetry:
+  # -- Enable the Netdata OpenTelemetry Deployment
+  # @section -- Netdata OpenTelemetry
+  enabled: false
+  # -- Hostname for the Netdata OpenTelemetry instance
+  # @section -- Netdata OpenTelemetry
+  hostname: "netdata-otel"
+  # -- Listen port
+  # @section -- Netdata OpenTelemetry
+  port: "{{ .Values.parent.port }}"
+
+  ## Service responsible for receiving OTEL metrics and logs
+  service:
+    # -- Service type
+    # @section -- Netdata OpenTelemetry
+    type: ClusterIP
+    # -- Service port
+    # @section -- Netdata OpenTelemetry
+    port: 4317
+    # -- Service annotations
+    # @section -- Netdata OpenTelemetry
+    annotations: {}
+    # -- Cluster IP address (only used with service.type ClusterIP)
+    # @section -- Netdata OpenTelemetry
+    clusterIP: ""
+    # -- LoadBalancer IP address (only used with service.type LoadBalancer)
+    # @section -- Netdata OpenTelemetry
+    loadBalancerIP: ""
+    # -- Allowed source ranges for LoadBalancer (only used with service.type LoadBalancer)
+    # @section -- Netdata OpenTelemetry
+    loadBalancerSourceRanges: []
+    # -- External traffic policy (only used with service.type LoadBalancer)
+    # @section -- Netdata OpenTelemetry
+    externalTrafficPolicy: ""
+    # -- Health check node port (only used with service.type LoadBalancer and external traffic policy Local)
+    # @section -- Netdata OpenTelemetry
+    healthCheckNodePort: ""
+
+  # -- Compute resources required by this Deployment
+  # @section -- Netdata OpenTelemetry
+  resources: {}
+    # limits:
+    #  cpu: 4
+    #  memory: 4096Mi
+    # requests:
+    #  cpu: 4
+    #  memory: 4096Mi
+
+  livenessProbe:
+    # -- Number of seconds after the container has started before liveness probes are initiated
+    # @section -- Netdata OpenTelemetry
+    initialDelaySeconds: 0
+    # -- When a liveness probe fails, Kubernetes will try failureThreshold times before giving up
+    # @section -- Netdata OpenTelemetry
+    failureThreshold: 3
+    # -- How often (in seconds) to perform the liveness probe
+    # @section -- Netdata OpenTelemetry
+    periodSeconds: 30
+    # -- Minimum consecutive successes for the liveness probe to be considered successful after having failed
+    # @section -- Netdata OpenTelemetry
+    successThreshold: 1
+    # -- Number of seconds after which the liveness probe times out
+    # @section -- Netdata OpenTelemetry
+    timeoutSeconds: 1
+  readinessProbe:
+    # -- Number of seconds after the container has started before readiness probes are initiated
+    # @section -- Netdata OpenTelemetry
+    initialDelaySeconds: 0
+    # -- When a readiness probe fails, Kubernetes will try failureThreshold times before giving up
+    # @section -- Netdata OpenTelemetry
+    failureThreshold: 3
+    # -- How often (in seconds) to perform the readiness probe
+    # @section -- Netdata OpenTelemetry
+    periodSeconds: 30
+    # -- Minimum consecutive successes for the readiness probe to be considered successful after having failed
+    # @section -- Netdata OpenTelemetry
+    successThreshold: 1
+    # -- Number of seconds after which the readiness probe times out
+    # @section -- Netdata OpenTelemetry
+    timeoutSeconds: 1
+
+  securityContext:
+    # -- The UID to run the container process
+    # @section -- Netdata OpenTelemetry
+    runAsUser: 201
+    # -- The GID to run the container process
+    # @section -- Netdata OpenTelemetry
+    runAsGroup: 201
+    # -- The supplementary group for setting permissions on volumes
+    # @section -- Netdata OpenTelemetry
+    fsGroup: 201
+
+  # -- Duration in seconds the pod needs to terminate gracefully
+  # @section -- Netdata OpenTelemetry
+  terminationGracePeriodSeconds: 30
+
+  # -- Node selector
+  # @section -- Netdata OpenTelemetry
+  nodeSelector: {}
+
+  # -- Tolerations settings
+  # @section -- Netdata OpenTelemetry
+  tolerations: []
+
+  # -- Affinity settings
+  # @section -- Netdata OpenTelemetry
+  affinity: {}
+
+  # -- Pod priority class name
+  # @section -- Netdata OpenTelemetry
+  priorityClassName: ""
+
+  # -- Additional labels
+  # @section -- Netdata OpenTelemetry
+  podLabels: {}
+
+  podAnnotationAppArmor:
+    # -- Whether or not to include the AppArmor security annotation
+    # @section -- Netdata OpenTelemetry
+    enabled: true
+
+  # -- Additional annotations
+  # @section -- Netdata OpenTelemetry
+  podAnnotations: {}
+
+  # -- DNS policy for pod
+  # @section -- Netdata OpenTelemetry
+  dnsPolicy: Default
+
+  persistence:
+    # -- Whether should use a persistent volume
+    # @section -- Netdata OpenTelemetry
+    enabled: true
+    # -- The storage class for the persistent volume claim
+    # @section -- Netdata OpenTelemetry
+    storageclass: "-"
+    # -- The storage space for the PVC
+    # @section -- Netdata OpenTelemetry
+    volumesize: 10Gi
+
+  # -- Manage custom configs
+  # @default -- See values.yaml for defaults
+  # @section -- Netdata OpenTelemetry
+  configs:
+    netdata:
+      enabled: true
+      path: /etc/netdata/netdata.conf
+      data: |
+        [global]
+          hostname = {{ .Values.netdataOpentelemetry.hostname }}
+        [db]
+          mode = ram
+        [web]
+          bind to = localhost:19999
+        [health]
+          enabled = no
+        [ml]
+          enabled = no
+        [plugins]
+          timex = no
+          checks = no
+          idlejitter = no
+          tc = no
+          diskspace = no
+          proc = no
+          cgroups = no
+          enable running new plugins = no
+          otel = yes
+          journal-viewer = yes
+          slabinfo = no
+          perf = no
+          go.d = yes
+          ioping = no
+          ebpf = no
+          charts.d = no
+          apps = no
+          python.d = no
+          fping = no
+    stream:
+      enabled: true
+      path: /etc/netdata/stream.conf
+      data: |
+        [stream]
+          enabled = {{ ternary "yes" "no" .Values.parent.enabled }}
+          destination = netdata:{{ .Values.service.port }}
+          api key = 11111111-2222-3333-4444-555555555555
+          timeout seconds = 60
+          buffer size bytes = 1048576
+          reconnect delay seconds = 5
+          initial clock resync iterations = 60
+    otel:
+      enabled: true
+      path: /etc/netdata/otel.yaml
+      data: |
+        endpoint:
+          path: {{ printf "\"0.0.0.0:%v\"" .Values.netdataOpentelemetry.service.port }}
+          tls_cert_path: null
+          tls_key_path: null
+          tls_ca_cert_path: null
+        metrics:
+          print_flattened: false
+          buffer_samples: 10
+          throttle_charts: 100
+          chart_configs_dir: otel.d/v1/metrics
+        logs:
+          journal_dir: otel/v1
+          size_of_journal_file: "100MB"
+          number_of_journal_files: 10
+          size_of_journal_files: "1GB"
+          duration_of_journal_files: "7 days"
+          duration_of_journal_file: "2 hours"
+          store_otlp_json: false
+
+  # -- Set environment parameters
+  # @section -- Netdata OpenTelemetry
   env: {}
     ## To disable anonymous statistics:
     # DO_NOT_TRACK: 1
 
+  # -- Set environment parameters from ConfigMap and/or Secrets
+  # @section -- Netdata OpenTelemetry
   envFrom: []
     ## E.g. to read Netdata Cloud claim token from an existing secret "netdata" set this to:
     # - secretRef:
@@ -519,11 +1078,223 @@ k8sState:
     ## Also ensure that claim.token is empty
 
   claiming:
+    # -- Enable claiming for netdata cloud
+    # @section -- Netdata OpenTelemetry
     enabled: false
+    # -- Claim token
+    # @section -- Netdata OpenTelemetry
     token: ""
+    # -- Comma separated list of claim rooms IDs. Empty value = All nodes room only
+    # @section -- Netdata OpenTelemetry
     rooms: ""
     url: "https://api.netdata.cloud"
 
+  # -- Additional volumeMounts
+  # @section -- Netdata OpenTelemetry
   extraVolumeMounts: []
 
+  # -- Additional volumes
+  # @section -- Netdata OpenTelemetry
   extraVolumes: []
+
+# OpenTelemetry Collector subchart configuration
+# This is an optional component that allows to gather logs from k8s cluster (in this configuration).
+# If you already have an exporter of any kind, just point it to the netdata-otel service
+# Documentation: https://opentelemetry.io/docs/platforms/kubernetes/helm/collector/
+otel-collector:
+  # -- Set to true to enable the OpenTelemetry Collector
+  # @section -- OpenTelemetry Collector
+  enabled: false
+
+  # -- Deployment mode: daemonset, deployment, or statefulset
+  # @section -- OpenTelemetry Collector
+  mode: daemonset
+
+  # Image configuration
+  image:
+    # -- Image repository
+    # @section -- OpenTelemetry Collector
+    repository: otel/opentelemetry-collector-k8s
+
+  # Presets enable quick configuration for common use cases
+  presets:
+    # Collect Kubernetes attributes and add them to logs
+    kubernetesAttributes:
+      # -- Enable Kubernetes attributes collection
+      # @section -- OpenTelemetry Collector
+      enabled: true
+    # Collect logs from Kubernetes pods
+    logsCollection:
+      # -- Enable logs collection from Kubernetes pods
+      # @section -- OpenTelemetry Collector
+      enabled: true
+      # -- Include collector logs in the collection
+      # @section -- OpenTelemetry Collector
+      includeCollectorLogs: false
+
+  # -- OpenTelemetry Collector configuration
+  # @default -- See values.yaml for defaults
+  # @section -- OpenTelemetry Collector
+  config:
+    receivers:
+      # Filelog receiver - collects logs from container log files
+      filelog:
+        include:
+          - /var/log/pods/*/*/*.log
+        exclude:
+          # Exclude OTel collector's own logs to avoid loop
+          - /var/log/pods/*/otc-container/*.log
+        start_at: end
+        include_file_path: true
+        include_file_name: false
+        operators:
+          # Parse CRI-O/containerd format logs
+          - type: container
+            id: container-parser
+            max_log_size: 102400
+
+    processors:
+      # Batch processor - recommended for better performance
+      batch:
+        send_batch_size: 1000
+        timeout: 10s
+        send_batch_max_size: 1500
+
+      # Memory limiter to prevent OOM
+      memory_limiter:
+        check_interval: 5s
+        limit_percentage: 80
+        spike_limit_percentage: 25
+
+      # Resource detection processor
+      resourcedetection:
+        detectors: [env, system]
+        timeout: 5s
+
+      # Kubernetes attributes processor - adds K8s metadata to logs
+      k8sattributes:
+        auth_type: "serviceAccount"
+        passthrough: false
+        extract:
+          metadata:
+            - k8s.namespace.name
+            - k8s.deployment.name
+            - k8s.statefulset.name
+            - k8s.daemonset.name
+            - k8s.cronjob.name
+            - k8s.job.name
+            - k8s.node.name
+            - k8s.pod.name
+            - k8s.pod.uid
+            - k8s.pod.start_time
+            - k8s.container.name
+          labels:
+            - tag_name: app
+              key: app
+              from: pod
+            - tag_name: component
+              key: component
+              from: pod
+          annotations:
+            - tag_name: annotation.app
+              key: app
+              from: pod
+        pod_association:
+          - sources:
+              - from: resource_attribute
+                name: k8s.pod.ip
+          - sources:
+              - from: resource_attribute
+                name: k8s.pod.uid
+          - sources:
+              - from: connection
+
+    exporters:
+      # OTLP gRPC exporter to your endpoint
+      otlp:
+        endpoint: "{{ .Release.Name }}-otel:4317"
+        tls:
+          insecure: true
+
+        # Retry configuration
+        retry_on_failure:
+          enabled: true
+          initial_interval: 5s
+          max_interval: 30s
+          max_elapsed_time: 300s
+
+        # Queue to handle temporary failures
+        sending_queue:
+          enabled: true
+          num_consumers: 10
+          queue_size: 1000
+
+    service:
+      pipelines:
+        # Logs pipeline
+        logs:
+          receivers: [filelog]
+          processors: [memory_limiter, k8sattributes, resourcedetection, batch]
+          exporters: [otlp]
+
+  # -- Resources
+  # @default -- See values.yaml for defaults
+  # @section -- OpenTelemetry Collector
+  resources:
+    limits:
+      cpu: 200m
+      memory: 256Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+
+  # Service account with necessary RBAC permissions
+  serviceAccount:
+    # -- Create service account
+    # @section -- OpenTelemetry Collector
+    create: true
+
+  # RBAC for accessing Kubernetes API
+  clusterRole:
+    # -- Create cluster role
+    # @section -- OpenTelemetry Collector
+    create: true
+    # -- Cluster role rules
+    # @default -- See values.yaml for defaults
+    # @section -- OpenTelemetry Collector
+    rules:
+      - apiGroups: [""]
+        resources: ["pods", "namespaces", "nodes"]
+        verbs: ["get", "list", "watch"]
+      - apiGroups: ["apps"]
+        resources: ["replicasets"]
+        verbs: ["get", "list", "watch"]
+
+  # -- Tolerations to run on all nodes
+  # @default -- See values.yaml for defaults
+  # @section -- OpenTelemetry Collector
+  tolerations:
+    - effect: NoSchedule
+      operator: Exists
+    - effect: NoExecute
+      operator: Exists
+
+  # Ports configuration
+  # @default -- See values.yaml for defaults
+  # @section -- OpenTelemetry Collector
+  ports:
+    otlp:
+      enabled: true
+      containerPort: 4317
+      servicePort: 4317
+      protocol: TCP
+    otlp-http:
+      enabled: true
+      containerPort: 4318
+      servicePort: 4318
+      protocol: TCP
+    metrics:
+      enabled: true
+      containerPort: 8888
+      servicePort: 8888
+      protocol: TCP
