@@ -976,7 +976,7 @@ netdataOpentelemetry:
 
   # -- DNS policy for pod
   # @section -- Netdata OpenTelemetry
-  dnsPolicy: ClusterFirstWithHostNet
+  dnsPolicy: ClusterFirst
 
   # Volumes to create are called varlib and varlog
   # varlib stores the alerts information and claimID of the agent. Static size of 1Gi

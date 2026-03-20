@@ -1948,7 +1948,7 @@ true
 			<td>netdataOpentelemetry.dnsPolicy</td>
 			<td>string</td>
 			<td><pre lang="json">
-"ClusterFirstWithHostNet"
+"ClusterFirst"
 </pre>
 </td>
 			<td>DNS policy for pod</td>
