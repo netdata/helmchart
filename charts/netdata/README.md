@@ -1948,7 +1948,7 @@ true
 			<td>netdataOpentelemetry.dnsPolicy</td>
 			<td>string</td>
 			<td><pre lang="json">
-"Default"
+"ClusterFirstWithHostNet"
 </pre>
 </td>
 			<td>DNS policy for pod</td>
@@ -1960,7 +1960,7 @@ true
 true
 </pre>
 </td>
-			<td>Whether should use a persistent volume</td>
+			<td>Whether should use a persistent volumes</td>
 		</tr>
 		<tr>
 			<td>netdataOpentelemetry.persistence.storageclass</td>
@@ -1969,7 +1969,7 @@ true
 "-"
 </pre>
 </td>
-			<td>The storage class for the persistent volume claim</td>
+			<td>The storage class for the persistent volume claim (both varlib and varlog volumes)</td>
 		</tr>
 		<tr>
 			<td>netdataOpentelemetry.persistence.volumesize</td>
@@ -1978,7 +1978,7 @@ true
 "10Gi"
 </pre>
 </td>
-			<td>The storage space for the PVC</td>
+			<td>The storage space for the logs (varlog volume)</td>
 		</tr>
 		<tr>
 			<td>netdataOpentelemetry.configs</td>

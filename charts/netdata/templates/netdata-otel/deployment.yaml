@@ -140,6 +140,8 @@ spec:
             {{- if .Values.netdataOpentelemetry.persistence.enabled }}
             - name: varlog
               mountPath: /var/log/netdata/otel
+            - name: varlib
+              mountPath: /var/lib/netdata
             {{- end }}
             {{- if .Values.netdataOpentelemetry.extraVolumeMounts -}}
 {{ toYaml .Values.netdataOpentelemetry.extraVolumeMounts | nindent 12 }}
@@ -175,6 +177,9 @@ spec:
         - name: varlog
           persistentVolumeClaim:
             claimName: {{ template "netdata.name" . }}-otel-varlog
+        - name: varlib
+          persistentVolumeClaim:
+            claimName: {{ template "netdata.name" . }}-otel-varlib
         {{- end }}
         {{- if .Values.netdataOpentelemetry.extraVolumes }}
 {{ toYaml .Values.netdataOpentelemetry.extraVolumes | indent 8}}
