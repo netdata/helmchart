@@ -1960,7 +1960,7 @@ true
 true
 </pre>
 </td>
-			<td>Whether should use a persistent volumes</td>
+			<td>Whether to use persistent volumes</td>
 		</tr>
 		<tr>
 			<td>netdataOpentelemetry.persistence.storageclass</td>
