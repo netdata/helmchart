@@ -976,16 +976,19 @@ netdataOpentelemetry:
 
   # -- DNS policy for pod
   # @section -- Netdata OpenTelemetry
-  dnsPolicy: Default
+  dnsPolicy: ClusterFirst
 
+  # Volumes to create are called varlib and varlog
+  # varlib stores the alerts information and claimID of the agent. Static size of 1Gi
+  # varlog volume stores the logs. Size can be adjusted with persistence.volumesize
   persistence:
-    # -- Whether should use a persistent volume
+    # -- Whether to use persistent volumes
     # @section -- Netdata OpenTelemetry
     enabled: true
-    # -- The storage class for the persistent volume claim
+    # -- The storage class for the persistent volume claim (both varlib and varlog volumes)
     # @section -- Netdata OpenTelemetry
     storageclass: "-"
-    # -- The storage space for the PVC
+    # -- The storage space for the logs (varlog volume)
     # @section -- Netdata OpenTelemetry
     volumesize: 10Gi
 
