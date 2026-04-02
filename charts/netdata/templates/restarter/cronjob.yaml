@@ -7,6 +7,8 @@
 {{- $argsList = append $argsList (ternary $args "" .Values.child.enabled) }}
 {{- $args = printf "deployment/%s-k8s-state" (include "netdata.name" .) }}
 {{- $argsList = append $argsList (ternary $args "" .Values.k8sState.enabled) }}
+{{- $args = printf "deployment/%s-otel" (include "netdata.name" .) }}
+{{- $argsList = append $argsList (ternary $args "" .Values.netdataOpentelemetry.enabled) }}
 {{- $argsList = compact $argsList }}
 apiVersion: batch/v1
 kind: CronJob

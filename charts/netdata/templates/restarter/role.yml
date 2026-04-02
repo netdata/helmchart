@@ -20,6 +20,7 @@ rules:
       - {{ template "netdata.name" . }}-parent
       - {{ template "netdata.name" . }}-child
       - {{ template "netdata.name" . }}-k8s-state
+      - {{ template "netdata.name" . }}-otel
     verbs:
       - "get"
       - "patch"

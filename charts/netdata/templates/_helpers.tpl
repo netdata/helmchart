@@ -68,7 +68,7 @@ Return the appropriate apiVersion for ingress.
 Return a value indicating whether the restarter is enabled.
 */}}
 {{- define "netdata.restarter.enabled" -}}
-{{- if and .Values.restarter.enabled (eq .Values.image.pullPolicy "Always") (or .Values.parent.enabled .Values.child.enabled .Values.k8sState.enabled) }}
+{{- if and .Values.restarter.enabled (eq .Values.image.pullPolicy "Always") (or .Values.parent.enabled .Values.child.enabled .Values.k8sState.enabled .Values.netdataOpentelemetry.enabled) }}
 {{- "true" -}}
 {{- else -}}
 {{- "" -}}
