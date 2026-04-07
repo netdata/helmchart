@@ -139,6 +139,26 @@ ingress:
   #     hosts:
   #       - netdata.k8s.local
 
+httpRoute:
+  # -- Create HTTPRoute to access the netdata web UI via Gateway API
+  # @section -- General settings
+  enabled: false
+  # -- Additional annotations to add to the HTTPRoute
+  # @section -- General settings
+  annotations: {}
+  # -- Additional labels to add to the HTTPRoute
+  # @section -- General settings
+  labels: {}
+  # -- Parent references for Gateway API HTTPRoute. Required when `httpRoute.enabled=true`
+  # @section -- General settings
+  parentRefs: []
+  # -- Hostnames for the HTTPRoute
+  # @section -- General settings
+  hostnames: []
+  # -- Optional explicit HTTPRoute rules. If empty, a default PathPrefix `/` rule is generated
+  # @section -- General settings
+  rules: []
+
 rbac:
   # -- if true, create & use RBAC resources
   # @section -- General settings

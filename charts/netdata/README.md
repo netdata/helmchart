@@ -369,6 +369,60 @@ See values.yaml for defaults
 			<td>URL hostnames for the ingress (they need to resolve to the external IP of the ingress controller)</td>
 		</tr>
 		<tr>
+			<td>httpRoute.enabled</td>
+			<td>bool</td>
+			<td><pre lang="json">
+false
+</pre>
+</td>
+			<td>Create HTTPRoute to access the netdata web UI via Gateway API</td>
+		</tr>
+		<tr>
+			<td>httpRoute.annotations</td>
+			<td>object</td>
+			<td><pre lang="json">
+{}
+</pre>
+</td>
+			<td>Additional annotations to add to the HTTPRoute</td>
+		</tr>
+		<tr>
+			<td>httpRoute.labels</td>
+			<td>object</td>
+			<td><pre lang="json">
+{}
+</pre>
+</td>
+			<td>Additional labels to add to the HTTPRoute</td>
+		</tr>
+		<tr>
+			<td>httpRoute.parentRefs</td>
+			<td>list</td>
+			<td><pre lang="json">
+[]
+</pre>
+</td>
+			<td>Parent references for Gateway API HTTPRoute. Required when `httpRoute.enabled=true`</td>
+		</tr>
+		<tr>
+			<td>httpRoute.hostnames</td>
+			<td>list</td>
+			<td><pre lang="json">
+[]
+</pre>
+</td>
+			<td>Hostnames for the HTTPRoute</td>
+		</tr>
+		<tr>
+			<td>httpRoute.rules</td>
+			<td>list</td>
+			<td><pre lang="json">
+[]
+</pre>
+</td>
+			<td>Optional explicit HTTPRoute rules. If empty, a default PathPrefix `/` rule is generated</td>
+		</tr>
+		<tr>
 			<td>rbac.create</td>
 			<td>bool</td>
 			<td><pre lang="json">
