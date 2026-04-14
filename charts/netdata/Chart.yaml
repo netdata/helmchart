@@ -15,7 +15,7 @@ maintainers:
   - name: Netdata Cloud SRE team
     email: cloud-sre@netdata.cloud
 icon: https://netdata.github.io/helmchart/logo.png
-appVersion: v2.9.0
+appVersion: v2.10.2
 dependencies:
   - name: opentelemetry-collector
     alias: otel-collector
