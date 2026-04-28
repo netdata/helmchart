@@ -4,7 +4,7 @@
 
 ![Version: 3.7.164](https://img.shields.io/badge/Version-3.7.164-informational?style=flat-square)
 
-![AppVersion: v2.10.2](https://img.shields.io/badge/AppVersion-v2.10.2-informational?style=flat-square)
+![AppVersion: v2.10.3](https://img.shields.io/badge/AppVersion-v2.10.3-informational?style=flat-square)
 
 _Based on the work of varyumin (https://github.com/varyumin/netdata)_.
 
