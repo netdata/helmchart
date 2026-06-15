@@ -943,7 +943,7 @@ true
 			<td>parent.database.volumesize</td>
 			<td>string</td>
 			<td><pre lang="json">
-"5Gi"
+"15Gi"
 </pre>
 </td>
 			<td>The storage space for the PVC of the parent database</td>
