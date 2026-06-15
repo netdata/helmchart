@@ -345,7 +345,7 @@ parent:
     storageclass: "-"
     # -- The storage space for the PVC of the parent database
     # @section -- Parent
-    volumesize: 5Gi
+    volumesize: 15Gi
 
   alarms:
     # -- Whether the parent should use a persistent volume for the alarms log
