@@ -2313,6 +2313,36 @@ In case of `child` instance it is a bit simpler. By default, hostPath: `/var/lib
 in: `/var/lib/netdata`. You can disable it, but this option is pretty much required in a real life scenario, as without
 it each pod deletion will result in a new replication node for a parent.
 
+### Collecting logs with OpenTelemetry
+
+Netdata can ingest, store, and visualize your cluster's container logs through OpenTelemetry.
+This relies on two components — **both disabled by default**:
+
+- **`netdataOpentelemetry`** — Netdata's OpenTelemetry receiver. It runs as its own `Deployment`
+  (the `netdata-otel` node) and listens for OTLP data on port `4317`. It receives, stores, and
+  displays the logs in the Netdata UI. It does **not** collect logs itself.
+- **`otel-collector`** — the upstream [OpenTelemetry Collector](https://opentelemetry.io/docs/platforms/kubernetes/helm/collector/),
+  bundled as an optional subchart. It runs as a `DaemonSet` (one pod per node), reads each node's
+  local container log files, and forwards them over OTLP to `netdataOpentelemetry`.
+
+`netdataOpentelemetry` is the destination; `otel-collector` is what feeds it. The collector is
+bundled only as a convenient, working default, and is off by default because it is not the only
+option. If you already run a log pipeline (Fluent Bit, Vector, an existing Collector, or any
+OTLP-capable agent), leave `otel-collector` disabled and point that pipeline's OTLP exporter at
+the `netdata-otel` service on port `4317` instead.
+
+**Log flow:**
+
+```
+container stdout/stderr
+   │  the container runtime writes them to node-local files (/var/log/pods/…)
+   ▼
+otel-collector DaemonSet  (one pod per node, needs host log access)
+   │  reads each node's log files, pushes over OTLP
+   ▼
+netdata-otel:4317  →  stored and shown in the Netdata UI
+```
+
 ### Service discovery and supported services
 
 Netdata's [service discovery](https://github.com/netdata/agent-service-discovery/), which is installed as part of the
