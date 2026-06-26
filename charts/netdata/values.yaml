@@ -1040,6 +1040,7 @@ netdataOpentelemetry:
           cgroups = no
           enable running new plugins = no
           otel = yes
+          otel-signal-viewer = yes
           journal-viewer = yes
           slabinfo = no
           perf = no
