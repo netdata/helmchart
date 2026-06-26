@@ -2343,6 +2343,92 @@ otel-collector DaemonSet  (one pod per node, needs host log access)
 netdata-otel:4317  →  stored and shown in the Netdata UI
 ```
 
+#### Securing the endpoint with TLS
+
+By default the `netdata-otel` receiver listens on port `4317` in **plaintext** — TLS is **disabled**
+(`tls_cert_path`, `tls_key_path`, and `tls_ca_cert_path` are unset in
+`netdataOpentelemetry.configs.otel.data`). The steps below turn it on with a self-signed
+certificate. TLS affects **both sides**: the receiver must serve the certificate, and every client
+(including the bundled `otel-collector`) must be switched to TLS, or it will stop delivering data.
+
+**1. Generate a self-signed certificate and key** (Linux, `openssl`):
+
+```
+openssl req -x509 -newkey rsa:4096 -nodes \
+  -keyout tls.key -out tls.crt -days 365 \
+  -subj "/CN=netdata-otel"
+```
+
+**2. Create a Kubernetes TLS secret** from those files, in the chart's namespace:
+
+```
+kubectl create secret tls netdata-otel-tls \
+  --cert=tls.crt --key=tls.key \
+  --namespace <your-namespace>
+```
+
+**3. Mount the secret into the receiver and point the config at it.** The certificate paths live
+inside `netdataOpentelemetry.configs.otel.data`, which is a single block — supply it in full with
+the two `tls_*_path` values filled in (keep the `metrics` and `logs` sections in sync with the
+chart's `values.yaml`). Mounting the secret alone does nothing until these paths are set:
+
+```yaml
+netdataOpentelemetry:
+  extraVolumes:
+    - name: otel-tls
+      secret:
+        secretName: netdata-otel-tls
+  extraVolumeMounts:
+    - name: otel-tls
+      mountPath: /etc/netdata/otel-certs
+      readOnly: true
+  configs:
+    otel:
+      data: |
+        endpoint:
+          path: "0.0.0.0:4317"
+          tls_cert_path: /etc/netdata/otel-certs/tls.crt
+          tls_key_path: /etc/netdata/otel-certs/tls.key
+          tls_ca_cert_path: null
+        metrics:
+          print_flattened: false
+          buffer_samples: 10
+          throttle_charts: 100
+          chart_configs_dir: otel.d/v1/metrics
+        logs:
+          journal_dir: otel/v1
+          size_of_journal_file: "100MB"
+          number_of_journal_files: 10
+          size_of_journal_files: "1GB"
+          duration_of_journal_files: "7 days"
+          duration_of_journal_file: "2 hours"
+          store_otlp_json: false
+```
+
+**4. Switch every client to TLS.** A TLS listener rejects plaintext connections, so any sender must
+be reconfigured — otherwise logs silently stop arriving. For the bundled `otel-collector`, enable
+TLS on its OTLP exporter. Because the certificate is self-signed, skip verification with
+`insecure_skip_verify` — this keeps the connection encrypted but does not validate the certificate
+chain (only the `tls` block is overridden; the exporter's `endpoint` is kept from the chart
+defaults):
+
+```yaml
+otel-collector:
+  config:
+    exporters:
+      otlp:
+        tls:
+          insecure: false
+          insecure_skip_verify: true
+```
+
+Apply the same change to any external OTLP client — Fluent Bit, Vector, or another Collector —
+pointing at the `netdata-otel` service.
+
+> For production, replace the self-signed certificate with one issued by a trusted CA, give it a
+> `CN`/`SAN` that matches the `netdata-otel` service DNS name, and have clients trust that CA via
+> `tls_ca_cert_path` instead of skipping verification.
+
 ### Service discovery and supported services
 
 Netdata's [service discovery](https://github.com/netdata/agent-service-discovery/), which is installed as part of the
