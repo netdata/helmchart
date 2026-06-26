@@ -1076,9 +1076,9 @@ netdataOpentelemetry:
           print_flattened: false
           buffer_samples: 10
           throttle_charts: 100
-          chart_configs_dir: otel.d/v1/metrics
+          chart_configs_dir: /etc/netdata/otel.d/v1/metrics
         logs:
-          journal_dir: otel/v1
+          journal_dir: /var/log/netdata/otel/v1
           size_of_journal_file: "100MB"
           number_of_journal_files: 10
           size_of_journal_files: "1GB"
