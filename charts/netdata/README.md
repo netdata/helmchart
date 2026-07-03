@@ -459,6 +459,15 @@ true
 			<td>The name of the service account to use. If not set and create is true, a name is generated using the fullname template</td>
 		</tr>
 		<tr>
+			<td>serviceAccount.annotations</td>
+			<td>object</td>
+			<td><pre lang="json">
+{}
+</pre>
+</td>
+			<td>Annotations to add to the service account (e.g. an AWS IRSA `eks.amazonaws.com/role-arn`)</td>
+		</tr>
+		<tr>
 			<td>restarter.enabled</td>
 			<td>bool</td>
 			<td><pre lang="json">
