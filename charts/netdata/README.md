@@ -33,7 +33,7 @@ Please validate that the settings are suitable for your cluster before using the
 
 - A working cluster running Kubernetes v1.9 or newer.
 - The [kubectl](https://kubernetes.io/docs/reference/kubectl/overview/) command line tool,
-  within [one minor version difference](https://kubernetes.io/docs/tasks/tools/install-kubectl/#before-you-begin) of
+  within [one minor version difference](https://kubernetes.io/releases/version-skew-policy/#kubectl) of
   your cluster, on an administrative system.
 - The [Helm package manager](https://helm.sh/) v3.8.0 or newer on the same administrative system.
 
@@ -2486,15 +2486,15 @@ Annotations on pods allow a fine control of the scraping process:
 
 If your cluster runs services on non-default ports or uses non-default names, you may need to configure service
 discovery to start collecting metrics from your services. You have to edit
-the [default ConfigMap](https://github.com/netdata/helmchart/blob/master/sdconfig/child.yml) that is shipped with the
+the [default ConfigMap](https://github.com/netdata/helmchart/blob/master/charts/netdata/sdconfig/child.yml) that is shipped with the
 Helmchart and deploy that to your cluster.
 
-First, copy `netdata-helmchart/sdconfig/child.yml` to a new location outside the `netdata-helmchart` directory. The
+First, copy `netdata-helmchart/charts/netdata/sdconfig/child.yml` to a new location outside the `netdata-helmchart` directory. The
 destination can be anywhere you like, but the following examples assume it resides next to the `netdata-helmchart`
 directory.
 
 ```bash
-cp netdata-helmchart/sdconfig/child.yml .
+cp netdata-helmchart/charts/netdata/sdconfig/child.yml .
 ```
 
 Edit the new `child.yml` file according to your needs. See
