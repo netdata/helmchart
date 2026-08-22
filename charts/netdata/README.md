@@ -2544,4 +2544,4 @@ If you want to contribute, we're humbled!
 - Take a look at our [Contributing Guidelines](https://github.com/netdata/.github/blob/main/CONTRIBUTING.md).
 - This repository is under the [Netdata Code Of Conduct](https://github.com/netdata/.github/blob/main/CODE_OF_CONDUCT.md).
 - Chat about your contribution and let us help you in
-  our [forum](https://community.netdata.cloud/c/agent-development/9)!
+  our [forum](https://community.netdata.cloud/)!
