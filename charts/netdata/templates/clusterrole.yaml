@@ -18,6 +18,7 @@ rules:
       - "nodes"          # used by go.d/k8s_state
       - "nodes/metrics"  # used by go.d/k8s_kubelet when querying Kubelet HTTPS endpoint
       - "nodes/proxy"    # used by netdata (cgroup-name.sh) when querying Kubelet /pods endpoint
+      - "persistentvolumeclaims"  # used by go.d/k8s_state
     verbs:
       - "get"
       - "list"
