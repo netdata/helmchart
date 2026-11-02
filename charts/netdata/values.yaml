@@ -1072,22 +1072,14 @@ netdataOpentelemetry:
       data: |
         endpoint:
           path: {{ printf "\"0.0.0.0:%v\"" .Values.netdataOpentelemetry.service.port }}
-          tls_cert_path: null
-          tls_key_path: null
-          tls_ca_cert_path: null
-        metrics:
-          print_flattened: false
-          buffer_samples: 10
-          throttle_charts: 100
-          chart_configs_dir: /etc/netdata/otel.d/v1/metrics
         logs:
-          journal_dir: /var/log/netdata/otel/v1
-          size_of_journal_file: "100MB"
-          number_of_journal_files: 10
-          size_of_journal_files: "1GB"
-          duration_of_journal_files: "7 days"
-          duration_of_journal_file: "2 hours"
-          store_otlp_json: false
+          retention:
+            default:
+              max_total_size: "5GB"
+        traces:  
+          retention:  
+            default:  
+              max_total_size: "5GB"
 
   # -- Set environment parameters
   # @section -- Netdata OpenTelemetry
