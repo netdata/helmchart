@@ -2,6 +2,34 @@ apiVersion: v1
 entries:
   netdata:
   - apiVersion: v2
+    appVersion: v2.13.0
+    created: "2026-11-19T16:42:29.58505924Z"
+    dependencies:
+    - alias: otel-collector
+      condition: otel-collector.enabled
+      name: opentelemetry-collector
+      repository: https://open-telemetry.github.io/opentelemetry-helm-charts
+      version: 0.144.0
+    description: Real-time performance monitoring, done right!
+    digest: e8cb953d8a27f7177667d38690afe660190d8062b90bd3b2d314695ee8de6a8b
+    home: https://netdata.cloud/
+    icon: https://netdata.github.io/helmchart/logo.png
+    keywords:
+    - alerting
+    - metric
+    - monitoring
+    maintainers:
+    - email: cloud-sre@netdata.cloud
+      name: Netdata Cloud SRE team
+    name: netdata
+    sources:
+    - https://github.com/netdata/helmchart
+    - https://github.com/netdata/netdata
+    type: application
+    urls:
+    - https://github.com/netdata/helmchart/releases/download/netdata-3.7.181/netdata-3.7.181.tgz
+    version: 3.7.181
+  - apiVersion: v2
     appVersion: v2.12.3
     created: "2026-11-16T17:59:33.924515526Z"
     dependencies:
@@ -5228,4 +5256,4 @@ entries:
     urls:
     - https://github.com/netdata/helmchart/releases/download/netdata-2.0.13/netdata-2.0.13.tgz
     version: 2.0.13
-generated: "2026-11-16T17:59:33.925073209Z"
+generated: "2026-11-19T16:42:29.58550146Z"
