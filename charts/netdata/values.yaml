@@ -1076,9 +1076,9 @@ netdataOpentelemetry:
           retention:
             default:
               max_total_size: "5GB"
-        traces:  
-          retention:  
-            default:  
+        traces:
+          retention:
+            default:
               max_total_size: "5GB"
 
   # -- Set environment parameters

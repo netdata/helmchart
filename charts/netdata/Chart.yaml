@@ -1,12 +1,19 @@
 apiVersion: v2
 name: netdata
 version: 3.7.181
-description: Real-time performance monitoring, done right!
+description: "Netdata, full-stack observability: the AI SRE that learns your stack!"
 type: application
 keywords:
-  - alerting
-  - metric
+  - observability
   - monitoring
+  - full-stack-observability
+  - ai-sre
+  - kubernetes
+  - opentelemetry
+  - metrics
+  - logs
+  - alerting
+  - anomaly-detection
 home: https://netdata.cloud/
 sources:
   - https://github.com/netdata/helmchart
