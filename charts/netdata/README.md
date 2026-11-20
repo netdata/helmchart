@@ -4,7 +4,7 @@ Netdata, full-stack observability: the AI SRE that learns your stack!
 
 <a href="https://artifacthub.io/packages/search?repo=netdata" target="_blank" rel="noopener noreferrer"><img loading="lazy" src="https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/netdata" alt="Artifact HUB" class="img_node_modules-@docusaurus-theme-classic-lib-theme-MDXComponents-Img-styles-module"></img></a>
 
-![Version: 3.7.181](https://img.shields.io/badge/Version-3.7.181-informational?style=flat-square)
+![Version: 3.7.182](https://img.shields.io/badge/Version-3.7.182-informational?style=flat-square)
 
 ![AppVersion: v2.13.0](https://img.shields.io/badge/AppVersion-v2.13.0-informational?style=flat-square)
 

@@ -1,7 +1,7 @@
 apiVersion: v2
 name: netdata
-version: 3.7.181
-description: "Netdata, full-stack observability: the AI SRE that learns your stack!"
+version: 3.7.182
+description: 'Netdata, full-stack observability: the AI SRE that learns your stack!'
 type: application
 keywords:
   - observability
